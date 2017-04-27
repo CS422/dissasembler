@@ -1,0 +1,46 @@
+00009000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.04
+Created On: 4/26/2017 5:53:33 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      :
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00009000                             7      ORG    $9000
+00009000                             8  START:                  ; first instruction of program
+00009000                             9      
+00009000                            10  * Put program code here
+00009000  4E71                      11       NOP 
+00009002                            12  
+00009002                            13  *    LEA     MSG,A1
+00009002                            14  *    MOVE.B  #14, D0
+00009002                            15  *    TRAP    #15
+00009002                            16      
+00009002                            17      
+00009002                            18  *    MOVE.B  #2,D0
+00009002                            19  *    TRAP    #15
+00009002                            20   
+00009002                            21  *    MOVEA.W $300,A2
+00009002                            22  *    MOVE.W  D1,D2   THE INPUT IS STORED INTO D1 WE MOVE IT TO D2
+00009002                            23      
+00009002                            24  *    MOVE.W  D2,(A2)
+00009002                            25      
+00009002                            26      
+00009002                            27      
+00009002                            28      
+00009002  FFFF FFFF                 29      SIMHALT             ; halt simulator
+00009006                            30  
+00009006                            31  * Put variables and constants here
+00009006                            32  ;MSG     DC.L    'ENTER A NUMBER: ',0
+00009006                            33      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+START               9000

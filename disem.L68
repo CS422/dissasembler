@@ -1,0 +1,329 @@
+00001000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.04
+Created On: 4/26/2017 5:54:10 PM
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : 
+00000000                             3  * Written by : DANNY AND EDWARD
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  *-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
+00001000                             8      ORG    $1000
+00001000  =0000000D                  9  CR  EQU $0D
+00001000  =0000000A                 10  LF  EQU $0A
+00001000                            11  START:                  ; first instruction of program
+00001000                            12              ;LEA     stack,SP
+00001000  43F9 00000598             13              LEA     welcome_message,A1  PRESENT THE WELCOME MESSAGE
+00001006  103C 000E                 14              MOVE.B  #14,D0
+0000100A  4E4F                      15              TRAP    #15
+0000100C                            16              
+0000100C                            17             
+0000100C                            18  
+0000100C                            19  
+0000100C                            20  * Put program code here
+0000100C                            21  *-----
+0000100C                            22  *This program starts by given a starting address and an ending address disassemble
+0000100C                            23  *the binary code that is at that location.
+0000100C                            24  *
+0000100C                            25  *
+0000100C                            26  *----
+0000100C                            27  
+0000100C                            28  
+0000100C                            29  *run_program     
+0000100C                            30  *                MOVE.L  #0,A3
+0000100C                            31  *                CLR     D1
+0000100C                            32  *                LEA     enter_start_AD,A1
+0000100C                            33  *                MOVE.L  #14,D0
+0000100C                            34  *                TRAP    #15
+0000100C                            35                  
+0000100C                            36                  
+0000100C                            37                  *---------------------I/O SECTION
+0000100C                            38                  
+0000100C                            39  get_input_start_addr 
+0000100C  267C 00000000             40                  MOVE.L  #0,A3
+00001012  4241                      41                  CLR     D1
+00001014  43F9 0000060E             42                  LEA     enter_start_AD,A1
+0000101A  700E                      43                  MOVE.L  #14,D0
+0000101C  4E4F                      44                  TRAP    #15
+0000101E                            45                  
+0000101E                            46                  
+0000101E                            47  
+0000101E                            48        
+0000101E  43F9 00000642             49                  LEA     userStartAddrInput,A1   load address to store the input from user
+00001024  7002                      50                  MOVE.L  #2,D0
+00001026  4E4F                      51                  TRAP    #15
+00001028  4EB9 000004EC             52                  JSR     parse_input         parse the starting address
+0000102E                            53                  
+0000102E                            54                  
+0000102E  2A46                      55                  MOVE.L  D6,A5   MOVE OUR STARTING ADDRESS TO A6
+00001030                            56                  
+00001030                            57                  *----MIGHT NEED TO CHECK FOR ODD ADDRESSING ?
+00001030                            58                  *----CHECK FOR ADDRESS OUT OF BOUNDS DOMAIN?
+00001030                            59  
+00001030                            60  
+00001030                            61  
+00001030                            62  get_input_end_addr
+00001030  267C 00000000             63                  MOVE.L  #0,A3
+00001036  4241                      64                  CLR     D1
+00001038  43F9 000006A6             65                  LEA     userEnd,A1
+0000103E  700E                      66                  MOVE.L  #14,D0
+00001040  4E4F                      67                  TRAP    #15
+00001042                            68                  
+00001042                            69  
+00001042                            70  
+00001042  43F9 00000674             71                  LEA     userEndAddrInput,A1
+00001048  1239 000006A6             72                  MOVE.B  userEnd,D1
+0000104E  7002                      73                  MOVE.L  #2,D0
+00001050  4E4F                      74                  TRAP    #15
+00001052  4EB9 00000502             75                  JSR     parse_end
+00001058                            76  
+00001058                            77                  
+00001058  2C46                      78                  MOVE.L  D6,A6   MOVE OUT ENDING ADDRESS TO A7
+0000105A  4EB9 00000400             79                  JSR     get_opcode 
+00001060                            80  
+00001060                            81                  *----MIGHT NEED TO CHECK FOR ODD ADDRESSING ?
+00001060                            82                  *----CHECK FOR ADDRESS OUT OF BOUNDS DOMAIN?
+00001060                            83                  ;SIMHALT
+00001060                            84  
+00001060                            85          *----------END OF I/O SECTION*---
+00001060                            86          *----------Start of OPCODE SUBROUTINE
+00001060  =0000A000                 87  stack            EQU        $A000  
+00001060  =0000000C                 88  shift            EQU        12                   * Shift 12 bits 
+00000400                            89                   ORG        $400
+00000400                            90           
+00000400  4FF9 0000A000             91  get_opcode       LEA        stack,SP        *Load the SP
+00000406  41F9 00000424             92                   LEA        jmp_table,A0    *Index into the table
+0000040C  4280                      93                   CLR.L      D0              *Zero it       
+0000040E  227C 00009000             94                   MOVE.L     #$00009000,A1        *We'll play with it here
+00000414  3011                      95                   MOVE.W     (A1),D0
+00000416  123C 000C                 96                   MOVE.B     #shift,D1       *Shift 12 bits to the right  
+0000041A  E268                      97                   LSR.W      D1,D0           *Move the bits
+0000041C  C0FC 0006                 98                   MULU       #6,D0           *Form offset     
+00000420  4EB0 0000                 99                   JSR        0(A0,D0)        *Jump indirect with index
+00000424                           100                   
+00000424  4EF9 00000484            101  jmp_table        JMP        code0000        *Bit manipulation/MOVEP/Immediate
+0000042A  4EF9 00000488            102                   JMP        code0001        *MOVE.B
+00000430  4EF9 0000048C            103                   JMP        code0010        *MOVE.L
+00000436  4EF9 00000490            104                   JMP        code0011        *MOVE.W
+0000043C  4EF9 00000494            105                   JMP        code0100        *Miscellaneous
+00000442  4EF9 000004A8            106                   JMP        code0101        *ADDQ/SUBQ/Scc/DBcc
+00000448  4EF9 000004AC            107                   JMP        code0110        *BSR,BRA,Bcc
+0000044E  4EF9 000004B0            108                   JMP        code0111        *MOVEQ
+00000454  4EF9 000004B4            109                   JMP        code1000        *OR/DIV/SBCD
+0000045A  4EF9 000004B8            110                   JMP        code1001        *SUB/SUBX
+00000460  4EF9 000004BC            111                   JMP        code1010        *Unassigned
+00000466  4EF9 000004C0            112                   JMP        code1011        *CMP/EOR
+0000046C  4EF9 000004C4            113                   JMP        code1100        *AND/MUL/ABCD/EXG
+00000472  4EF9 000004C8            114                   JMP        code1101        *ADD/ADDA/ADDX
+00000478  4EF9 000004CC            115                   JMP        code1110        *Shift/Rotate
+0000047E  4EF9 000004D0            116                   JMP        code1111        *Special/Reserved
+00000484                           117                   
+00000484  4E72 2700                118  code0000         STOP       #$2700
+00000488  4E72 2700                119  code0001         STOP       #$2700
+0000048C  4E72 2700                120  code0010         STOP       #$2700
+00000490  4E72 2700                121  code0011         STOP       #$2700
+00000494  267C 00000000            122  code0100         MOVE.L  #0,A3
+0000049A  4241                     123                   CLR     D1
+0000049C  43F9 0000060E            124                   LEA     enter_start_AD,A1
+000004A2  700E                     125                   MOVE.L  #14,D0
+000004A4  4E4F                     126                   TRAP    #15
+000004A6  4E75                     127                   RTS
+000004A8  4E72 2700                128  code0101         STOP       #$2700
+000004AC  4E72 2700                129  code0110         STOP       #$2700
+000004B0  4E72 2700                130  code0111         STOP       #$2700
+000004B4  4E72 2700                131  code1000         STOP       #$2700
+000004B8  4E72 2700                132  code1001         STOP       #$2700
+000004BC  4E72 2700                133  code1010         STOP       #$2700
+000004C0  4E72 2700                134  code1011         STOP       #$2700
+000004C4  4E72 2700                135  code1100         STOP       #$2700
+000004C8  4E72 2700                136  code1101         STOP       #$2700
+000004CC  4E72 2700                137  code1110         STOP       #$2700
+000004D0  4E72 2700                138  code1111         STOP       #$2700
+000004D4                           139  
+000004D4                           140          *INCLUDE 'opcode_subroutine.x68'
+000004D4                           141  STORE_SRT_END:
+000004D4  9C4D                     142              SUB.W   A5,D6   SUBTRACT THE STARTING ADDRESS FROM THE ENDING ADDRESS TO GET THE SIZE OF INSTRUCTIONS
+000004D6  23CD 00FFFF00            143              MOVE.L  A5,$00FFFF00    STORE USER START ADDRESS SO WE CAN FREE UP REG
+000004DC  23CE 00FFFF10            144              MOVE.L  A6,$00FFFF10    STORE USER END ADDRESS SO WE CAN FREE UP REG
+000004E2  23C6 00FFFF20            145              MOVE.L  D6,$00FFFF20    STORE SIZE OF INSTRCTIONS
+000004E8                           146              
+000004E8  FFFF FFFF                147              SIMHALT
+000004EC                           148  
+000004EC                           149  
+000004EC                           150  *-Parses input - take input from user to create a memory address
+000004EC                           151  *- entry is parsed to make sure it falls within a valid range
+000004EC                           152  *-good inputs are converteed to hex
+000004EC                           153  *-the entered addres get's stored in d3
+000004EC                           154  *-
+000004EC                           155  *-
+000004EC  7C00                     156  parse_input     MOVEQ   #$0,D6  IM SURE WE CAN USE CLR, CLEAR THE DATA REGISTER
+000004EE  7A00                     157                  MOVEQ   #$0,D5
+000004F0                           158                  
+000004F0                           159                  *-CHECK TO SEE INPUT DATA
+000004F0  B205                     160                  CMP.B   D5,D1   D5 IS 0
+000004F2  6700 0086                161                  BEQ     error_no_input no input was found
+000004F6  0C41 0008                162                  CMPI    #$8,D1  CHECK IF THE USER ENTERED TOO MANY CHARACTERS 8+
+000004FA  6E00 0090                163                  BGT     error_bad_entry
+000004FE                           164                  ;BGT     error_inv_to_many_char
+000004FE  6000 0018                165                  BRA     parse_each
+00000502                           166  
+00000502  7C00                     167  parse_end        MOVEQ   #$0,D6  CLEARS THE D6 REGISTEY
+00000504  7A00                     168                  MOVEQ   #$0,D5  CLEARS D5
+00000506  B205                     169                  CMP.B   D5,D1   CHECKS TO SEE IF A VALUE WAS ENTERED
+00000508  6700 0070                170                  BEQ     error_no_input
+0000050C  0C41 0008                171                  CMPI    #$8,D1  CHECKS IF THE USER ENTERED TOO MANY CHARACTERS 8+
+00000510  6E00 007A                172                  BGT     error_bad_entry
+00000514                           173                  ;BGT     error_to_many_char
+00000514  6000 0002                174                  BRA     parse_each        
+00000518                           175  
+00000518                           176  *parse each analyzes each ind character entered
+00000518                           177  *in ASCII table lower case 'f' is tyhe highest character code (102)
+00000518                           178  
+00000518  1419                     179  parse_each      MOVE.B  (A1)+,D2    GET THE NEXT CHARACTER FOR PARSING
+0000051A  B405                     180                  CMP.B   D5,D2       CHECK IF THE NEXT VALUE IS NULL, IF SO WE HAVE EITHER ERROR OR REACHED END OF INPUT
+0000051C  6700 0058                181                  BEQ     parse_complete  end of user input
+00000520  B43C 0066                182                  CMP.B   #102,D2     NEED TO CHECK WETHER THE INPUT IS OUT OF ASCII RANGE 'f' is 102
+00000524  6E00 0012                183                  BGT     hex_compare
+00000528                           184                  
+00000528                           185                  *-
+00000528                           186                  *Comapare the decimal number values betyween 0 -9 first
+00000528                           187                  *
+00000528                           188                  *-
+00000528  B43C 002F                189  dec_compare     CMP.B   #47,D2      if its lower than 47 that means its invalid character
+0000052C                           190                                      *-for decimal values between [47, 57] are valid
+0000052C  6F00 0056                191                  BLE     error_char 
+00000530  B43C 003A                192                  CMP.B   #58, D2     IF THE VALUE IS NOT LESS THAN 47 AND NOT GREATER THAN 58 WE CAN CONVERT DECIMAL TO HEX
+00000534  6D00 0022                193                  BLT     dec_convert
+00000538                           194                  *-
+00000538                           195                  *there are no number values, lets check alpha characters
+00000538                           196                  *->IF the value is not less than 65 which is 'A' and the value is NO more than
+00000538                           197                  *->71 'G' then we should go and convert to hex range A-F
+00000538                           198                  *-UPPER case
+00000538                           199                  *-      
+00000538  B43C 0041                200  hex_compare     CMP.B   #65,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 65(A)
+0000053C  6D00 0046                201                  BLT     error_char  the VALUE IS LESS THAN 65 WHICH IS SYMBOLS AND INVALID
+00000540  B43C 0047                202                  CMP.B   #71,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 71(G)
+00000544  6D00 001C                203                  BLT     upper_ascii VALUE FELL IN RANGE A-F                 
+00000548  B43C 0061                204  low_hex_compare CMP.B   #97,D2      CHECK TO SEE IF VALUE IS LESS THAN 97 'a'
+0000054C  6D00 0036                205                  BLT     error_char  VALUE IS SOME SYMBOL *- 97 - 103
+00000550  B43C 0067                206                  CMP.B   #103,D2     CHECK IF ITS WITHIN RANGE, LESS THAN 103
+00000554  6D00 0016                207                  BLT     lower_ascii
+00000558                           208                  
+00000558                           209           
+00000558  0402 0030                210  dec_convert     SUBI.B  #48,D2      CONVERT TO HEX FROM ASCII BY SUBTRACTING 48 FROM CURRENT DECIMAL VALUE
+0000055C                           211                  *-BECAUSE 0 - 9 THE HEX VALUES WILL BE A SINGLE CHAR WE SHIFT LEFT
+0000055C  E986                     212                  ASL.L   #4,D6
+0000055E  DC02                     213                  ADD.B   D2,D6       MOVE NEW BYTE INTO THE RETURN REGISTER
+00000560  60B6                     214                  BRA     parse_each  continue to parse the next character, SHOULD BE IN RANGE FOR LOWER
+00000562                           215                                      *- 97 - 103
+00000562                           216                  
+00000562                           217                              
+00000562                           218  *- ASCII conversions UPPER case to hex value by substracting 55
+00000562                           219  
+00000562  0402 0037                220  upper_ascii     SUBI.B  #55,D2  SUBTRACT 55 TO GET THE HEX VALUE OF THE CORRESPONDING CHARACTER
+00000566  E986                     221                  ASL.L   #4,D6   MOVE THE SANITIZED VALUE INTO D6 REGISTER
+00000568  DC02                     222                  ADD.B   D2,D6   MOVE THE NEW BYTE INTO RETURN REGISTER
+0000056A  60AC                     223                  BRA     parse_each  parse next item
+0000056C                           224  *-ASCI lower case to hex value by subtracting 87
+0000056C  0402 0057                225  lower_ascii     SUBI.B  #87,D2
+00000570  E986                     226                  ASL.L   #4,D6
+00000572  DC02                     227                  ADD.B   D2,D6
+00000574  60A2                     228                  BRA     parse_each
+00000576                           229  
+00000576  7801                     230  parse_complete  MOVEQ   #1,D4  FINISH PARSING USER INPUT
+00000578  4E75                     231                  RTS             JUMP FROM SUBROUTINE                
+0000057A  43F9 000005D3            232  error_no_input  LEA no_entry,A1 load bad entry statment
+00000580  7001                     233                  MOVE.L  #1,D0
+00000582  4E4F                     234                  TRAP    #15
+00000584                           235                  ;JMP     get_input
+00000584  43F9 000005FB            236  error_char      LEA bad_char,A1
+0000058A  4E4F                     237                  trap #15
+0000058C                           238                  ;JMP get_input0
+0000058C  43F9 000005E6            239  error_bad_entry LEA bad_entry,A1
+00000592  4E4F                     240                  TRAP #15
+00000594                           241                  ;JMP  get_input
+00000594                           242  
+00000594                           243  
+00000594  FFFF FFFF                244      SIMHALT             ; halt simulator
+00000598                           245  
+00000598                           246  * Put variables and constants here
+00000598= 48 65 6C 6C 6F 20 ...    247  welcome_message DC.B    'Hello and Welcome 68Kkrew"s 68K Disassembler(get the pun)',CR,LF
+000005D3                           248  
+000005D3                           249  
+000005D3= 4E 6F 20 45 6E 74 ...    250  no_entry    DC.B    'No Entry detected.',0
+000005E6= 42 61 64 20 45 6E ...    251  bad_entry   DC.B    'Bad Entry Dectected.',0
+000005FB= 42 61 64 20 43 68 ...    252  bad_char    DC.B    'Bad Char detected.',0
+0000060E                           253  *-errors
+0000060E= 45 6E 74 65 72 20 ...    254  enter_start_AD  DC.B    'Enter a starting address between $0 and $00FFFE00: ',0
+00000642                           255  userStartAddrInput  DS.B    50  address used to store the data input from user
+00000674                           256  userEndAddrInput    DS.B    50  address used to stoer the data input from user
+000006A6                           257  
+000006A6= 45 6E 74 65 72 20 ...    258  userEnd         DC.B    'Enter an address greater than the starting address: ',0
+000006DB                           259  
+000006DB                           260  userEndInput    DS.B    50  addresse used to store the data input from user
+0000070E  43F8 05D3                261  error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
+00000712  7001                     262                          MOVE.L  #1,D0
+00000714  4E4F                     263                          TRAP    #15
+00000716                           264                          ;JMP     get_input
+00000716                           265  
+00000716                           266  
+00000716                           267  
+00000716                           268      END    START        ; last line of source
+
+No errors detected
+No warnings generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+BAD_CHAR            5FB
+BAD_ENTRY           5E6
+CODE0000            484
+CODE0001            488
+CODE0010            48C
+CODE0011            490
+CODE0100            494
+CODE0101            4A8
+CODE0110            4AC
+CODE0111            4B0
+CODE1000            4B4
+CODE1001            4B8
+CODE1010            4BC
+CODE1011            4C0
+CODE1100            4C4
+CODE1101            4C8
+CODE1110            4CC
+CODE1111            4D0
+CR                  D
+DEC_COMPARE         528
+DEC_CONVERT         558
+ENTER_START_AD      60E
+ERROR_BAD_ENTRY     58C
+ERROR_CHAR          584
+ERROR_INV_TO_MANY_CHAR  70E
+ERROR_NO_INPUT      57A
+GET_INPUT_END_ADDR  1030
+GET_INPUT_START_ADDR  100C
+GET_OPCODE          400
+HEX_COMPARE         538
+JMP_TABLE           424
+LF                  A
+LOWER_ASCII         56C
+LOW_HEX_COMPARE     548
+NO_ENTRY            5D3
+PARSE_COMPLETE      576
+PARSE_EACH          518
+PARSE_END           502
+PARSE_INPUT         4EC
+SHIFT               C
+STACK               A000
+START               1000
+STORE_SRT_END       4D4
+UPPER_ASCII         562
+USEREND             6A6
+USERENDADDRINPUT    674
+USERENDINPUT        6DB
+USERSTARTADDRINPUT  642
+WELCOME_MESSAGE     598
