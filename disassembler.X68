@@ -1,11 +1,12 @@
 *-----------------------------------------------------------
-* Title      : 
-* Written by : DANNY AND EDWARD
-* Date       :
-* Description:
+* Title      : (!!!!!!STABLE!!!!) Master branch
+* Written by : Danny Ly & Edward Chang
+* Date       : 4/27/2017
+* Description: Our dissasembler for 68K
 *-----------------------------------------------------------
 *-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
     ORG    $1000
+    
 CR  EQU $0D
 LF  EQU $0A
 startLoc    EQU $7000
@@ -17,8 +18,10 @@ startLoc    EQU $7000
 *
 *
 *---------
-START:                  ; first instruction of program
+START:                  
+            ; first instruction of program
             ;LEA     stack,SP
+            *-present the hello message
             LEA     welcome_message,A1  PRESENT THE WELCOME MESSAGE
             MOVE.B  #14,D0
             TRAP    #15
@@ -34,17 +37,17 @@ START:                  ; first instruction of program
 *
 *----
 
-
-*run_program     
-*                MOVE.L  #0,A3
-*                CLR     D1
-*                LEA     enter_start_AD,A1
-*                MOVE.L  #14,D0
-*                TRAP    #15
-                
-                
+*-------
+* Needs to check for odd addressing**
+*
+*
+*-----
                 *---------------------I/O SECTION
-                
+                * Grabs ascii from user and converts to hex stored into memory
+                * A4 is used as our pointer for the program, ending addresses can be stored
+                * statically in memory and retrieved when needed to compare
+                * this free's up a adress/data register to use
+                *-----------------------
 get_input_start_addr 
                 MOVE.L  #0,A3
                 CLR     D1
