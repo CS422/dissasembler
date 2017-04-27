@@ -119,11 +119,11 @@ code0000         STOP       #$2700
 code0001         STOP       #$2700
 code0010         STOP       #$2700
 code0011         STOP       #$2700
-code0100         MOVE.L  #0,A3
-                 CLR     D1
-                 LEA     enter_start_AD,A1
-                 MOVE.L  #14,D0
-                 TRAP    #15
+code0100         MOVE.L     #0,A3
+                 CLR        D1
+                 LEA        enter_start_AD,A1
+                 MOVE.L     #14,D0
+                 TRAP       #15
                  RTS
 code0101         STOP       #$2700
 code0110         STOP       #$2700
@@ -266,6 +266,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 
 
     END    START        ; last line of source
+
 
 
 
