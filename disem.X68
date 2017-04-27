@@ -75,13 +75,69 @@ get_input_end_addr
                 JSR     parse_end
 
                 
-                MOVE.L  D6,A6   MOVE OUT ENDING ADDRESS TO A7 
+                MOVE.L  D6,A6   MOVE OUT ENDING ADDRESS TO A7
+                JSR     get_opcode 
 
                 *----MIGHT NEED TO CHECK FOR ODD ADDRESSING ?
                 *----CHECK FOR ADDRESS OUT OF BOUNDS DOMAIN?
                 ;SIMHALT
 
         *----------END OF I/O SECTION*---
+        *----------Start of OPCODE SUBROUTINE
+stack            EQU        $A000  
+shift            EQU        12                   * Shift 12 bits 
+                 ORG        $400
+         
+get_opcode       LEA        stack,SP        *Load the SP
+                 LEA        jmp_table,A0    *Index into the table
+                 CLR.L      D0              *Zero it       
+                 MOVE.L     #$00009000,A1        *We'll play with it here
+                 MOVE.W     (A1),D0
+                 MOVE.B     #shift,D1       *Shift 12 bits to the right  
+                 LSR.W      D1,D0           *Move the bits
+                 MULU       #6,D0           *Form offset     
+                 JSR        0(A0,D0)        *Jump indirect with index
+                 
+jmp_table        JMP        code0000        *Bit manipulation/MOVEP/Immediate
+                 JMP        code0001        *MOVE.B
+                 JMP        code0010        *MOVE.L
+                 JMP        code0011        *MOVE.W
+                 JMP        code0100        *Miscellaneous
+                 JMP        code0101        *ADDQ/SUBQ/Scc/DBcc
+                 JMP        code0110        *BSR,BRA,Bcc
+                 JMP        code0111        *MOVEQ
+                 JMP        code1000        *OR/DIV/SBCD
+                 JMP        code1001        *SUB/SUBX
+                 JMP        code1010        *Unassigned
+                 JMP        code1011        *CMP/EOR
+                 JMP        code1100        *AND/MUL/ABCD/EXG
+                 JMP        code1101        *ADD/ADDA/ADDX
+                 JMP        code1110        *Shift/Rotate
+                 JMP        code1111        *Special/Reserved
+                 
+code0000         STOP       #$2700
+code0001         STOP       #$2700
+code0010         STOP       #$2700
+code0011         STOP       #$2700
+code0100         MOVE.L  #0,A3
+                 CLR     D1
+                 LEA     enter_start_AD,A1
+                 MOVE.L  #14,D0
+                 TRAP    #15
+                 RTS
+code0101         STOP       #$2700
+code0110         STOP       #$2700
+code0111         STOP       #$2700
+code1000         STOP       #$2700
+code1001         STOP       #$2700
+code1010         STOP       #$2700
+code1011         STOP       #$2700
+code1100         STOP       #$2700
+code1101         STOP       #$2700
+code1110         STOP       #$2700
+code1111         STOP       #$2700
+
+        *INCLUDE 'opcode_subroutine.x68'
 STORE_SRT_END:
             SUB.W   A5,D6   SUBTRACT THE STARTING ADDRESS FROM THE ENDING ADDRESS TO GET THE SIZE OF INSTRUCTIONS
             MOVE.L  A5,$00FFFF00    STORE USER START ADDRESS SO WE CAN FREE UP REG
@@ -210,6 +266,9 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 
 
     END    START        ; last line of source
+
+
+
 
 
 
