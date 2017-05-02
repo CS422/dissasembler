@@ -21,6 +21,22 @@ START:                  ; first instruction of program
     
     NOP
     NOP
+    
+    RTS
+        NOP
+    
+    RTS
+        NOP
+    
+    RTS
+        NOP
+    
+    RTS
+        NOP
+    
+    RTS
+        NOP
+    
  
     
     
@@ -91,6 +107,7 @@ test_buffer ds.w    85
 inputbuffer    ds.w    9999  input string storage
 
     END    START        ; last line of source
+
 
 
 

@@ -138,23 +138,25 @@ STORE_SRT_END:
 mainLoop          
             *-----
             *-This is the various OP Codes to decode, and branch off too, we need to decode these ones
-            *-
-            *-
+            *- listing of finished and un finished work
+            *-          ***Machine Code saved in D6*****
             *-----
 
             LSR     #4,D3       SHIFT 4 BITS TO GET THE MSB OF THE WORD
             
             ;compare bits to instructions
-            ;CMP.B   #bin0001,D3 ;MOVE.B
-            ;BEQ     op0001      ;branch to op0001
+            
+            CMP.B   #bin0001,D3 ;MOVE.B
+            *- Machine code saved in D6
+            BEQ     op0001      ;branch to op0001
             ;CMP.B   #bin0011,D3 ;MOVE.W
             ;BEQ     op0011      ;branch to op0011
             ;CMP.B   #bin0010,D3 ;MOVE.L 
             ;BEQ     op0010      ;branch to op0010           
             ;CMP.B   #bin0111,D3 ;MOVEQ
             ;BEQ     op0111      ;branch to op0111                        
-            CMP.B   #bin0100,D3 ;MOVEM.L, MOVEM.W, LEA, CLR, JSR, RTS
-            BEQ     op0100      ;branch to op0100                        
+            CMP.B   #bin0100,D3     MOVEM.L, MOVEM.W, LEA, CLR, JSR,NOP(DONE), RTS(DONE)
+            BEQ     op0100          branch to op0100                        
             ;CMP.B   #bin1101,D3 ;ADD, ADDA
             ;BEQ     op1101      ;branch to op1101            
             ;CMP.B   #bin1001,D3 ;SUB, SUBA
@@ -415,53 +417,15 @@ N1111
             RTS   
             
             
-op0100      ;MOVEM, LEA, CLR, JSR, RTS
+            
+            *---------------------------------------------------------------
+            *--------------------------------------------------------
+            *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
+            *-------------------------------------
+            INCLUDE 'op0100.x68'    IN a different file, modulated design        
+            INCLUDE 'op0001.x68'    MOVE.b Differetn file
 
-            ;CMP.W   #$4EB9,D6   ;see if it's a JSR
-            ;BEQ     jumpToRt            
-            ;CMP.W   #$4E75,D6   ;see if it's a RTS
-            ;BEQ     returnRt 
-           
-* determine if contents in D3 are a word or long ---------- 
-            ;JSR     WorL        
-* ---------------------------------------------------------
-            ;CMP.B   #hex7,D3    ;see if it's a LEA
-            ;BEQ     _lea        ;branch 
-            
-* determine if contents in D3 are either CLR or MOVEM ----- 
-            ;JSR     clrORmm       
-* ---------------------------------------------------------
-            ;CMP.B   #hex8,D3    ;see if it's a CLR.B
-            ;BEQ     _clrB       ;branch             
-            ;CMP.B   #hex9,D3    ;see if it's a CLR.W
-            ;BEQ     _clrW       ;branch   
-            ;CMP.B   #hexA,D3    ;see if it's a CLR.L
-            ;BEQ     _clrL       ;branch
-  
-            ;CMP.B   #hex2,D3    ;see if it's a MOVEM.W
-            ;BEQ     _movemW     ;branch   
-            ;CMP.B   #hex3,D3    ;see if it's a MOVEM.L
-            ;BEQ     _movemL     ;branch              
-                        
-            ;BRA     opError     ;bad opcode branch to error
-            
-            
-            ;CMP.W   #$4E71,D6
-            ;BEQ     _
-            
-            
 
-            ;Print/store JSR here
-            MOVE.L  #2,D7       ;data is not error
-            MOVE.B  #' ',(A2)+      ;print spaces
-            MOVE.B  #' ',(A2)+      ;print spaces
-            MOVE.B  #' ',(A2)+      ;print spaces
-            MOVE.B  #' ',(A2)+      ;print spaces
-            MOVE.B  #'N',(A2)+  ;print R
-            MOVE.B  #'O',(A2)+  ;print T
-            MOVE.B  #'P',(A2)+  ;print S
-            MOVE.B  #3,D5       ;counter for output
-            BRA     printCode
             
 opError                             
             MOVE.L  A0,D3
@@ -768,6 +732,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
