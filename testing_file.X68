@@ -16,6 +16,7 @@ START:                  ; first instruction of program
     
 * Put program code here
     
+    MOVE.B  d,D0
     
     NOP
     
