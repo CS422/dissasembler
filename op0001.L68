@@ -1,0 +1,102 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.04
+Created On: 2017-05-05 ¿ÀÈÄ 12:21:57
+
+00000000                             1  *-----------------------------------------------------------
+00000000                             2  * Title      : OPCODE for 0001 MOVE.B
+00000000                             3  * Written by :
+00000000                             4  * Date       :
+00000000                             5  * Description:
+00000000                             6  *-----------------------------------------------------------
+00000000                             7  *------------------
+00000000                             8  * Original Machine Code stored in D6(DO not Touch)
+00000000                             9  * D0 - Desinated register for 3 bit decoding
+00000000                            10  * D2 -  Desinated Temp register for storing edited machine code (changed this)
+00000000                            11  *
+00000000                            12  
+00000000                            13  
+00000000                            14  
+00000000                            15  
+00000000                            16  op0001
+00000000                            17  *------------------------------------------------------------
+00000000                            18  * **** 0000 0000 0000
+00000000                            19  * 4 MSB determines the opcode and size 
+00000000                            20  * this case MOVE.B
+00000000  7E02                      21              MOVE.L  #2,D7       ;data is not error
+00000002  14FC 0020                 22              MOVE.B  #' ',(A2)+      ;print spaces
+00000006  14FC 0020                 23              MOVE.B  #' ',(A2)+      ;print spaces
+0000000A  14FC 0020                 24              MOVE.B  #' ',(A2)+      ;print spaces
+0000000E  14FC 0020                 25              MOVE.B  #' ',(A2)+      ;print spaces
+00000012  14FC 004D                 26              MOVE.B  #'M',(A2)+      ;print M
+00000016  14FC 004F                 27              MOVE.B  #'O',(A2)+      ;print O
+0000001A  14FC 0056                 28              MOVE.B  #'V',(A2)+      ;print V
+0000001E  14FC 0045                 29              MOVE.B  #'E',(A2)+      PRINT  E
+00000022  14FC 002E                 30              MOVE.B  #'.',(A2)+
+00000026  14FC 0042                 31              MOVE.B  #'B',(A2)+
+0000002A                            32              
+0000002A                            33              
+0000002A                            34  *------------------------------------------------------------
+0000002A                            35  * 0000 0000 00** *000
+0000002A                            36  * Only next last 3 bits which is stored at D0 => Source Address mode
+0000002A                            37  *            MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+0000002A                            38  *            LSL.W   #2,D2
+0000002A                            39  *            LSR.W   #5,D2
+0000002A                            40  *            MOVE.B  D2,D0
+0000002A                            41  *            LEA     modeTable,A6 Load the table into A6
+0000002A                            42  *            JSR     (A6,D0)     Jump to subroutine of value at D0
+0000002A                            43               
+0000002A                            44  *------------------------------------------------------------
+0000002A                            45  * 0000 0000 0000 0***
+0000002A                            46  * Only last 3 bits which is stored at D0 => Source Register
+0000002A  3406                      47              MOVE.W  D6, D2  MOVE the original machine code to D2 to play with
+0000002C  E30A                      48              LSL.B   #1,D2   Shift the bits left by 1, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
+0000002E  1002                      49              MOVE.B  D2,D0   MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
+00000030  E208                      50              LSR.B   #1,D0   SHIFT TO GET THE 3 BITS VALUE            
+Line 51 ERROR: Undefined symbol
+00000032  4DF9 004DBB8E             51              LEA     numTable,A6 Load the table into A6
+00000038  4EB6 0000                 52              JSR     (A6,D0)     Jump to subroutine of value at D0
+0000003C                            53  *------------------------------------------------------------
+0000003C                            54  * 0000 000* **00 0000
+0000003C                            55  * Only next last 3 bits which is stored at D0 => Destination Address mode
+0000003C                            56  *            MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+0000003C                            57  *            LSL.L   #7,D2
+0000003C                            58  *            LSR.L   #8,D2
+0000003C                            59  *            LSR.L   #5,D2
+0000003C                            60  *            MOVE.B  D2,D0
+0000003C                            61  *            LEA     modeTable,A6 Load the table into A6
+0000003C                            62  *            JSR     (A6,D0)     Jump to subroutine of value at D0
+0000003C                            63  *------------------------------------------------------------
+0000003C                            64  * 0000 ***0 0000 0000
+0000003C                            65  * Only first 3 bits after 4MSB  => Destination Register
+0000003C                            66  * (which is stored at D0)
+0000003C  2406                      67              MOVE.L  D6,D2       MOVE the original machine code to D2 to play with
+0000003E  E08A                      68              LSR.L   #8,D2       Shift the bits right by 9, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
+00000040  E28A                      69              LSR.L   #1,D2
+00000042  E30A                      70              LSL.B   #1,D2
+00000044  E20A                      71              LSR.B   #1,D2
+00000046  1002                      72              MOVE.B  D2,D0       MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
+Line 73 ERROR: Undefined symbol
+00000048  4DF9 004DBB8E             73              LEA     numTable,A6 Load the table into A6
+0000004E  4EB6 0000                 74              JSR     (A6,D0)     Jump to subroutine of value at D0
+00000052                            75  *------------------------------------------------------------
+00000052                            76  * end of decoding
+00000052                            77  *------------------------------------------------------------
+00000052                            78  
+00000052                            79  * printing          
+Line 80 ERROR: Undefined symbol
+00000052  6000 BB3A                 80              BRA     printCode
+00000056                            81  
+00000056                            82  
+00000056                            83  
+00000056                            84  
+00000056                            85  
+Line 86 WARNING: END directive missing, starting address not set
+
+3 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+OP0001              0

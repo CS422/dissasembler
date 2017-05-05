@@ -98,7 +98,7 @@ STORE_SRT_END:
             MOVE.L  D6,$00FFFF20    STORE SIZE OF INSTRCTIONS
             MOVE.L  A5,A4
             BRA get_next_instruction
-            
+                         
    
 *---move_addresses:
                                 
@@ -281,7 +281,26 @@ write_data_in_D3_to_buffer:
                 ADDI.B  #4,D5
                 RTS
                 
-
+* -----------------------------------------------------------            
+* Jump Table modeTable ***************************************
+*** matches the associated Addressing mode     
+*************************************************************
+*modeTable   JSR     M0000   ;Dn, Data Register 
+*            RTS             ;return, done printing
+*            JSR     M0001   ;An, Address Register 
+*            RTS             ;return, done printing
+*            JSR     M0010   ;(An), Address
+*            RTS             ;return, done printing
+*            JSR     M0011   ;(An)+, Address with Postincrement
+*            RTS             ;return, done printing
+*            JSR     M0100   ;-(An), Address with Predecrement
+*            RTS             ;return, done printing
+*            JSR     M0101   ;(D18,An), Address with Displacemenet
+*            RTS             ;return, done printing
+*            JSR     M0110   ;register 6
+*            RTS             ;return, done printing
+*            JSR     M0111   ;register 7
+*            RTS             ;return, done printing            
 * -----------------------------------------------------------            
 * Jump Table numTable ***************************************
 *** prints the associated number of the register            *
@@ -732,6 +751,10 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
+
+
+
 
 
 

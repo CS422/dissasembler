@@ -14,15 +14,10 @@
 
 
 op0001
-            MOVE.B  D6, D2 MOVE the original machine code to D2 to play with
-            LSL.B   #1,D2   Shift the bits left by 1, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
-            MOVE.B  D2,D0   MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
-            LSR.B   #1,D0   SHIFT TO GET THE 3 BITS VALUE
-            
-            JSR     (A6,D3)
-
-
-
+*------------------------------------------------------------
+* **** 0000 0000 0000
+* 4 MSB determines the opcode and size 
+* this case MOVE.B
             MOVE.L  #2,D7       ;data is not error
             MOVE.B  #' ',(A2)+      ;print spaces
             MOVE.B  #' ',(A2)+      ;print spaces
@@ -36,10 +31,69 @@ op0001
             MOVE.B  #'B',(A2)+
             
             
-            MOVE.B  #3,D5           ;counter for output
-            
-            
+*------------------------------------------------------------
+* **** **** **BI T***
+* Only next last 3 bits which is stored at D0 => Source Address mode
+*            MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+*            LSL.W   #2,D2
+*            LSR.W   #5,D2
+*            MOVE.B  D2,D0
+*            MULU    #6,D0
+*            LEA     modeTable,A6 Load the table into A6
+*            JSR     (A6,D0)     Jump to subroutine of value at D0
+             
+*------------------------------------------------------------
+* **** **** **** *BIT
+* Only last 3 bits which is stored at D0 => Source Register
+            CLR     D2
+            CLR     D0
+            MOVE.W  D6, D2  MOVE the original machine code to D2 to play with
+            LSL.B   #1,D2   Shift the bits left by 1, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
+            LSR.B   #1,D2
+            MOVE.B  D2,D0   MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0             
+            MULU    #8,D0
+            LEA     numTable,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D0
+*------------------------------------------------------------
+* **** ***B IT** ****
+* Only next last 3 bits which is stored at D0 => Destination Address mode
+*            MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+*            LSL.L   #7,D2
+*            LSR.L   #8,D2
+*            LSR.L   #5,D2
+*            MOVE.B  D2,D0
+*            MULU    #6,D0
+*            LEA     modeTable,A6 Load the table into A6
+*            JSR     (A6,D0)     Jump to subroutine of value at D0
+*------------------------------------------------------------
+* **** BIT* **** ****
+* Only first 3 bits after 4MSB  => Destination Register
+* (which is stored at D0)
+            CLR     D2
+            CLR     D0
+            MOVE.L  D6,D2       MOVE the original machine code to D2 to play with
+            LSR.L   #8,D2       Shift the bits right by 9, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
+            LSR.L   #1,D2
+            LSL.B   #1,D2
+            LSR.B   #1,D2
+            MOVE.B  D2,D0       MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
+            MULU    #8,D0
+            LEA     numTable,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D0
+*------------------------------------------------------------
+* end of decoding
+*------------------------------------------------------------
+
+* printing          
             BRA     printCode
+
+
+
+
+
+
+
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~
