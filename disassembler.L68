@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 2017-05-05 오후 1:02:15
+Created On: 2017-05-08 오후 11:12:38
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : (!!!!!!STABLE!!!!) Master branch
@@ -152,7 +152,7 @@ Created On: 2017-05-05 오후 1:02:15
 0000107E                           148              
 0000107E  B63C 0001                149              CMP.B   #bin0001,D3 ;MOVE.B
 00001082                           150              *- Machine code saved in D6
-00001082  6700 0208                151              BEQ     op0001      ;branch to op0001
+00001082  6700 02A6                151              BEQ     op0001      ;branch to op0001
 00001086                           152              ;CMP.B   #bin0011,D3 ;MOVE.W
 00001086                           153              ;BEQ     op0011      ;branch to op0011
 00001086                           154              ;CMP.B   #bin0010,D3 ;MOVE.L 
@@ -160,7 +160,7 @@ Created On: 2017-05-05 오후 1:02:15
 00001086                           156              ;CMP.B   #bin0111,D3 ;MOVEQ
 00001086                           157              ;BEQ     op0111      ;branch to op0111                        
 00001086  B63C 0004                158              CMP.B   #bin0100,D3     MOVEM.L, MOVEM.W, LEA, CLR, JSR,NOP(DONE), RTS(DONE)
-0000108A  6700 01A4                159              BEQ     op0100          branch to op0100                        
+0000108A  6700 0242                159              BEQ     op0100          branch to op0100                        
 0000108E                           160              ;CMP.B   #bin1101,D3 ;ADD, ADDA
 0000108E                           161              ;BEQ     op1101      ;branch to op1101            
 0000108E                           162              ;CMP.B   #bin1001,D3 ;SUB, SUBA
@@ -180,7 +180,7 @@ Created On: 2017-05-05 오후 1:02:15
 0000108E                           176              ;CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
 0000108E                           177              ;BEQ     op1110      ;branch to op1110            
 0000108E                           178              
-0000108E  6000 025E                179              BRA     opERROR     ;invalid opcode display we havent implemented this code yet
+0000108E  6000 032C                179              BRA     opERROR     ;invalid opcode display we havent implemented this code yet
 00001092                           180              
 00001092                           181              ;branch to display opError display
 00001092                           182              
@@ -253,7 +253,7 @@ Created On: 2017-05-05 오후 1:02:15
 000010F6  E04B                     249                  LSR.W   #8,D3
 000010F8  E84B                     250                  LSR.W   #4,D3
 000010FA  C6FC 0008                251                  MULU.W  #8,D3
-000010FE  4DF9 00001150            252                  LEA     numTable,A6
+000010FE  4DF9 000011EE            252                  LEA     numTable,A6
 00001104  4EB6 3000                253                  JSR     (A6,D3)
 00001108                           254                  
 00001108  3606                     255                  MOVE.W  D6,D3   COPY DATA
@@ -261,7 +261,7 @@ Created On: 2017-05-05 오후 1:02:15
 0000110C  E04B                     257                  LSR.W   #8,D3
 0000110E  E84B                     258                  LSR.W   #4,D3
 00001110  C6FC 0008                259                  MULU.W  #8,D3
-00001114  4DF9 00001150            260                  LEA     numTable,A6
+00001114  4DF9 000011EE            260                  LEA     numTable,A6
 0000111A  4EB6 3000                261                  JSR     (A6,D3)
 0000111E                           262                  
 0000111E  3606                     263                  MOVE.W  D6,D3
@@ -270,7 +270,7 @@ Created On: 2017-05-05 오후 1:02:15
 00001122  E04B                     266                  LSR.W   #8,D3
 00001124  E84B                     267                  LSR.W   #4,D3
 00001126  C6FC 0008                268                  MULU.W  #8,D3
-0000112A  4DF9 00001150            269                  LEA numTable,A6
+0000112A  4DF9 000011EE            269                  LEA numTable,A6
 00001130  4EB6 3000                270                  JSR     (A6,D3)
 00001134                           271                  
 00001134                           272                  
@@ -280,7 +280,7 @@ Created On: 2017-05-05 오후 1:02:15
 0000113A  E04B                     276                  LSR.W   #8,D3
 0000113C  E84B                     277                  LSR.W   #4,D3
 0000113E  C6FC 0008                278                  MULU.W  #8,D3
-00001142  4DF9 00001150            279                  LEA     numTable,A6
+00001142  4DF9 000011EE            279                  LEA     numTable,A6
 00001148  4EB6 3000                280                  JSR     (A6,D3)
 0000114C  5805                     281                  ADDI.B  #4,D5
 0000114E  4E75                     282                  RTS
@@ -289,583 +289,657 @@ Created On: 2017-05-05 오후 1:02:15
 00001150                           285  * Jump Table modeTable ***************************************
 00001150                           286  *** matches the associated Addressing mode     
 00001150                           287  *************************************************************
-00001150                           288  *modeTable   JSR     M0000   ;Dn, Data Register 
-00001150                           289  *            RTS             ;return, done printing
-00001150                           290  *            JSR     M0001   ;An, Address Register 
-00001150                           291  *            RTS             ;return, done printing
-00001150                           292  *            JSR     M0010   ;(An), Address
-00001150                           293  *            RTS             ;return, done printing
-00001150                           294  *            JSR     M0011   ;(An)+, Address with Postincrement
-00001150                           295  *            RTS             ;return, done printing
-00001150                           296  *            JSR     M0100   ;-(An), Address with Predecrement
-00001150                           297  *            RTS             ;return, done printing
-00001150                           298  *            JSR     M0101   ;(D18,An), Address with Displacemenet
-00001150                           299  *            RTS             ;return, done printing
-00001150                           300  *            JSR     M0110   ;register 6
-00001150                           301  *            RTS             ;return, done printing
-00001150                           302  *            JSR     M0111   ;register 7
-00001150                           303  *            RTS             ;return, done printing            
-00001150                           304  * -----------------------------------------------------------            
-00001150                           305  * Jump Table numTable ***************************************
-00001150                           306  *** prints the associated number of the register            *
-00001150                           307  *** Also prints hex values for data and addresses           *
-00001150                           308  *-----see below for decoding of what these sub-routines are
-00001150                           309  *************************************************************
-00001150  4EB9 000011D0            310  numTable    JSR     N0000   ;register 0
-00001156  4E75                     311              RTS             ;return, done printing
-00001158  4EB9 000011D6            312              JSR     N0001   ;register 1
-0000115E  4E75                     313              RTS             ;return, done printing
-00001160  4EB9 000011DC            314              JSR     N0010   ;register 2
-00001166  4E75                     315              RTS             ;return, done printing
-00001168  4EB9 000011E2            316              JSR     N0011   ;register 3
-0000116E  4E75                     317              RTS             ;return, done printing
-00001170  4EB9 000011E8            318              JSR     N0100   ;register 4
-00001176  4E75                     319              RTS             ;return, done printing
-00001178  4EB9 000011EE            320              JSR     N0101   ;register 5
-0000117E  4E75                     321              RTS             ;return, done printing
-00001180  4EB9 000011F4            322              JSR     N0110   ;register 6
-00001186  4E75                     323              RTS             ;return, done printing
-00001188  4EB9 000011FA            324              JSR     N0111   ;register 7
-0000118E  4E75                     325              RTS             ;return, done printing
-00001190  4EB9 00001200            326              JSR     N1000   ;num 8
-00001196  4E75                     327              RTS             ;return, done printing
-00001198  4EB9 00001206            328              JSR     N1001   ;num 9
-0000119E  4E75                     329              RTS             ;return, done printing
-000011A0  4EB9 0000120C            330              JSR     N1010   ;num A
-000011A6  4E75                     331              RTS             ;return, done printing
-000011A8  4EB9 00001212            332              JSR     N1011   ;num B
-000011AE  4E75                     333              RTS             ;return, done printing
-000011B0  4EB9 00001218            334              JSR     N1100   ;num C
-000011B6  4E75                     335              RTS             ;return, done printing
-000011B8  4EB9 0000121E            336              JSR     N1101   ;num D
-000011BE  4E75                     337              RTS             ;return, done printing
-000011C0  4EB9 00001224            338              JSR     N1110   ;num E
-000011C6  4E75                     339              RTS             ;return, done printing
-000011C8  4EB9 0000122A            340              JSR     N1111   ;num F
-000011CE  4E75                     341              RTS             ;return, done printing
-000011D0                           342  * -----------------------------------------------------------            
-000011D0                           343  * Subroutine N0000 ------------------------------------------
-000011D0                           344  N0000
-000011D0  14FC 0030                345              MOVE.B  #'0',(A2)+      ;display 0
-000011D4  4E75                     346              RTS
-000011D6                           347  
-000011D6                           348  * -----------------------------------------------------------            
-000011D6                           349  * Subroutine N0001 ------------------------------------------
-000011D6                           350  N0001
-000011D6  14FC 0031                351              MOVE.B  #'1',(A2)+      ;display 1
-000011DA  4E75                     352              RTS
-000011DC                           353  
-000011DC                           354  * -----------------------------------------------------------            
-000011DC                           355  * Subroutine N0010 ------------------------------------------
-000011DC                           356  N0010
-000011DC  14FC 0032                357              MOVE.B  #'2',(A2)+      ;display 2
-000011E0  4E75                     358              RTS
-000011E2                           359   
-000011E2                           360  * -----------------------------------------------------------            
-000011E2                           361  * Subroutine N0011 ------------------------------------------
-000011E2                           362  N0011
-000011E2  14FC 0033                363              MOVE.B  #'3',(A2)+      ;display 3
-000011E6  4E75                     364              RTS
-000011E8                           365  
-000011E8                           366  * -----------------------------------------------------------            
-000011E8                           367  * Subroutine N0100 ------------------------------------------
-000011E8                           368  N0100
-000011E8  14FC 0034                369              MOVE.B  #'4',(A2)+      ;display 4
-000011EC  4E75                     370              RTS
-000011EE                           371  
-000011EE                           372  * -----------------------------------------------------------            
-000011EE                           373  * Subroutine N0101 ------------------------------------------
-000011EE                           374  N0101
-000011EE  14FC 0035                375              MOVE.B  #'5',(A2)+      ;display 5
-000011F2  4E75                     376              RTS
-000011F4                           377  
-000011F4                           378  * -----------------------------------------------------------            
-000011F4                           379  * Subroutine N0110 ------------------------------------------
-000011F4                           380  N0110
-000011F4  14FC 0036                381              MOVE.B  #'6',(A2)+      ;display 6
-000011F8  4E75                     382              RTS
-000011FA                           383              
-000011FA                           384  * -----------------------------------------------------------            
-000011FA                           385  * Subroutine N0111 ------------------------------------------
-000011FA                           386  N0111
-000011FA  14FC 0037                387              MOVE.B  #'7',(A2)+      ;display 7
-000011FE  4E75                     388              RTS
-00001200                           389  
-00001200                           390  * ----------------------------------------------------------- 
-00001200                           391  * Subroutine N1000 ------------------------------------------
-00001200                           392  N1000       
-00001200  14FC 0038                393              MOVE.B  #'8',(A2)+      ;display 8
-00001204  4E75                     394              RTS
-00001206                           395  
-00001206                           396  * -----------------------------------------------------------            
-00001206                           397  * Subroutine N1001 ------------------------------------------
-00001206                           398  N1001   
-00001206  14FC 0039                399              MOVE.B  #'9',(A2)+      ;display 9
-0000120A  4E75                     400              RTS
-0000120C                           401  
-0000120C                           402  * -----------------------------------------------------------            
-0000120C                           403  * Subroutine N1010 ------------------------------------------
-0000120C                           404  N1010   
-0000120C  14FC 0041                405              MOVE.B  #'A',(A2)+      ;display A
-00001210  4E75                     406              RTS
-00001212                           407  
-00001212                           408  * -----------------------------------------------------------            
-00001212                           409  * Subroutine N1011 ------------------------------------------
-00001212                           410  N1011   
-00001212  14FC 0042                411              MOVE.B  #'B',(A2)+      ;display B
-00001216  4E75                     412              RTS
-00001218                           413  
-00001218                           414  * -----------------------------------------------------------            
-00001218                           415  * Subroutine N1100 ------------------------------------------
-00001218                           416  N1100   
-00001218  14FC 0043                417              MOVE.B  #'C',(A2)+      ;display C
-0000121C  4E75                     418              RTS
-0000121E                           419  
-0000121E                           420  * -----------------------------------------------------------            
-0000121E                           421  * Subroutine N1101 ------------------------------------------
-0000121E                           422  N1101   
-0000121E  14FC 0044                423              MOVE.B  #'D',(A2)+      ;display D
-00001222  4E75                     424              RTS
-00001224                           425  
-00001224                           426  * -----------------------------------------------------------            
-00001224                           427  * Subroutine N1110 ------------------------------------------
-00001224                           428  N1110   
-00001224  14FC 0045                429              MOVE.B  #'E',(A2)+      ;display E
-00001228  4E75                     430              RTS
-0000122A                           431  
-0000122A                           432  * -----------------------------------------------------------            
-0000122A                           433  * Subroutine N1111 ------------------------------------------
-0000122A                           434  N1111   
-0000122A  14FC 0046                435              MOVE.B  #'F',(A2)+      ;display F
-0000122E  4E75                     436              RTS   
-00001230                           437              
-00001230                           438              
-00001230                           439              
-00001230                           440              *---------------------------------------------------------------
-00001230                           441              *--------------------------------------------------------
-00001230                           442              *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
-00001230                           443              *-------------------------------------
-00001230                           444              INCLUDE 'op0100.x68'    IN a different file, modulated design        
-00001230                           445  op0100      
-00001230                           446  
-00001230                           447  
-00001230                           448   
-00001230                           449              ;CMP.W   #$4EB9,D6   ;see if it's a JSR
-00001230                           450              ;BEQ     jumpToRt            
-00001230                           451              ;CMP.W   #$4E75,D6   ;see if it's a RTS
-00001230                           452              ;BEQ     returnRt 
-00001230                           453             
-00001230                           454              ;JSR     WorL        
-00001230                           455              ;CMP.B   #hex7,D3    ;see if it's a LEA
-00001230                           456              ;BEQ     _lea        ;branch 
-00001230                           457              
-00001230                           458              ;JSR     clrORmm       
-00001230                           459              ;CMP.B   #hex8,D3    ;see if it's a CLR.B
-00001230                           460              ;BEQ     _clrB       ;branch             
-00001230                           461              ;CMP.B   #hex9,D3    ;see if it's a CLR.W
-00001230                           462              ;BEQ     _clrW       ;branch   
-00001230                           463              ;CMP.B   #hexA,D3    ;see if it's a CLR.L
-00001230                           464              ;BEQ     _clrL       ;branch
-00001230                           465    
-00001230                           466              ;CMP.B   #hex2,D3    ;see if it's a MOVEM.W
-00001230                           467              ;BEQ     _movemW     ;branch   
-00001230                           468              ;CMP.B   #hex3,D3    ;see if it's a MOVEM.L
-00001230                           469              ;BEQ     _movemL     ;branch              
-00001230                           470                          
-00001230                           471              ;BRA     opError     ;bad opcode branch to error
-00001230                           472              
-00001230                           473              
-00001230  BC7C 4E71                474              CMP.W   #$4E71,D6
-00001234  6700 000A                475              BEQ     _NOP
-00001238                           476              
-00001238  BC7C 4E75                477              CMP.W   #$4E75,D6   ;see if it's a RTS
-0000123C  6700 0028                478              BEQ     _RTS        branch to RTS
-00001240                           479             
-00001240                           480  
-00001240                           481              
-00001240                           482  _NOP
-00001240  7E02                     483              MOVE.L  #2,D7       ;data is not error
-00001242  14FC 0020                484              MOVE.B  #' ',(A2)+      ;print spaces
-00001246  14FC 0020                485              MOVE.B  #' ',(A2)+      ;print spaces
-0000124A  14FC 0020                486              MOVE.B  #' ',(A2)+      ;print spaces
-0000124E  14FC 0020                487              MOVE.B  #' ',(A2)+      ;print spaces
-00001252  14FC 004E                488              MOVE.B  #'N',(A2)+      ;print N
-00001256  14FC 004F                489              MOVE.B  #'O',(A2)+      ;print O
-0000125A  14FC 0050                490              MOVE.B  #'P',(A2)+      ;print P
-0000125E  1A3C 0003                491              MOVE.B  #3,D5           ;counter for output
-00001262  6000 00EE                492              BRA     printCode
-00001266                           493  
-00001266                           494  _RTS    
-00001266  7E02                     495              MOVE.L  #2,D7       ;data is not error
-00001268  14FC 0020                496              MOVE.B  #' ',(A2)+      ;print spaces
-0000126C  14FC 0020                497              MOVE.B  #' ',(A2)+      ;print spaces
-00001270  14FC 0020                498              MOVE.B  #' ',(A2)+      ;print spaces
-00001274  14FC 0020                499              MOVE.B  #' ',(A2)+      ;print spaces
-00001278  14FC 0052                500              MOVE.B  #'R',(A2)+      ;print R
-0000127C  14FC 0054                501              MOVE.B  #'T',(A2)+      ;print T
-00001280  14FC 0053                502              MOVE.B  #'S',(A2)+      ;print S
-00001284  1A3C 0003                503              MOVE.B  #3,D5           ;counter for output
-00001288  6000 00C8                504              BRA     printCode
-00001288  6000 00C8                505  -------------------- end include --------------------
-0000128C                           506              INCLUDE 'op0001.x68'    MOVE.b Differetn file
-0000128C                           507  
-0000128C                           508  
-0000128C                           509  
-0000128C                           510  
-0000128C                           511  op0001
-0000128C  7E02                     512              MOVE.L  #2,D7       ;data is not error
-0000128E  14FC 0020                513              MOVE.B  #' ',(A2)+      ;print spaces
-00001292  14FC 0020                514              MOVE.B  #' ',(A2)+      ;print spaces
-00001296  14FC 0020                515              MOVE.B  #' ',(A2)+      ;print spaces
-0000129A  14FC 0020                516              MOVE.B  #' ',(A2)+      ;print spaces
-0000129E  14FC 004D                517              MOVE.B  #'M',(A2)+      ;print M
-000012A2  14FC 004F                518              MOVE.B  #'O',(A2)+      ;print O
-000012A6  14FC 0056                519              MOVE.B  #'V',(A2)+      ;print V
-000012AA  14FC 0045                520              MOVE.B  #'E',(A2)+      PRINT  E
-000012AE  14FC 002E                521              MOVE.B  #'.',(A2)+
-000012B2  14FC 0042                522              MOVE.B  #'B',(A2)+
-000012B6                           523              
-000012B6                           524              
-000012B6                           525               
-000012B6  4242                     526              CLR     D2
-000012B8  4240                     527              CLR     D0
-000012BA  3406                     528              MOVE.W  D6, D2  MOVE the original machine code to D2 to play with
-000012BC  E30A                     529              LSL.B   #1,D2   Shift the bits left by 1, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
-000012BE  E20A                     530              LSR.B   #1,D2
-000012C0  1002                     531              MOVE.B  D2,D0   MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0             
-000012C2  C0FC 0008                532              MULU    #8,D0
-000012C6  4DF8 1150                533              LEA     numTable,A6 Load the table into A6
-000012CA  4EB6 0000                534              JSR     (A6,D0)     Jump to subroutine of value at D0
-000012CE  4242                     535              CLR     D2
-000012D0  4240                     536              CLR     D0
-000012D2  2406                     537              MOVE.L  D6,D2       MOVE the original machine code to D2 to play with
-000012D4  E08A                     538              LSR.L   #8,D2       Shift the bits right by 9, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
-000012D6  E28A                     539              LSR.L   #1,D2
-000012D8  E30A                     540              LSL.B   #1,D2
-000012DA  E20A                     541              LSR.B   #1,D2
-000012DC  1002                     542              MOVE.B  D2,D0       MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
-000012DE  C0FC 0008                543              MULU    #8,D0
-000012E2  4DF8 1150                544              LEA     numTable,A6 Load the table into A6
-000012E6  4EB6 0000                545              JSR     (A6,D0)     Jump to subroutine of value at D0
-000012EA                           546  
-000012EA  6000 0066                547              BRA     printCode
-000012EE                           548  
-000012EE                           549  
-000012EE                           550  
-000012EE                           551  
-000012EE                           552  
-000012EE                           553  
-000012EE                           554  
-000012EE                           555  
-000012EE                           556  -------------------- end include --------------------
-000012EE                           557  
-000012EE                           558  
-000012EE                           559              
-000012EE                           560  opError                             
-000012EE  2608                     561              MOVE.L  A0,D3
-000012F0  2C03                     562              MOVE.L  D3,D6
-000012F2  45F9 0000066C            563              LEA     bad_code_buffer,A2
-000012F8  7E02                     564              MOVE.L  #2,D7
-000012FA  4EB8 10E0                565              JSR     write_data_in_D3_to_buffer
-000012FE                           566              
-000012FE  14FC 0020                567              MOVE.B  #' ',(A2)+      ;print spaces
-00001302  14FC 0020                568              MOVE.B  #' ',(A2)+      ;print spaces
-00001306  14FC 0020                569              MOVE.B  #' ',(A2)+      ;print spaces
-0000130A  14FC 0020                570              MOVE.B  #' ',(A2)+      ;print spaces
-0000130E  14FC 0044                571              MOVE.B  #'D',(A2)+      ;print D
-00001312  14FC 0041                572              MOVE.B  #'A',(A2)+      ;print A
-00001316  14FC 0054                573              MOVE.B  #'T',(A2)+      ;print T
-0000131A  14FC 0041                574              MOVE.B  #'A',(A2)+      ;print A
-0000131E  14FC 0020                575              MOVE.B  #' ',(A2)+      ;print spaces
-00001322  14FC 0020                576              MOVE.B  #' ',(A2)+      ;print spaces
-00001326  14FC 0020                577              MOVE.B  #' ',(A2)+      ;print spaces
-0000132A  14FC 0020                578              MOVE.B  #' ',(A2)+      ;print spaces
-0000132E                           579              
-0000132E                           580              
-0000132E  14FC 0046                581              MOVE.B  #'F',(A2)+      ;print spaces
-00001332  14FC 0046                582              MOVE.B  #'F',(A2)+      ;print spaces
-00001336  14FC 0046                583              MOVE.B  #'F',(A2)+      ;print spaces
-0000133A  14FC 0046                584              MOVE.B  #'F',(A2)+      ;print spaces
-0000133E                           585              
-0000133E                           586              
-0000133E                           587              ;MOVE.L  (A0),D3
-0000133E                           588              ;MOVE.L  D3,D6
-0000133E                           589              ;MOVE.L  #1,D7
-0000133E                           590              ;JSR     write_data_in_D3_to_buffer
-0000133E                           591              
-0000133E  14BC 0000                592              MOVE.B  #$00,(A2) * add NULL value to print string
-00001342  43F9 0000066C            593              LEA     bad_code_buffer,A1
-00001348  103C 000D                594              MOVE.B  #13,D0
-0000134C  4E4F                     595              TRAP    #15   
-0000134E                           596           
-0000134E  6000 FD54                597              BRA     get_next_instruction           
-00001352                           598  printCode   
-00001352  14BC 0000                599              MOVE.B  #$00,(A2)   * add NULL value to print string
-00001356  070A 0000                600              MOVEP   (A2),D3
-0000135A  43F9 00000614            601              LEA     good_code_buffer,A1 * load buffer for good code to print
-00001360  700D                     602              MOVEQ   #13,D0
-00001362  4E4F                     603              TRAP    #15         * display code
-00001364                           604    
-00001364  6000 FD3E                605              BRA     get_next_instruction                     
-00001368                           606  * OP Codes -------------------------------------------------
-00001368  =00000000                607  bin0000     EQU     %0000   ;ADDI, ANDI, EORI, BCHG, CMPI
-00001368  =00000001                608  bin0001     EQU     %0001   ;MOVE.B
-00001368  =00000002                609  bin0010     EQU     %0010   ;MOVE.L
-00001368  =00000003                610  bin0011     EQU     %0011   ;MOVE.W
-00001368  =00000004                611  bin0100     EQU     %0100   ;MOVEM, MULS.L, DIVU.L, LEA, CLR, JSR, RTS
-00001368  =00000005                612  bin0101     EQU     %0101   ;SUBQ
-00001368  =00000006                613  bin0110     EQU     %0110   ;Bcc
-00001368  =00000007                614  bin0111     EQU     %0111   ;MOVEQ
-00001368  =00000008                615  bin1000     EQU     %1000   ;DIVU.W
-00001368  =00000009                616  bin1001     EQU     %1001   ;SUB, SUBA
-00001368  =0000000B                617  bin1011     EQU     %1011   ;CMP, CMPA, EOR
-00001368  =0000000C                618  bin1100     EQU     %1100   ;AND, MULS.W
-00001368  =0000000D                619  bin1101     EQU     %1101   ;ADD, ADDA
-00001368  =0000000E                620  bin1110     EQU     %1110   ;ASR, ASL, ROL, ROR
-00001368                           621  
-00001368                           622  
-00001368                           623              
-00001368                           624  ;LOOP:
-00001368                           625                  *-compare the adress pointers current address with ending address to see if we need to continue
-00001368                           626                  *- load the address registrer (pointer/ this helps us look at data)
-00001368                           627                  *-load address register number into data register
-00001368                           628                  
-00001368                           629                  ;MOVE.L  a5,d2   ;move the value of a5 to d2(starting/current pointing number)
-00001368                           630                  ;lea     $00FFFF10,a6    ;load the ending address to d3(we do this so in the future d3 is not just storing something, we can free up d3 to use
-00001368                           631                  ;MOVE.L  (a6),d3         since we loaded the address of ou engine value into a address register 'basically keeping its pointer instance' we deref it for the value
-00001368                           632                  ;CMP.L   d2,d3       ;if the current poiinter is the same as 
-00001368                           633                  ;BEQ     FINISH      ;finish they are equal
-00001368                           634                  ;RTS
-00001368                           635  
-00001368                           636          
-00001368                           637          *----------END OF I/O SECTION*---
-00001368                           638          *----------Start of OPCODE SUBROUTINE
-00001368  =0000A000                639  stack            EQU        $A000  
-00001368  =0000000C                640  shift            EQU        12                   * Shift 12 bits 
-00000400                           641                   ORG        $400
-00000400                           642           
-00000400  4FF9 0000A000            643  get_opcode       LEA        stack,SP        *Load the SP
-00000406  41F9 00000424            644                   LEA        jmp_table,A0    *Index into the table
-0000040C  4280                     645                   CLR.L      D0              *Zero it       
-0000040E  227C 00009000            646                   MOVE.L     #$00009000,A1        *We'll play with it here
-00000414  3011                     647                   MOVE.W     (A1),D0
-00000416  123C 000C                648                   MOVE.B     #shift,D1       *Shift 12 bits to the right  
-0000041A  E268                     649                   LSR.W      D1,D0           *Move the bits
-0000041C  C0FC 0006                650                   MULU       #6,D0           *Form offset     
-00000420  4EB0 0000                651                   JSR        0(A0,D0)        *Jump indirect with index
-00000424                           652                   
-00000424  4EF9 00000484            653  jmp_table        JMP        code0000        *Bit manipulation/MOVEP/Immediate
-0000042A  4EF9 00000488            654                   JMP        code0001        *MOVE.B
-00000430  4EF9 0000048C            655                   JMP        code0010        *MOVE.L
-00000436  4EF9 00000490            656                   JMP        code0011        *MOVE.W
-0000043C  4EF9 00000494            657                   JMP        code0100        *Miscellaneous
-00000442  4EF9 000004A8            658                   JMP        code0101        *ADDQ/SUBQ/Scc/DBcc
-00000448  4EF9 000004AC            659                   JMP        code0110        *BSR,BRA,Bcc
-0000044E  4EF9 000004B0            660                   JMP        code0111        *MOVEQ
-00000454  4EF9 000004B4            661                   JMP        code1000        *OR/DIV/SBCD
-0000045A  4EF9 000004B8            662                   JMP        code1001        *SUB/SUBX
-00000460  4EF9 000004BC            663                   JMP        code1010        *Unassigned
-00000466  4EF9 000004C0            664                   JMP        code1011        *CMP/EOR
-0000046C  4EF9 000004C4            665                   JMP        code1100        *AND/MUL/ABCD/EXG
-00000472  4EF9 000004C8            666                   JMP        code1101        *ADD/ADDA/ADDX
-00000478  4EF9 000004CC            667                   JMP        code1110        *Shift/Rotate
-0000047E  4EF9 000004D0            668                   JMP        code1111        *Special/Reserved
-00000484                           669                   
-00000484  4E72 2700                670  code0000         STOP       #$2700
-00000488  4E72 2700                671  code0001         STOP       #$2700
-0000048C  4E72 2700                672  code0010         STOP       #$2700
-00000490  4E72 2700                673  code0011         STOP       #$2700
-00000494  267C 00000000            674  code0100         MOVE.L     #0,A3
-0000049A  4241                     675                   CLR        D1
-0000049C  43F9 000006C5            676                   LEA        enter_start_AD,A1
-000004A2  700E                     677                   MOVE.L     #14,D0
-000004A4  4E4F                     678                   TRAP       #15
-000004A6  4E75                     679                   RTS
-000004A8  4E72 2700                680  code0101         STOP       #$2700
-000004AC  4E72 2700                681  code0110         STOP       #$2700
-000004B0  4E72 2700                682  code0111         STOP       #$2700
-000004B4  4E72 2700                683  code1000         STOP       #$2700
-000004B8  4E72 2700                684  code1001         STOP       #$2700
-000004BC  4E72 2700                685  code1010         STOP       #$2700
-000004C0  4E72 2700                686  code1011         STOP       #$2700
-000004C4  4E72 2700                687  code1100         STOP       #$2700
-000004C8  4E72 2700                688  code1101         STOP       #$2700
-000004CC  4E72 2700                689  code1110         STOP       #$2700
-000004D0  4E72 2700                690  code1111         STOP       #$2700
-000004D4                           691  
-000004D4                           692  FINISH:
-000004D4                           693          *INCLUDE 'opcode_subroutine.x68'
-000004D4  2608                     694              MOVE.L  A0,D3
-000004D6  2C03                     695              MOVE.L  D3,D6
-000004D8  45F9 00000614            696              LEA     good_code_buffer,A2
-000004DE                           697   
-000004DE                           698              
-000004DE  14FC 0046                699              MOVE.B  #'F',(A2)+      ;print spaces
-000004E2  14FC 0049                700              MOVE.B  #'I',(A2)+      ;print spaces
-000004E6  14FC 0049                701              MOVE.B  #'I',(A2)+      ;print spaces
-000004EA  14FC 004E                702              MOVE.B  #'N',(A2)+      ;print spaces
-000004EE  14FC 0049                703              MOVE.B  #'I',(A2)+      ;print D
-000004F2  14FC 0053                704              MOVE.B  #'S',(A2)+      ;print A
-000004F6  14FC 0048                705              MOVE.B  #'H',(A2)+      ;print T
-000004FA  14FC 0041                706              MOVE.B  #'A',(A2)+      ;print A
-000004FE  14FC 0041                707              MOVE.B  #'A',(A2)+      ;print spaces
-00000502  14FC 0041                708              MOVE.B  #'A',(A2)+      ;print spaces
-00000506  14FC 0048                709              MOVE.B  #'H',(A2)+      ;print spaces
-0000050A  14FC 0041                710              MOVE.B  #'A',(A2)+      ;print spaces
-0000050E  14FC 0052                711              MOVE.B  #'R',(A2)+
-00000512  2610                     712              MOVE.L  (A0),D3
-00000514  2C03                     713              MOVE.L  D3,D6
-00000516  7E01                     714              MOVE.L  #1,D7
-00000518                           715  
-00000518                           716              
-00000518  14BC 0000                717              MOVE.B  #$00,(A2) * add NULL value to print string
-0000051C  43F9 00000614            718              LEA     good_code_buffer,A1
-00000522  103C 000D                719              MOVE.B  #13,D0
-00000526  4E4F                     720              TRAP    #15   
-00000528  FFFF FFFF                721              SIMHALT
-0000052C                           722  
-0000052C                           723  *-390 -> 406 WITH NOP AT 400
-0000052C                           724  
-0000052C                           725  
-0000052C                           726  
-0000052C                           727  
-0000052C                           728  
-0000052C                           729  
-0000052C                           730  
-0000052C                           731  
-0000052C                           732  
-0000052C                           733  
-0000052C                           734  
-0000052C                           735  
-0000052C                           736  
-0000052C                           737  
-0000052C                           738  
-0000052C                           739  *-Parses input - take input from user to create a memory address
-0000052C                           740  *- entry is parsed to make sure it falls within a valid range
-0000052C                           741  *-good inputs are converteed to hex
-0000052C                           742  *-the entered addres get's stored in d3
-0000052C                           743  *-
-0000052C                           744  *-
-0000052C                           745  
-0000052C                           746  
-0000052C                           747  
-0000052C  7C00                     748  parse_input     MOVEQ   #$0,D6  ZERO OUT THE REGISTERY
-0000052E  7A00                     749                  MOVEQ   #$0,D5  ZERO OUT THE REGISTERY
-00000530                           750                  
-00000530                           751                  *-CHECK TO SEE INPUT DATA
-00000530  B205                     752                  CMP.B   D5,D1   D5 IS 0
-00000532  6700 0086                753                  BEQ     error_no_input no input was found
-00000536  0C41 0008                754                  CMPI    #$8,D1  CHECK IF THE USER ENTERED TOO MANY CHARACTERS 8+
-0000053A  6E00 0090                755                  BGT     error_bad_entry
-0000053E                           756                  ;BGT     error_inv_to_many_char
-0000053E  6000 0018                757                  BRA     parse_each
-00000542                           758  
-00000542  7C00                     759  parse_end        MOVEQ   #$0,D6  CLEARS THE D6 REGISTEY
-00000544  7A00                     760                  MOVEQ   #$0,D5  CLEARS D5
-00000546  B205                     761                  CMP.B   D5,D1   CHECKS TO SEE IF A VALUE WAS ENTERED
-00000548  6700 0070                762                  BEQ     error_no_input
-0000054C  0C41 0008                763                  CMPI    #$8,D1  CHECKS IF THE USER ENTERED TOO MANY CHARACTERS 8+
-00000550  6E00 007A                764                  BGT     error_bad_entry
-00000554                           765                  ;BGT     error_to_many_char
-00000554  6000 0002                766                  BRA     parse_each        
-00000558                           767  
-00000558                           768  *parse each analyzes each ind character entered
-00000558                           769  *in ASCII table lower case 'f' is tyhe highest character code (102)
-00000558                           770  
-00000558  1419                     771  parse_each      MOVE.B  (A1)+,D2    GET THE NEXT CHARACTER FOR PARSING
-0000055A  B405                     772                  CMP.B   D5,D2       CHECK IF THE NEXT VALUE IS NULL, IF SO WE HAVE EITHER ERROR OR REACHED END OF INPUT
-0000055C  6700 0058                773                  BEQ     parse_complete  end of user input
-00000560  B43C 0066                774                  CMP.B   #102,D2     NEED TO CHECK WETHER THE INPUT IS OUT OF ASCII RANGE 'f' is 102
-00000564  6E00 0012                775                  BGT     hex_compare
-00000568                           776                  
-00000568                           777                  *-
-00000568                           778                  *Comapare the decimal number values betyween 0 -9 first
-00000568                           779                  *
-00000568                           780                  *-
-00000568  B43C 002F                781  dec_compare     CMP.B   #47,D2      if its lower than 47 that means its invalid character
-0000056C                           782                                      *-for decimal values between [47, 57] are valid
-0000056C  6F00 0056                783                  BLE     error_char 
-00000570  B43C 003A                784                  CMP.B   #58, D2     IF THE VALUE IS NOT LESS THAN 47 AND NOT GREATER THAN 58 WE CAN CONVERT DECIMAL TO HEX
-00000574  6D00 0022                785                  BLT     dec_convert
-00000578                           786                  *-
-00000578                           787                  *there are no number values, lets check alpha characters
-00000578                           788                  *->IF the value is not less than 65 which is 'A' and the value is NO more than
-00000578                           789                  *->71 'G' then we should go and convert to hex range A-F
-00000578                           790                  *-UPPER case
-00000578                           791                  *-      
-00000578  B43C 0041                792  hex_compare     CMP.B   #65,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 65(A)
-0000057C  6D00 0046                793                  BLT     error_char  the VALUE IS LESS THAN 65 WHICH IS SYMBOLS AND INVALID
-00000580  B43C 0047                794                  CMP.B   #71,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 71(G)
-00000584  6D00 001C                795                  BLT     upper_ascii VALUE FELL IN RANGE A-F                 
-00000588  B43C 0061                796  low_hex_compare CMP.B   #97,D2      CHECK TO SEE IF VALUE IS LESS THAN 97 'a'
-0000058C  6D00 0036                797                  BLT     error_char  VALUE IS SOME SYMBOL *- 97 - 103
-00000590  B43C 0067                798                  CMP.B   #103,D2     CHECK IF ITS WITHIN RANGE, LESS THAN 103
-00000594  6D00 0016                799                  BLT     lower_ascii
-00000598                           800                  
-00000598                           801           
-00000598  0402 0030                802  dec_convert     SUBI.B  #48,D2      CONVERT TO HEX FROM ASCII BY SUBTRACTING 48 FROM CURRENT DECIMAL VALUE
-0000059C                           803                  *-BECAUSE 0 - 9 THE HEX VALUES WILL BE A SINGLE CHAR WE SHIFT LEFT
-0000059C  E986                     804                  ASL.L   #4,D6
-0000059E  DC02                     805                  ADD.B   D2,D6       MOVE NEW BYTE INTO THE RETURN REGISTER
-000005A0  60B6                     806                  BRA     parse_each  continue to parse the next character, SHOULD BE IN RANGE FOR LOWER
-000005A2                           807                                      *- 97 - 103
-000005A2                           808                  
-000005A2                           809                              
-000005A2                           810  *- ASCII conversions UPPER case to hex value by substracting 55
-000005A2                           811  
-000005A2  0402 0037                812  upper_ascii     SUBI.B  #55,D2  SUBTRACT 55 TO GET THE HEX VALUE OF THE CORRESPONDING CHARACTER
-000005A6  E986                     813                  ASL.L   #4,D6   MOVE THE SANITIZED VALUE INTO D6 REGISTER
-000005A8  DC02                     814                  ADD.B   D2,D6   MOVE THE NEW BYTE INTO RETURN REGISTER
-000005AA  60AC                     815                  BRA     parse_each  parse next item
-000005AC                           816  *-ASCI lower case to hex value by subtracting 87
-000005AC  0402 0057                817  lower_ascii     SUBI.B  #87,D2
-000005B0  E986                     818                  ASL.L   #4,D6
-000005B2  DC02                     819                  ADD.B   D2,D6
-000005B4  60A2                     820                  BRA     parse_each
-000005B6                           821  
-000005B6  7801                     822  parse_complete  MOVEQ   #1,D4  FINISH PARSING USER INPUT
-000005B8  4E75                     823                  RTS             JUMP FROM SUBROUTINE                
-000005BA  43F9 0000068A            824  error_no_input  LEA no_entry,A1 load bad entry statment
-000005C0  7001                     825                  MOVE.L  #1,D0
-000005C2  4E4F                     826                  TRAP    #15
-000005C4                           827                  ;JMP     get_input
-000005C4  43F9 000006B2            828  error_char      LEA bad_char,A1
-000005CA  4E4F                     829                  trap #15
-000005CC                           830                  ;JMP get_input0
-000005CC  43F9 0000069D            831  error_bad_entry LEA bad_entry,A1
-000005D2  4E4F                     832                  TRAP #15
-000005D4                           833                  ;JMP  get_input
-000005D4                           834  
-000005D4                           835  
-000005D4  FFFF FFFF                836      SIMHALT             ; halt simulator
-000005D8                           837  
-000005D8                           838  * Put variables and constants here
-000005D8= 48 65 6C 6C 6F 20 ...    839  welcome_message DC.B    'Hello and Welcome 68Kkrew"s 68K Disassembler(get the pun)',CR,LF,0
-00000614                           840  
-00000614                           841  
-00000614                           842  good_code_buffer    DS.B    88
-0000066C                           843  
-0000066C                           844  bad_code_buffer     DS.B    30
-0000068A= 4E 6F 20 45 6E 74 ...    845  no_entry    DC.B    'No Entry detected.',0
-0000069D= 42 61 64 20 45 6E ...    846  bad_entry   DC.B    'Bad Entry Dectected.',0
-000006B2= 42 61 64 20 43 68 ...    847  bad_char    DC.B    'Bad Char detected.',0
-000006C5                           848  *-errors
-000006C5                           849  ;enter_start_AD  DC.B    'Enter a starting address between $0 and $00FFFE00: ',0
-000006C5= 45 6E 74 65 72 20 ...    850  enter_start_AD  DC.B    'Enter a starting address: ',0
-000006E0                           851  userStartAddrInput  DS.B    50  address used to store the data input from user
-00000712                           852  userEndAddrInput    DS.B    50  address used to stoer the data input from user
-00000744                           853  
-00000744= 45 6E 74 65 72 20 ...    854  userEnd         DC.B    'Enter an address greater than the starting address: ',0
-00000779                           855  
-00000779                           856  userEndInput    DS.B    50  addresse used to store the data input from user
-000007AC  43F8 068A                857  error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
-000007B0  7001                     858                          MOVE.L  #1,D0
-000007B2  4E4F                     859                          TRAP    #15
-000007B4                           860                          ;JMP     get_input
-000007B4                           861  
-000007B4                           862  *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
-000007B4                           863  
-000007B4                           864      END    START        ; last line of source
+00001150  4EB9 00001180            288  modeTable   JSR     M0000   ;Dn, Data Register 
+00001156  4E75                     289              RTS             ;return, done printing
+00001158  4EB9 0000118C            290              JSR     M0001   ;An, Address Register 
+0000115E  4E75                     291              RTS             ;return, done printing
+00001160  4EB9 00001198            292              JSR     M0010   ;(An), Address
+00001166  4E75                     293              RTS             ;return, done printing
+00001168  4EB9 000011AC            294              JSR     M0011   ;(An)+, Address with Postincrement
+0000116E  4E75                     295              RTS             ;return, done printing
+00001170  4EB9 000011C4            296              JSR     M0100   ;-(An), Address with Predecrement
+00001176  4E75                     297              RTS             ;return, done printing
+00001178  4EB9 000011DC            298              JSR     M0111   ;(xxx).W, (xxx).L, #imm
+0000117E  4E75                     299              RTS             ;return, done printing           
+00001180                           300  * -----------------------------------------------------------            
+00001180                           301  * Subroutine M0000 ------------------------------------------
+00001180                           302  M0000                               ;Dn
+00001180  14FC 0044                303              MOVE.B  #'D',(A2)+      ;display D
+00001184  4EB9 000011E2            304              JSR     registerPrint   ;display n
+0000118A  4E75                     305              RTS
+0000118C                           306  
+0000118C                           307  * -----------------------------------------------------------            
+0000118C                           308  * Subroutine M0001 ------------------------------------------
+0000118C                           309  M0001                               ;An
+0000118C  14FC 0041                310              MOVE.B  #'A',(A2)+      ;display A
+00001190  4EB9 000011E2            311              JSR     registerPrint   ;display n
+00001196  4E75                     312              RTS
+00001198                           313  
+00001198                           314  * -----------------------------------------------------------            
+00001198                           315  * Subroutine M0010 ------------------------------------------
+00001198                           316  M0010                               ;(An) Address
+00001198  14FC 0028                317              MOVE.B  #'(',(A2)+      ;display (
+0000119C  14FC 0041                318              MOVE.B  #'A',(A2)+      ;display A
+000011A0  4EB9 000011E2            319              JSR     registerPrint   ;display n      
+000011A6  14FC 0029                320              MOVE.B  #')',(A2)+      ;display )
+000011AA  4E75                     321              RTS
+000011AC                           322   
+000011AC                           323  * -----------------------------------------------------------            
+000011AC                           324  * Subroutine M0011 ------------------------------------------
+000011AC                           325  M0011                               ;(An)+ 
+000011AC  14FC 0028                326              MOVE.B  #'(',(A2)+      ;display (
+000011B0  14FC 0041                327              MOVE.B  #'A',(A2)+      ;display A
+000011B4  4EB9 000011E2            328              JSR     registerPrint   ;display n      
+000011BA  14FC 0029                329              MOVE.B  #')',(A2)+      ;display )
+000011BE  14FC 002B                330              MOVE.B  #'+',(A2)+      ;display +
+000011C2  4E75                     331              RTS
+000011C4                           332  
+000011C4                           333  
+000011C4                           334  * -----------------------------------------------------------            
+000011C4                           335  * Subroutine M0100 ------------------------------------------
+000011C4                           336  M0100                               ;-(An)
+000011C4  14FC 002D                337              MOVE.B  #'-',(A2)+      ;display -
+000011C8  14FC 0028                338              MOVE.B  #'(',(A2)+      ;display (
+000011CC  14FC 0041                339              MOVE.B  #'A',(A2)+      ;display A
+000011D0  4EB9 000011E2            340              JSR     registerPrint   ;display n      
+000011D6  14FC 0029                341              MOVE.B  #')',(A2)+      ;display )
+000011DA  4E75                     342              RTS
+000011DC                           343  
+000011DC                           344  
+000011DC                           345  * -----------------------------------------------------------            
+000011DC                           346  * Subroutine M0111 ------------------------------------------
+000011DC                           347  M0111                               ;(xxx).W, (xxx).L, #imm
+000011DC  14FC 0037                348              MOVE.B  #'7',(A2)+      ;display 7
+000011E0  4E75                     349              RTS
+000011E2                           350  
+000011E2                           351  * ----------------------------------------------------------- 
+000011E2                           352  registerPrint
+000011E2  4FF9 000011EE            353              LEA     numTable,A7 Load the table into A7
+000011E8  4EB7 1000                354              JSR     (A7,D1)     Jump to subroutine of value at D0
+000011EC  4E75                     355              RTS
+000011EE                           356              
+000011EE                           357   
+000011EE                           358  * -----------------------------------------------------------            
+000011EE                           359  * Jump Table numTable ***************************************
+000011EE                           360  *** prints the associated number of the register            *
+000011EE                           361  *** Also prints hex values for data and addresses           *
+000011EE                           362  *-----see below for decoding of what these sub-routines are
+000011EE                           363  *************************************************************
+000011EE  4EB9 0000126E            364  numTable    JSR     N0000   ;register 0
+000011F4  4E75                     365              RTS             ;return, done printing
+000011F6  4EB9 00001274            366              JSR     N0001   ;register 1
+000011FC  4E75                     367              RTS             ;return, done printing
+000011FE  4EB9 0000127A            368              JSR     N0010   ;register 2
+00001204  4E75                     369              RTS             ;return, done printing
+00001206  4EB9 00001280            370              JSR     N0011   ;register 3
+0000120C  4E75                     371              RTS             ;return, done printing
+0000120E  4EB9 00001286            372              JSR     N0100   ;register 4
+00001214  4E75                     373              RTS             ;return, done printing
+00001216  4EB9 0000128C            374              JSR     N0101   ;register 5
+0000121C  4E75                     375              RTS             ;return, done printing
+0000121E  4EB9 00001292            376              JSR     N0110   ;register 6
+00001224  4E75                     377              RTS             ;return, done printing
+00001226  4EB9 00001298            378              JSR     N0111   ;register 7
+0000122C  4E75                     379              RTS             ;return, done printing
+0000122E  4EB9 0000129E            380              JSR     N1000   ;num 8
+00001234  4E75                     381              RTS             ;return, done printing
+00001236  4EB9 000012A4            382              JSR     N1001   ;num 9
+0000123C  4E75                     383              RTS             ;return, done printing
+0000123E  4EB9 000012AA            384              JSR     N1010   ;num A
+00001244  4E75                     385              RTS             ;return, done printing
+00001246  4EB9 000012B0            386              JSR     N1011   ;num B
+0000124C  4E75                     387              RTS             ;return, done printing
+0000124E  4EB9 000012B6            388              JSR     N1100   ;num C
+00001254  4E75                     389              RTS             ;return, done printing
+00001256  4EB9 000012BC            390              JSR     N1101   ;num D
+0000125C  4E75                     391              RTS             ;return, done printing
+0000125E  4EB9 000012C2            392              JSR     N1110   ;num E
+00001264  4E75                     393              RTS             ;return, done printing
+00001266  4EB9 000012C8            394              JSR     N1111   ;num F
+0000126C  4E75                     395              RTS             ;return, done printing
+0000126E                           396  * -----------------------------------------------------------            
+0000126E                           397  * Subroutine N0000 ------------------------------------------
+0000126E                           398  N0000
+0000126E  14FC 0030                399              MOVE.B  #'0',(A2)+      ;display 0
+00001272  4E75                     400              RTS
+00001274                           401  
+00001274                           402  * -----------------------------------------------------------            
+00001274                           403  * Subroutine N0001 ------------------------------------------
+00001274                           404  N0001
+00001274  14FC 0031                405              MOVE.B  #'1',(A2)+      ;display 1
+00001278  4E75                     406              RTS
+0000127A                           407  
+0000127A                           408  * -----------------------------------------------------------            
+0000127A                           409  * Subroutine N0010 ------------------------------------------
+0000127A                           410  N0010
+0000127A  14FC 0032                411              MOVE.B  #'2',(A2)+      ;display 2
+0000127E  4E75                     412              RTS
+00001280                           413   
+00001280                           414  * -----------------------------------------------------------            
+00001280                           415  * Subroutine N0011 ------------------------------------------
+00001280                           416  N0011
+00001280  14FC 0033                417              MOVE.B  #'3',(A2)+      ;display 3
+00001284  4E75                     418              RTS
+00001286                           419  
+00001286                           420  * -----------------------------------------------------------            
+00001286                           421  * Subroutine N0100 ------------------------------------------
+00001286                           422  N0100
+00001286  14FC 0034                423              MOVE.B  #'4',(A2)+      ;display 4
+0000128A  4E75                     424              RTS
+0000128C                           425  
+0000128C                           426  * -----------------------------------------------------------            
+0000128C                           427  * Subroutine N0101 ------------------------------------------
+0000128C                           428  N0101
+0000128C  14FC 0035                429              MOVE.B  #'5',(A2)+      ;display 5
+00001290  4E75                     430              RTS
+00001292                           431  
+00001292                           432  * -----------------------------------------------------------            
+00001292                           433  * Subroutine N0110 ------------------------------------------
+00001292                           434  N0110
+00001292  14FC 0036                435              MOVE.B  #'6',(A2)+      ;display 6
+00001296  4E75                     436              RTS
+00001298                           437              
+00001298                           438  * -----------------------------------------------------------            
+00001298                           439  * Subroutine N0111 ------------------------------------------
+00001298                           440  N0111
+00001298  14FC 0037                441              MOVE.B  #'7',(A2)+      ;display 7
+0000129C  4E75                     442              RTS
+0000129E                           443  
+0000129E                           444  * ----------------------------------------------------------- 
+0000129E                           445  * Subroutine N1000 ------------------------------------------
+0000129E                           446  N1000       
+0000129E  14FC 0038                447              MOVE.B  #'8',(A2)+      ;display 8
+000012A2  4E75                     448              RTS
+000012A4                           449  
+000012A4                           450  * -----------------------------------------------------------            
+000012A4                           451  * Subroutine N1001 ------------------------------------------
+000012A4                           452  N1001   
+000012A4  14FC 0039                453              MOVE.B  #'9',(A2)+      ;display 9
+000012A8  4E75                     454              RTS
+000012AA                           455  
+000012AA                           456  * -----------------------------------------------------------            
+000012AA                           457  * Subroutine N1010 ------------------------------------------
+000012AA                           458  N1010   
+000012AA  14FC 0041                459              MOVE.B  #'A',(A2)+      ;display A
+000012AE  4E75                     460              RTS
+000012B0                           461  
+000012B0                           462  * -----------------------------------------------------------            
+000012B0                           463  * Subroutine N1011 ------------------------------------------
+000012B0                           464  N1011   
+000012B0  14FC 0042                465              MOVE.B  #'B',(A2)+      ;display B
+000012B4  4E75                     466              RTS
+000012B6                           467  
+000012B6                           468  * -----------------------------------------------------------            
+000012B6                           469  * Subroutine N1100 ------------------------------------------
+000012B6                           470  N1100   
+000012B6  14FC 0043                471              MOVE.B  #'C',(A2)+      ;display C
+000012BA  4E75                     472              RTS
+000012BC                           473  
+000012BC                           474  * -----------------------------------------------------------            
+000012BC                           475  * Subroutine N1101 ------------------------------------------
+000012BC                           476  N1101   
+000012BC  14FC 0044                477              MOVE.B  #'D',(A2)+      ;display D
+000012C0  4E75                     478              RTS
+000012C2                           479  
+000012C2                           480  * -----------------------------------------------------------            
+000012C2                           481  * Subroutine N1110 ------------------------------------------
+000012C2                           482  N1110   
+000012C2  14FC 0045                483              MOVE.B  #'E',(A2)+      ;display E
+000012C6  4E75                     484              RTS
+000012C8                           485  
+000012C8                           486  * -----------------------------------------------------------            
+000012C8                           487  * Subroutine N1111 ------------------------------------------
+000012C8                           488  N1111   
+000012C8  14FC 0046                489              MOVE.B  #'F',(A2)+      ;display F
+000012CC  4E75                     490              RTS   
+000012CE                           491              
+000012CE                           492              
+000012CE                           493              
+000012CE                           494              *---------------------------------------------------------------
+000012CE                           495              *--------------------------------------------------------
+000012CE                           496              *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
+000012CE                           497              *-------------------------------------
+000012CE                           498              INCLUDE 'op0100.x68'    IN a different file, modulated design        
+000012CE                           499  op0100      
+000012CE                           500  
+000012CE                           501  
+000012CE                           502   
+000012CE                           503              ;CMP.W   #$4EB9,D6   ;see if it's a JSR
+000012CE                           504              ;BEQ     jumpToRt            
+000012CE                           505              ;CMP.W   #$4E75,D6   ;see if it's a RTS
+000012CE                           506              ;BEQ     returnRt 
+000012CE                           507             
+000012CE                           508              ;JSR     WorL        
+000012CE                           509              ;CMP.B   #hex7,D3    ;see if it's a LEA
+000012CE                           510              ;BEQ     _lea        ;branch 
+000012CE                           511              
+000012CE                           512              ;JSR     clrORmm       
+000012CE                           513              ;CMP.B   #hex8,D3    ;see if it's a CLR.B
+000012CE                           514              ;BEQ     _clrB       ;branch             
+000012CE                           515              ;CMP.B   #hex9,D3    ;see if it's a CLR.W
+000012CE                           516              ;BEQ     _clrW       ;branch   
+000012CE                           517              ;CMP.B   #hexA,D3    ;see if it's a CLR.L
+000012CE                           518              ;BEQ     _clrL       ;branch
+000012CE                           519    
+000012CE                           520              ;CMP.B   #hex2,D3    ;see if it's a MOVEM.W
+000012CE                           521              ;BEQ     _movemW     ;branch   
+000012CE                           522              ;CMP.B   #hex3,D3    ;see if it's a MOVEM.L
+000012CE                           523              ;BEQ     _movemL     ;branch              
+000012CE                           524                          
+000012CE                           525              ;BRA     opError     ;bad opcode branch to error
+000012CE                           526              
+000012CE                           527              
+000012CE  BC7C 4E71                528              CMP.W   #$4E71,D6
+000012D2  6700 000A                529              BEQ     _NOP
+000012D6                           530              
+000012D6  BC7C 4E75                531              CMP.W   #$4E75,D6   ;see if it's a RTS
+000012DA  6700 0028                532              BEQ     _RTS        branch to RTS
+000012DE                           533             
+000012DE                           534  
+000012DE                           535              
+000012DE                           536  _NOP
+000012DE  7E02                     537              MOVE.L  #2,D7       ;data is not error
+000012E0  14FC 0020                538              MOVE.B  #' ',(A2)+      ;print spaces
+000012E4  14FC 0020                539              MOVE.B  #' ',(A2)+      ;print spaces
+000012E8  14FC 0020                540              MOVE.B  #' ',(A2)+      ;print spaces
+000012EC  14FC 0020                541              MOVE.B  #' ',(A2)+      ;print spaces
+000012F0  14FC 004E                542              MOVE.B  #'N',(A2)+      ;print N
+000012F4  14FC 004F                543              MOVE.B  #'O',(A2)+      ;print O
+000012F8  14FC 0050                544              MOVE.B  #'P',(A2)+      ;print P
+000012FC  1A3C 0003                545              MOVE.B  #3,D5           ;counter for output
+00001300  6000 011E                546              BRA     printCode
+00001304                           547  
+00001304                           548  _RTS    
+00001304  7E02                     549              MOVE.L  #2,D7       ;data is not error
+00001306  14FC 0020                550              MOVE.B  #' ',(A2)+      ;print spaces
+0000130A  14FC 0020                551              MOVE.B  #' ',(A2)+      ;print spaces
+0000130E  14FC 0020                552              MOVE.B  #' ',(A2)+      ;print spaces
+00001312  14FC 0020                553              MOVE.B  #' ',(A2)+      ;print spaces
+00001316  14FC 0052                554              MOVE.B  #'R',(A2)+      ;print R
+0000131A  14FC 0054                555              MOVE.B  #'T',(A2)+      ;print T
+0000131E  14FC 0053                556              MOVE.B  #'S',(A2)+      ;print S
+00001322  1A3C 0003                557              MOVE.B  #3,D5           ;counter for output
+00001326  6000 00F8                558              BRA     printCode
+00001326  6000 00F8                559  -------------------- end include --------------------
+0000132A                           560              INCLUDE 'op0001.x68'    MOVE.b Differetn file
+0000132A                           561  
+0000132A                           562  
+0000132A                           563  
+0000132A                           564  
+0000132A                           565  op0001
+0000132A  7E02                     566              MOVE.L  #2,D7       ;data is not error
+0000132C  14FC 0020                567              MOVE.B  #' ',(A2)+      ;print spaces
+00001330  14FC 0020                568              MOVE.B  #' ',(A2)+      ;print spaces
+00001334  14FC 0020                569              MOVE.B  #' ',(A2)+      ;print spaces
+00001338  14FC 0020                570              MOVE.B  #' ',(A2)+      ;print spaces
+0000133C  14FC 004D                571              MOVE.B  #'M',(A2)+      ;print M
+00001340  14FC 004F                572              MOVE.B  #'O',(A2)+      ;print O
+00001344  14FC 0056                573              MOVE.B  #'V',(A2)+      ;print V
+00001348  14FC 0045                574              MOVE.B  #'E',(A2)+      PRINT  E
+0000134C  14FC 002E                575              MOVE.B  #'.',(A2)+
+00001350  14FC 0042                576              MOVE.B  #'B',(A2)+
+00001354  4242                     577              CLR     D2
+00001356  4241                     578              CLR     D1
+00001358  4240                     579              CLR     D0
+0000135A  2406                     580              MOVE.L  D6,D2       MOVE the original machine code to D2 to play with
+0000135C  E98A                     581              LSL.L   #4,D2       BIT* **** **** 0000
+0000135E  E08A                     582              LSR.L   #8,D2       0000 0000 BIT* ****
+00001360  EA8A                     583              LSR.L   #5,D2       0000 0000 0000 0BIT     
+00001362  1202                     584              MOVE.B  D2,D1       MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0 
+00001364  C2FC 0008                585              MULU    #8,D1
+00001368  4EB8 11E2                586              JSR     registerPrint
+0000136C  4242                     587              CLR     D2
+0000136E  4241                     588              CLR     D1
+00001370  4240                     589              CLR     D0
+00001372  3406                     590              MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+00001374  EF8A                     591              LSL.L   #7,D2
+00001376  E08A                     592              LSR.L   #8,D2
+00001378  EA8A                     593              LSR.L   #5,D2
+0000137A  1002                     594              MOVE.B  D2,D0
+0000137C  C0FC 0008                595              MULU    #8,D0
+00001380  4DF8 1150                596              LEA     modeTable,A6 Load the table into A6
+00001384  4EB6 0000                597              JSR     (A6,D0)     Jump to subroutine of value at D0
+00001388  4242                     598              CLR     D2
+0000138A  4241                     599              CLR     D1
+0000138C  4240                     600              CLR     D0
+0000138E  3406                     601              MOVE.W  D6,D2  MOVE the original machine code to D2 to play with
+00001390  E54A                     602              LSL.W   #2,D2
+00001392  EA4A                     603              LSR.W   #5,D2
+00001394  1002                     604              MOVE.B  D2,D0
+00001396  C0FC 0008                605              MULU    #8,D0
+0000139A  4DF8 1150                606              LEA     modeTable,A6 Load the table into A6
+0000139E  4EB6 0000                607              JSR     (A6,D0)     Jump to subroutine of value at D0
+000013A2  4242                     608              CLR     D2
+000013A4  4241                     609              CLR     D1
+000013A6  4240                     610              CLR     D0
+000013A8  3406                     611              MOVE.W  D6, D2  MOVE the original machine code to D2 to play with
+000013AA  E30A                     612              LSL.B   #1,D2   Shift the bits left by 1, IE 100 LSL.B -> 1000, we get the byte, then shift back LSR.B #1 -> 0100 (OMG EDWARD IS GOD)
+000013AC  E20A                     613              LSR.B   #1,D2
+000013AE  1202                     614              MOVE.B  D2,D1   MOVE OUT SHIFTED BTYE TO PLAY WITH TO D0             
+000013B0  C2FC 0008                615              MULU    #8,D1
+000013B4  4EB8 11E2                616               JSR     registerPrint
+000013B8                           617  
+000013B8  6000 0066                618              BRA     printCode
+000013BC                           619  
+000013BC                           620  
+000013BC                           621  
+000013BC                           622  
+000013BC                           623  
+000013BC                           624  
+000013BC                           625  
+000013BC                           626  
+000013BC                           627  
+000013BC                           628  
+000013BC                           629  
+000013BC                           630  -------------------- end include --------------------
+000013BC                           631  
+000013BC                           632  
+000013BC                           633              
+000013BC                           634  opError                             
+000013BC  2608                     635              MOVE.L  A0,D3
+000013BE  2C03                     636              MOVE.L  D3,D6
+000013C0  45F9 0000066C            637              LEA     bad_code_buffer,A2
+000013C6  7E02                     638              MOVE.L  #2,D7
+000013C8  4EB8 10E0                639              JSR     write_data_in_D3_to_buffer
+000013CC                           640              
+000013CC  14FC 0020                641              MOVE.B  #' ',(A2)+      ;print spaces
+000013D0  14FC 0020                642              MOVE.B  #' ',(A2)+      ;print spaces
+000013D4  14FC 0020                643              MOVE.B  #' ',(A2)+      ;print spaces
+000013D8  14FC 0020                644              MOVE.B  #' ',(A2)+      ;print spaces
+000013DC  14FC 0044                645              MOVE.B  #'D',(A2)+      ;print D
+000013E0  14FC 0041                646              MOVE.B  #'A',(A2)+      ;print A
+000013E4  14FC 0054                647              MOVE.B  #'T',(A2)+      ;print T
+000013E8  14FC 0041                648              MOVE.B  #'A',(A2)+      ;print A
+000013EC  14FC 0020                649              MOVE.B  #' ',(A2)+      ;print spaces
+000013F0  14FC 0020                650              MOVE.B  #' ',(A2)+      ;print spaces
+000013F4  14FC 0020                651              MOVE.B  #' ',(A2)+      ;print spaces
+000013F8  14FC 0020                652              MOVE.B  #' ',(A2)+      ;print spaces
+000013FC                           653              
+000013FC                           654              
+000013FC  14FC 0046                655              MOVE.B  #'F',(A2)+      ;print spaces
+00001400  14FC 0046                656              MOVE.B  #'F',(A2)+      ;print spaces
+00001404  14FC 0046                657              MOVE.B  #'F',(A2)+      ;print spaces
+00001408  14FC 0046                658              MOVE.B  #'F',(A2)+      ;print spaces
+0000140C                           659              
+0000140C                           660              
+0000140C                           661              ;MOVE.L  (A0),D3
+0000140C                           662              ;MOVE.L  D3,D6
+0000140C                           663              ;MOVE.L  #1,D7
+0000140C                           664              ;JSR     write_data_in_D3_to_buffer
+0000140C                           665              
+0000140C  14BC 0000                666              MOVE.B  #$00,(A2) * add NULL value to print string
+00001410  43F9 0000066C            667              LEA     bad_code_buffer,A1
+00001416  103C 000D                668              MOVE.B  #13,D0
+0000141A  4E4F                     669              TRAP    #15   
+0000141C                           670           
+0000141C  6000 FC86                671              BRA     get_next_instruction           
+00001420                           672  printCode   
+00001420  14BC 0000                673              MOVE.B  #$00,(A2)   * add NULL value to print string
+00001424  070A 0000                674              MOVEP   (A2),D3
+00001428  43F9 00000614            675              LEA     good_code_buffer,A1 * load buffer for good code to print
+0000142E  700D                     676              MOVEQ   #13,D0
+00001430  4E4F                     677              TRAP    #15         * display code
+00001432                           678    
+00001432  6000 FC70                679              BRA     get_next_instruction                     
+00001436                           680  * OP Codes -------------------------------------------------
+00001436  =00000000                681  bin0000     EQU     %0000   ;ADDI, ANDI, EORI, BCHG, CMPI
+00001436  =00000001                682  bin0001     EQU     %0001   ;MOVE.B
+00001436  =00000002                683  bin0010     EQU     %0010   ;MOVE.L
+00001436  =00000003                684  bin0011     EQU     %0011   ;MOVE.W
+00001436  =00000004                685  bin0100     EQU     %0100   ;MOVEM, MULS.L, DIVU.L, LEA, CLR, JSR, RTS
+00001436  =00000005                686  bin0101     EQU     %0101   ;SUBQ
+00001436  =00000006                687  bin0110     EQU     %0110   ;Bcc
+00001436  =00000007                688  bin0111     EQU     %0111   ;MOVEQ
+00001436  =00000008                689  bin1000     EQU     %1000   ;DIVU.W
+00001436  =00000009                690  bin1001     EQU     %1001   ;SUB, SUBA
+00001436  =0000000B                691  bin1011     EQU     %1011   ;CMP, CMPA, EOR
+00001436  =0000000C                692  bin1100     EQU     %1100   ;AND, MULS.W
+00001436  =0000000D                693  bin1101     EQU     %1101   ;ADD, ADDA
+00001436  =0000000E                694  bin1110     EQU     %1110   ;ASR, ASL, ROL, ROR
+00001436                           695  
+00001436                           696  
+00001436                           697              
+00001436                           698  ;LOOP:
+00001436                           699                  *-compare the adress pointers current address with ending address to see if we need to continue
+00001436                           700                  *- load the address registrer (pointer/ this helps us look at data)
+00001436                           701                  *-load address register number into data register
+00001436                           702                  
+00001436                           703                  ;MOVE.L  a5,d2   ;move the value of a5 to d2(starting/current pointing number)
+00001436                           704                  ;lea     $00FFFF10,a6    ;load the ending address to d3(we do this so in the future d3 is not just storing something, we can free up d3 to use
+00001436                           705                  ;MOVE.L  (a6),d3         since we loaded the address of ou engine value into a address register 'basically keeping its pointer instance' we deref it for the value
+00001436                           706                  ;CMP.L   d2,d3       ;if the current poiinter is the same as 
+00001436                           707                  ;BEQ     FINISH      ;finish they are equal
+00001436                           708                  ;RTS
+00001436                           709  
+00001436                           710          
+00001436                           711          *----------END OF I/O SECTION*---
+00001436                           712          *----------Start of OPCODE SUBROUTINE
+00001436  =0000A000                713  stack            EQU        $A000  
+00001436  =0000000C                714  shift            EQU        12                   * Shift 12 bits 
+00000400                           715                   ORG        $400
+00000400                           716           
+00000400  4FF9 0000A000            717  get_opcode       LEA        stack,SP        *Load the SP
+00000406  41F9 00000424            718                   LEA        jmp_table,A0    *Index into the table
+0000040C  4280                     719                   CLR.L      D0              *Zero it       
+0000040E  227C 00009000            720                   MOVE.L     #$00009000,A1        *We'll play with it here
+00000414  3011                     721                   MOVE.W     (A1),D0
+00000416  123C 000C                722                   MOVE.B     #shift,D1       *Shift 12 bits to the right  
+0000041A  E268                     723                   LSR.W      D1,D0           *Move the bits
+0000041C  C0FC 0006                724                   MULU       #6,D0           *Form offset     
+00000420  4EB0 0000                725                   JSR        0(A0,D0)        *Jump indirect with index
+00000424                           726                   
+00000424  4EF9 00000484            727  jmp_table        JMP        code0000        *Bit manipulation/MOVEP/Immediate
+0000042A  4EF9 00000488            728                   JMP        code0001        *MOVE.B
+00000430  4EF9 0000048C            729                   JMP        code0010        *MOVE.L
+00000436  4EF9 00000490            730                   JMP        code0011        *MOVE.W
+0000043C  4EF9 00000494            731                   JMP        code0100        *Miscellaneous
+00000442  4EF9 000004A8            732                   JMP        code0101        *ADDQ/SUBQ/Scc/DBcc
+00000448  4EF9 000004AC            733                   JMP        code0110        *BSR,BRA,Bcc
+0000044E  4EF9 000004B0            734                   JMP        code0111        *MOVEQ
+00000454  4EF9 000004B4            735                   JMP        code1000        *OR/DIV/SBCD
+0000045A  4EF9 000004B8            736                   JMP        code1001        *SUB/SUBX
+00000460  4EF9 000004BC            737                   JMP        code1010        *Unassigned
+00000466  4EF9 000004C0            738                   JMP        code1011        *CMP/EOR
+0000046C  4EF9 000004C4            739                   JMP        code1100        *AND/MUL/ABCD/EXG
+00000472  4EF9 000004C8            740                   JMP        code1101        *ADD/ADDA/ADDX
+00000478  4EF9 000004CC            741                   JMP        code1110        *Shift/Rotate
+0000047E  4EF9 000004D0            742                   JMP        code1111        *Special/Reserved
+00000484                           743                   
+00000484  4E72 2700                744  code0000         STOP       #$2700
+00000488  4E72 2700                745  code0001         STOP       #$2700
+0000048C  4E72 2700                746  code0010         STOP       #$2700
+00000490  4E72 2700                747  code0011         STOP       #$2700
+00000494  267C 00000000            748  code0100         MOVE.L     #0,A3
+0000049A  4241                     749                   CLR        D1
+0000049C  43F9 000006C5            750                   LEA        enter_start_AD,A1
+000004A2  700E                     751                   MOVE.L     #14,D0
+000004A4  4E4F                     752                   TRAP       #15
+000004A6  4E75                     753                   RTS
+000004A8  4E72 2700                754  code0101         STOP       #$2700
+000004AC  4E72 2700                755  code0110         STOP       #$2700
+000004B0  4E72 2700                756  code0111         STOP       #$2700
+000004B4  4E72 2700                757  code1000         STOP       #$2700
+000004B8  4E72 2700                758  code1001         STOP       #$2700
+000004BC  4E72 2700                759  code1010         STOP       #$2700
+000004C0  4E72 2700                760  code1011         STOP       #$2700
+000004C4  4E72 2700                761  code1100         STOP       #$2700
+000004C8  4E72 2700                762  code1101         STOP       #$2700
+000004CC  4E72 2700                763  code1110         STOP       #$2700
+000004D0  4E72 2700                764  code1111         STOP       #$2700
+000004D4                           765  
+000004D4                           766  FINISH:
+000004D4                           767          *INCLUDE 'opcode_subroutine.x68'
+000004D4  2608                     768              MOVE.L  A0,D3
+000004D6  2C03                     769              MOVE.L  D3,D6
+000004D8  45F9 00000614            770              LEA     good_code_buffer,A2
+000004DE                           771   
+000004DE                           772              
+000004DE  14FC 0046                773              MOVE.B  #'F',(A2)+      ;print spaces
+000004E2  14FC 0049                774              MOVE.B  #'I',(A2)+      ;print spaces
+000004E6  14FC 0049                775              MOVE.B  #'I',(A2)+      ;print spaces
+000004EA  14FC 004E                776              MOVE.B  #'N',(A2)+      ;print spaces
+000004EE  14FC 0049                777              MOVE.B  #'I',(A2)+      ;print D
+000004F2  14FC 0053                778              MOVE.B  #'S',(A2)+      ;print A
+000004F6  14FC 0048                779              MOVE.B  #'H',(A2)+      ;print T
+000004FA  14FC 0041                780              MOVE.B  #'A',(A2)+      ;print A
+000004FE  14FC 0041                781              MOVE.B  #'A',(A2)+      ;print spaces
+00000502  14FC 0041                782              MOVE.B  #'A',(A2)+      ;print spaces
+00000506  14FC 0048                783              MOVE.B  #'H',(A2)+      ;print spaces
+0000050A  14FC 0041                784              MOVE.B  #'A',(A2)+      ;print spaces
+0000050E  14FC 0052                785              MOVE.B  #'R',(A2)+
+00000512  2610                     786              MOVE.L  (A0),D3
+00000514  2C03                     787              MOVE.L  D3,D6
+00000516  7E01                     788              MOVE.L  #1,D7
+00000518                           789  
+00000518                           790              
+00000518  14BC 0000                791              MOVE.B  #$00,(A2) * add NULL value to print string
+0000051C  43F9 00000614            792              LEA     good_code_buffer,A1
+00000522  103C 000D                793              MOVE.B  #13,D0
+00000526  4E4F                     794              TRAP    #15   
+00000528  FFFF FFFF                795              SIMHALT
+0000052C                           796  
+0000052C                           797  *-390 -> 406 WITH NOP AT 400
+0000052C                           798  
+0000052C                           799  
+0000052C                           800  
+0000052C                           801  
+0000052C                           802  
+0000052C                           803  
+0000052C                           804  
+0000052C                           805  
+0000052C                           806  
+0000052C                           807  
+0000052C                           808  
+0000052C                           809  
+0000052C                           810  
+0000052C                           811  
+0000052C                           812  
+0000052C                           813  *-Parses input - take input from user to create a memory address
+0000052C                           814  *- entry is parsed to make sure it falls within a valid range
+0000052C                           815  *-good inputs are converteed to hex
+0000052C                           816  *-the entered addres get's stored in d3
+0000052C                           817  *-
+0000052C                           818  *-
+0000052C                           819  
+0000052C                           820  
+0000052C                           821  
+0000052C  7C00                     822  parse_input     MOVEQ   #$0,D6  ZERO OUT THE REGISTERY
+0000052E  7A00                     823                  MOVEQ   #$0,D5  ZERO OUT THE REGISTERY
+00000530                           824                  
+00000530                           825                  *-CHECK TO SEE INPUT DATA
+00000530  B205                     826                  CMP.B   D5,D1   D5 IS 0
+00000532  6700 0086                827                  BEQ     error_no_input no input was found
+00000536  0C41 0008                828                  CMPI    #$8,D1  CHECK IF THE USER ENTERED TOO MANY CHARACTERS 8+
+0000053A  6E00 0090                829                  BGT     error_bad_entry
+0000053E                           830                  ;BGT     error_inv_to_many_char
+0000053E  6000 0018                831                  BRA     parse_each
+00000542                           832  
+00000542  7C00                     833  parse_end        MOVEQ   #$0,D6  CLEARS THE D6 REGISTEY
+00000544  7A00                     834                  MOVEQ   #$0,D5  CLEARS D5
+00000546  B205                     835                  CMP.B   D5,D1   CHECKS TO SEE IF A VALUE WAS ENTERED
+00000548  6700 0070                836                  BEQ     error_no_input
+0000054C  0C41 0008                837                  CMPI    #$8,D1  CHECKS IF THE USER ENTERED TOO MANY CHARACTERS 8+
+00000550  6E00 007A                838                  BGT     error_bad_entry
+00000554                           839                  ;BGT     error_to_many_char
+00000554  6000 0002                840                  BRA     parse_each        
+00000558                           841  
+00000558                           842  *parse each analyzes each ind character entered
+00000558                           843  *in ASCII table lower case 'f' is tyhe highest character code (102)
+00000558                           844  
+00000558  1419                     845  parse_each      MOVE.B  (A1)+,D2    GET THE NEXT CHARACTER FOR PARSING
+0000055A  B405                     846                  CMP.B   D5,D2       CHECK IF THE NEXT VALUE IS NULL, IF SO WE HAVE EITHER ERROR OR REACHED END OF INPUT
+0000055C  6700 0058                847                  BEQ     parse_complete  end of user input
+00000560  B43C 0066                848                  CMP.B   #102,D2     NEED TO CHECK WETHER THE INPUT IS OUT OF ASCII RANGE 'f' is 102
+00000564  6E00 0012                849                  BGT     hex_compare
+00000568                           850                  
+00000568                           851                  *-
+00000568                           852                  *Comapare the decimal number values betyween 0 -9 first
+00000568                           853                  *
+00000568                           854                  *-
+00000568  B43C 002F                855  dec_compare     CMP.B   #47,D2      if its lower than 47 that means its invalid character
+0000056C                           856                                      *-for decimal values between [47, 57] are valid
+0000056C  6F00 0056                857                  BLE     error_char 
+00000570  B43C 003A                858                  CMP.B   #58, D2     IF THE VALUE IS NOT LESS THAN 47 AND NOT GREATER THAN 58 WE CAN CONVERT DECIMAL TO HEX
+00000574  6D00 0022                859                  BLT     dec_convert
+00000578                           860                  *-
+00000578                           861                  *there are no number values, lets check alpha characters
+00000578                           862                  *->IF the value is not less than 65 which is 'A' and the value is NO more than
+00000578                           863                  *->71 'G' then we should go and convert to hex range A-F
+00000578                           864                  *-UPPER case
+00000578                           865                  *-      
+00000578  B43C 0041                866  hex_compare     CMP.B   #65,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 65(A)
+0000057C  6D00 0046                867                  BLT     error_char  the VALUE IS LESS THAN 65 WHICH IS SYMBOLS AND INVALID
+00000580  B43C 0047                868                  CMP.B   #71,D2      CHECK TO SEE IF THE VALUE OF THE CHAR IS LESS THAN 71(G)
+00000584  6D00 001C                869                  BLT     upper_ascii VALUE FELL IN RANGE A-F                 
+00000588  B43C 0061                870  low_hex_compare CMP.B   #97,D2      CHECK TO SEE IF VALUE IS LESS THAN 97 'a'
+0000058C  6D00 0036                871                  BLT     error_char  VALUE IS SOME SYMBOL *- 97 - 103
+00000590  B43C 0067                872                  CMP.B   #103,D2     CHECK IF ITS WITHIN RANGE, LESS THAN 103
+00000594  6D00 0016                873                  BLT     lower_ascii
+00000598                           874                  
+00000598                           875           
+00000598  0402 0030                876  dec_convert     SUBI.B  #48,D2      CONVERT TO HEX FROM ASCII BY SUBTRACTING 48 FROM CURRENT DECIMAL VALUE
+0000059C                           877                  *-BECAUSE 0 - 9 THE HEX VALUES WILL BE A SINGLE CHAR WE SHIFT LEFT
+0000059C  E986                     878                  ASL.L   #4,D6
+0000059E  DC02                     879                  ADD.B   D2,D6       MOVE NEW BYTE INTO THE RETURN REGISTER
+000005A0  60B6                     880                  BRA     parse_each  continue to parse the next character, SHOULD BE IN RANGE FOR LOWER
+000005A2                           881                                      *- 97 - 103
+000005A2                           882                  
+000005A2                           883                              
+000005A2                           884  *- ASCII conversions UPPER case to hex value by substracting 55
+000005A2                           885  
+000005A2  0402 0037                886  upper_ascii     SUBI.B  #55,D2  SUBTRACT 55 TO GET THE HEX VALUE OF THE CORRESPONDING CHARACTER
+000005A6  E986                     887                  ASL.L   #4,D6   MOVE THE SANITIZED VALUE INTO D6 REGISTER
+000005A8  DC02                     888                  ADD.B   D2,D6   MOVE THE NEW BYTE INTO RETURN REGISTER
+000005AA  60AC                     889                  BRA     parse_each  parse next item
+000005AC                           890  *-ASCI lower case to hex value by subtracting 87
+000005AC  0402 0057                891  lower_ascii     SUBI.B  #87,D2
+000005B0  E986                     892                  ASL.L   #4,D6
+000005B2  DC02                     893                  ADD.B   D2,D6
+000005B4  60A2                     894                  BRA     parse_each
+000005B6                           895  
+000005B6  7801                     896  parse_complete  MOVEQ   #1,D4  FINISH PARSING USER INPUT
+000005B8  4E75                     897                  RTS             JUMP FROM SUBROUTINE                
+000005BA  43F9 0000068A            898  error_no_input  LEA no_entry,A1 load bad entry statment
+000005C0  7001                     899                  MOVE.L  #1,D0
+000005C2  4E4F                     900                  TRAP    #15
+000005C4                           901                  ;JMP     get_input
+000005C4  43F9 000006B2            902  error_char      LEA bad_char,A1
+000005CA  4E4F                     903                  trap #15
+000005CC                           904                  ;JMP get_input0
+000005CC  43F9 0000069D            905  error_bad_entry LEA bad_entry,A1
+000005D2  4E4F                     906                  TRAP #15
+000005D4                           907                  ;JMP  get_input
+000005D4                           908  
+000005D4                           909  
+000005D4  FFFF FFFF                910      SIMHALT             ; halt simulator
+000005D8                           911  
+000005D8                           912  * Put variables and constants here
+000005D8= 48 65 6C 6C 6F 20 ...    913  welcome_message DC.B    'Hello and Welcome 68Kkrew"s 68K Disassembler(get the pun)',CR,LF,0
+00000614                           914  
+00000614                           915  
+00000614                           916  good_code_buffer    DS.B    88
+0000066C                           917  
+0000066C                           918  bad_code_buffer     DS.B    30
+0000068A= 4E 6F 20 45 6E 74 ...    919  no_entry    DC.B    'No Entry detected.',0
+0000069D= 42 61 64 20 45 6E ...    920  bad_entry   DC.B    'Bad Entry Dectected.',0
+000006B2= 42 61 64 20 43 68 ...    921  bad_char    DC.B    'Bad Char detected.',0
+000006C5                           922  *-errors
+000006C5                           923  ;enter_start_AD  DC.B    'Enter a starting address between $0 and $00FFFE00: ',0
+000006C5= 45 6E 74 65 72 20 ...    924  enter_start_AD  DC.B    'Enter a starting address: ',0
+000006E0                           925  userStartAddrInput  DS.B    50  address used to store the data input from user
+00000712                           926  userEndAddrInput    DS.B    50  address used to stoer the data input from user
+00000744                           927  
+00000744= 45 6E 74 65 72 20 ...    928  userEnd         DC.B    'Enter an address greater than the starting address: ',0
+00000779                           929  
+00000779                           930  userEndInput    DS.B    50  addresse used to store the data input from user
+000007AC  43F8 068A                931  error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
+000007B0  7001                     932                          MOVE.L  #1,D0
+000007B2  4E4F                     933                          TRAP    #15
+000007B4                           934                          ;JMP     get_input
+000007B4                           935  
+000007B4                           936  *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
+000007B4                           937  
+000007B4                           938      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -927,34 +1001,42 @@ JMP_TABLE           424
 LF                  A
 LOWER_ASCII         5AC
 LOW_HEX_COMPARE     588
+M0000               1180
+M0001               118C
+M0010               1198
+M0011               11AC
+M0100               11C4
+M0111               11DC
 MAINLOOP            107C
-N0000               11D0
-N0001               11D6
-N0010               11DC
-N0011               11E2
-N0100               11E8
-N0101               11EE
-N0110               11F4
-N0111               11FA
-N1000               1200
-N1001               1206
-N1010               120C
-N1011               1212
-N1100               1218
-N1101               121E
-N1110               1224
-N1111               122A
+MODETABLE           1150
+N0000               126E
+N0001               1274
+N0010               127A
+N0011               1280
+N0100               1286
+N0101               128C
+N0110               1292
+N0111               1298
+N1000               129E
+N1001               12A4
+N1010               12AA
+N1011               12B0
+N1100               12B6
+N1101               12BC
+N1110               12C2
+N1111               12C8
 NO_ENTRY            68A
-NUMTABLE            1150
-OP0001              128C
-OP0100              1230
-OPERROR             12EE
+NUMTABLE            11EE
+OP0001              132A
+OP0100              12CE
+OPERROR             13BC
 PARSE_COMPLETE      5B6
 PARSE_EACH          558
 PARSE_END           542
 PARSE_INPUT         52C
-PRINTCODE           1352
+PRINTCODE           1420
 PRINT_WORD          10F6
+REGISTERPRINT       11E2
 SHIFT               C
 STACK               A000
 START               1000
@@ -967,5 +1049,5 @@ USERENDINPUT        779
 USERSTARTADDRINPUT  6E0
 WELCOME_MESSAGE     5D8
 WRITE_DATA_IN_D3_TO_BUFFER  10E0
-_NOP                1240
-_RTS                1266
+_NOP                12DE
+_RTS                1304

@@ -285,22 +285,76 @@ write_data_in_D3_to_buffer:
 * Jump Table modeTable ***************************************
 *** matches the associated Addressing mode     
 *************************************************************
-*modeTable   JSR     M0000   ;Dn, Data Register 
-*            RTS             ;return, done printing
-*            JSR     M0001   ;An, Address Register 
-*            RTS             ;return, done printing
-*            JSR     M0010   ;(An), Address
-*            RTS             ;return, done printing
-*            JSR     M0011   ;(An)+, Address with Postincrement
-*            RTS             ;return, done printing
-*            JSR     M0100   ;-(An), Address with Predecrement
-*            RTS             ;return, done printing
-*            JSR     M0101   ;(D18,An), Address with Displacemenet
-*            RTS             ;return, done printing
-*            JSR     M0110   ;register 6
-*            RTS             ;return, done printing
-*            JSR     M0111   ;register 7
-*            RTS             ;return, done printing            
+modeTable   JSR     M0000   ;Dn, Data Register 
+            RTS             ;return, done printing
+            JSR     M0001   ;An, Address Register 
+            RTS             ;return, done printing
+            JSR     M0010   ;(An), Address
+            RTS             ;return, done printing
+            JSR     M0011   ;(An)+, Address with Postincrement
+            RTS             ;return, done printing
+            JSR     M0100   ;-(An), Address with Predecrement
+            RTS             ;return, done printing
+            JSR     M0111   ;(xxx).W, (xxx).L, #imm
+            RTS             ;return, done printing           
+* -----------------------------------------------------------            
+* Subroutine M0000 ------------------------------------------
+M0000                               ;Dn
+            MOVE.B  #'D',(A2)+      ;display D
+            JSR     registerPrint   ;display n
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine M0001 ------------------------------------------
+M0001                               ;An
+            MOVE.B  #'A',(A2)+      ;display A
+            JSR     registerPrint   ;display n
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine M0010 ------------------------------------------
+M0010                               ;(An) Address
+            MOVE.B  #'(',(A2)+      ;display (
+            MOVE.B  #'A',(A2)+      ;display A
+            JSR     registerPrint   ;display n      
+            MOVE.B  #')',(A2)+      ;display )
+            RTS
+ 
+* -----------------------------------------------------------            
+* Subroutine M0011 ------------------------------------------
+M0011                               ;(An)+ 
+            MOVE.B  #'(',(A2)+      ;display (
+            MOVE.B  #'A',(A2)+      ;display A
+            JSR     registerPrint   ;display n      
+            MOVE.B  #')',(A2)+      ;display )
+            MOVE.B  #'+',(A2)+      ;display +
+            RTS
+
+
+* -----------------------------------------------------------            
+* Subroutine M0100 ------------------------------------------
+M0100                               ;-(An)
+            MOVE.B  #'-',(A2)+      ;display -
+            MOVE.B  #'(',(A2)+      ;display (
+            MOVE.B  #'A',(A2)+      ;display A
+            JSR     registerPrint   ;display n      
+            MOVE.B  #')',(A2)+      ;display )
+            RTS
+
+
+* -----------------------------------------------------------            
+* Subroutine M0111 ------------------------------------------
+M0111                               ;(xxx).W, (xxx).L, #imm
+            MOVE.B  #'7',(A2)+      ;display 7
+            RTS
+
+* ----------------------------------------------------------- 
+registerPrint
+            LEA     numTable,A7 Load the table into A7
+            JSR     (A7,D1)     Jump to subroutine of value at D0
+            RTS
+            
+ 
 * -----------------------------------------------------------            
 * Jump Table numTable ***************************************
 *** prints the associated number of the register            *
@@ -751,6 +805,8 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
+
 
 
 
