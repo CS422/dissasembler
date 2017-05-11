@@ -1,6 +1,6 @@
 00001000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 2017-05-05 오후 12:09:32
+Created On: 2017-05-09 오후 9:21:22
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -10,14 +10,18 @@ Created On: 2017-05-05 오후 12:09:32
 00000000                             6  *-----------------------------------------------------------
 00001000                             7      ORG    $1000
 00001000                             8  START:                  ; first instruction of program
-00001000  1001                       9      move.b d1,d0
-00001002                            10  * Put program code here
-00001002                            11  
-00001002  FFFF FFFF                 12      SIMHALT             ; halt simulator
-00001006                            13  
-00001006                            14  * Put variables and constants here
-00001006                            15  
-00001006                            16      END    START        ; last line of source
+00001000                             9  
+00001000  2C3C 00001001             10              MOVE.L #$1001,D6
+00001006  2206                      11              MOVE.L  D6,D1       MOVE the original machine code to D1 to play with
+00001008  E949                      12              LSL.W   #4,D1       BIT* **** **** 0000
+0000100A  E089                      13              LSR.L   #8,D1       0000 0000 BIT* ****
+0000100C  EA89                      14              LSR.L   #5,D1       0000 0000 0000 0BIT     
+0000100E  C2FC 0008                 15              MULU    #8,D1       value adjusted for jumping  
+00001012                            16         
+00001012                            17  
+00001012                            18  * Put variables and constants here
+00001012                            19  
+00001012                            20      END    START        ; last line of source
 
 No errors detected
 No warnings generated

@@ -301,14 +301,16 @@ modeTable   JSR     M0000   ;Dn, Data Register
 * Subroutine M0000 ------------------------------------------
 M0000                               ;Dn
             MOVE.B  #'D',(A2)+      ;display D
-            JSR     registerPrint   ;display n
+            MOVEA.L A2,A3           ;get address for n
+            MOVE.B  #' ',(A2)+      ;blank
             RTS
 
 * -----------------------------------------------------------            
 * Subroutine M0001 ------------------------------------------
 M0001                               ;An
             MOVE.B  #'A',(A2)+      ;display A
-            JSR     registerPrint   ;display n
+            MOVEA.L A2,A3           ;get address for n
+            MOVE.B  #' ',(A2)+      ;blank
             RTS
 
 * -----------------------------------------------------------            
@@ -316,7 +318,8 @@ M0001                               ;An
 M0010                               ;(An) Address
             MOVE.B  #'(',(A2)+      ;display (
             MOVE.B  #'A',(A2)+      ;display A
-            JSR     registerPrint   ;display n      
+            MOVEA.L A2,A3           ;get address for n
+            MOVE.B  #' ',(A2)+      ;blank      
             MOVE.B  #')',(A2)+      ;display )
             RTS
  
@@ -325,7 +328,8 @@ M0010                               ;(An) Address
 M0011                               ;(An)+ 
             MOVE.B  #'(',(A2)+      ;display (
             MOVE.B  #'A',(A2)+      ;display A
-            JSR     registerPrint   ;display n      
+            MOVEA.L A2,A3           ;get address for n 
+            MOVE.B  #' ',(A2)+      ;blank     
             MOVE.B  #')',(A2)+      ;display )
             MOVE.B  #'+',(A2)+      ;display +
             RTS
@@ -337,24 +341,95 @@ M0100                               ;-(An)
             MOVE.B  #'-',(A2)+      ;display -
             MOVE.B  #'(',(A2)+      ;display (
             MOVE.B  #'A',(A2)+      ;display A
-            JSR     registerPrint   ;display n      
+            MOVEA.L A2,A3           ;get address for n
+            MOVE.B  #' ',(A2)+      ;blank      
             MOVE.B  #')',(A2)+      ;display )
             RTS
 
 
 * -----------------------------------------------------------            
-* Subroutine M0111 ------------------------------------------
+* Subroutine M0111 -------------------------Not finished-----
 M0111                               ;(xxx).W, (xxx).L, #imm
             MOVE.B  #'7',(A2)+      ;display 7
             RTS
 
-* ----------------------------------------------------------- 
+* -----------------------------------------------------------
+* Subroutine registerPrint----------------------------------- 
 registerPrint
             LEA     numTable,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D0
+            JSR     (A7,D1)     Jump to numTable with value at D1
+            RTS
+
+* -----------------------------------------------------------            
+* Jump Table regNumTable ***************************************
+*** prints the associated number of the register            *
+*** Also prints hex values for data and addresses           *
+*-----see below for decoding of what these sub-routines are
+*************************************************************
+regNumTable JSR     RN0000   ;register 0
+            RTS             ;return, done printing
+            JSR     RN0001   ;register 1
+            RTS             ;return, done printing
+            JSR     RN0010   ;register 2
+            RTS             ;return, done printing
+            JSR     RN0011   ;register 3
+            RTS             ;return, done printing
+            JSR     RN0100   ;register 4
+            RTS             ;return, done printing
+            JSR     RN0101   ;register 5
+            RTS             ;return, done printing
+            JSR     RN0110   ;register 6
+            RTS             ;return, done printing
+            JSR     RN0111   ;register 7
+            RTS             ;return, done printing
+* -----------------------------------------------------------            
+* Subroutine RN0000 ------------------------------------------
+RN0000
+            MOVE.B  #'0',(A3)      ;display 0
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine RN0001 ------------------------------------------
+RN0001
+            MOVE.B  #'1',(A3)      ;display 1
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine RN0010 ------------------------------------------
+RN0010
+            MOVE.B  #'2',(A3)      ;display 2
+            RTS
+ 
+* -----------------------------------------------------------            
+* Subroutine RN0011 ------------------------------------------
+RN0011
+            MOVE.B  #'3',(A3)      ;display 3
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine RN0100 ------------------------------------------
+RN0100
+            MOVE.B  #'4',(A3)      ;display 4
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine RN0101 ------------------------------------------
+RN0101
+            MOVE.B  #'5',(A3)      ;display 5
+            RTS
+
+* -----------------------------------------------------------            
+* Subroutine RN0110 ------------------------------------------
+RN0110
+            MOVE.B  #'6',(A3)      ;display 6
             RTS
             
- 
+* -----------------------------------------------------------            
+* Subroutine RN0111 ------------------------------------------
+RN0111
+            MOVE.B  #'7',(A3)      ;display 7
+            RTS
+
 * -----------------------------------------------------------            
 * Jump Table numTable ***************************************
 *** prints the associated number of the register            *
@@ -805,6 +880,8 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
+
 
 
 
