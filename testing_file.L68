@@ -1,6 +1,6 @@
 00000996 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 2017-05-05 오후 12:18:39
+Created On: 5/11/2017 2:17:49 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -20,78 +20,93 @@ Created On: 2017-05-05 오후 12:18:39
 00000996                            16      
 00000996                            17  * Put program code here
 00000996                            18      
-00000996  1001                      19      MOVE.B  D1,D0
-00000998                            20              
-00000998                            21   
-00000998                            22      
-00000998                            23      
-00000998                            24      
-00000998                            25      
-00000998                            26      
-00000998                            27      
-00000998                            28      
-00000998                            29      ;LEA     MESSAGE1,A1 *Loads message into address register A1
-00000998                            30      ;MOVE.B  #14,D0      *Moves number 14 into data regiter D0
-00000998                            31      ;TRAP    #15         *Displays Message
-00000998                            32     
-00000998                            33      ;LEA     inputbuffer,A1   ; Where to store input string
-00000998                            34      ;MOVE.B  #2,D0       ; from keyboard to store into input buffer Read string
-00000998                            35      ;TRAP    #15         ;execute the task
-00000998                            36  
-00000998                            37  
-00000998                            38      ;LEA test_buffer,A1  ;LOAD THE LOCATION where THIS STRING WILL BE PUT INTO
-00000998                            39      ; MOVE.B  #' ',(A1)+  ENTER space
-00000998                            40      ;MOVE.B  #' ',(A1)+  ENTER space
-00000998                            41      ;MOVE.B  #'D',(A1)+  load D
-00000998                            42      ;MOVE.B  #'A',(A1)+  load A
-00000998                            43      ;MOVE.B  #'N',(A1)+  Load N
-00000998                            44      ;MOVE.B  #'N',(A1)+  Load N    
-00000998                            45      ;MOVE.B  #'Y',(A1)+  Load Y
-00000998                            46      ; MOVE.B  #' ',(A1)+  ENTER space
-00000998                            47      ;  MOVE.B  #' ',(A1)+  ENTER space
-00000998                            48      ;   MOVE.B  #' ',(A1)+  ENTER space
-00000998                            49      
-00000998                            50      ;LEA     MESSAGE2,A1 *Loads message into address register A1
-00000998                            51      ;MOVE.B  #13,D0      *Moves number 14 into data regiter D0
-00000998                            52      ;TRAP    #15         *Displays Message
-00000998                            53  
-00000998                            54      ;LEA     test_buffer,A1   ;NOT SINCE THE STRING IS STORED AT THE BUFFER WHICH IS A LOCATIOIN FOR THE STRING TO LIVE is LOADED
-00000998                            55                              ; BACK INTO A1 for the trap task to execute what sin a1 String 
-00000998                            56      ;MOVE.B  #13,D0      ; Display string with newline
-00000998                            57      ;TRAP    #15
-00000998                            58  
-00000998                            59      ;MOVE.B   #9,D0
-00000998                            60      ;TRAP   #15          ; halt simulator
-00000998                            61     
-00000998= 65 6E 74 65 72 20 ...     62  message1 dc.b 'enter your string: ',0
-000009AC= 73 74 72 69 6E 67 ...     63  message2 dc.b 'string you have entered is: ',0
-000009CA                            64  test_buffer ds.w    85    
-00000A74                            65  ;    ds.w    0       ; force even address
-00000A74                            66  ;buffer  ds.b    80  ; input string storage
-00000A74                            67  
-00000A74                            68  *    LEA     MSG,A1
-00000A74                            69  *    MOVE.B  #14, D0
-00000A74                            70  *    TRAP    #15
-00000A74                            71      
-00000A74                            72      
-00000A74                            73  *    MOVE.B  #2,D0
-00000A74                            74  *    TRAP    #15
-00000A74                            75   
-00000A74                            76  *    MOVEA.W $300,A2
-00000A74                            77  *    MOVE.W  D1,D2   THE INPUT IS STORED INTO D1 WE MOVE IT TO D2
-00000A74                            78      
-00000A74                            79  *    MOVE.W  D2,(A2)
-00000A74                            80      
-00000A74                            81      
-00000A74                            82      
-00000A74                            83      
-00000A74  FFFF FFFF                 84      SIMHALT             ; halt simulator
-00000A78                            85  
-00000A78                            86  * Put variables and constants here
-00000A78                            87  ;MSG     DC.L    'ENTER A NUMBER: ',0
-00000A78                            88  inputbuffer    ds.w    9999  input string storage
-00005896                            89  
-00005896                            90      END    START        ; last line of source
+00000996                            19  *    MOVE.B  D0,D1       ; Testing Dn
+00000996                            20  *    MOVE.B  D0,D2       ; Testing Dn
+00000996                            21  **   MOVE.B  A0,D1       ; Testing An
+00000996                            22  *    MOVE.B  (A1),D7     ; Testing  (An)
+00000996                            23  *    MOVE.B  (A2),D7     ; Testing  (An)
+00000996                            24  *    MOVE.B  (A3),D7     ; Testing  (An)
+00000996                            25  *    MOVE.B  (A4),D7     ; Testing  (An)
+00000996                            26  *    
+00000996                            27  *    MOVE.B  (A7)+,D3     ; Testing  (An)+
+00000996                            28  *    MOVE.B  (A6)+,D5     ; Testing  (An)+
+00000996                            29  *    MOVE.B  -(A5),D4     ; Testing  -(An)
+00000996                            30  *    MOVE.B  #34,D4 
+00000996                            31  *    MOVE.B  -(A5),D4     ; Testing  -(An)
+00000996                            32  *    MOVE.W  #3434,D4
+00000996  1A39 0000A000             33       MOVE.B  $0000A000,D5
+0000099C  1A39 0000A000             34       MOVE.B  $A000,D5      
+000009A2                            35              
+000009A2                            36   
+000009A2                            37      
+000009A2                            38      
+000009A2                            39      
+000009A2                            40      
+000009A2                            41      
+000009A2                            42      
+000009A2                            43      
+000009A2                            44      ;LEA     MESSAGE1,A1 *Loads message into address register A1
+000009A2                            45      ;MOVE.B  #14,D0      *Moves number 14 into data regiter D0
+000009A2                            46      ;TRAP    #15         *Displays Message
+000009A2                            47     
+000009A2                            48      ;LEA     inputbuffer,A1   ; Where to store input string
+000009A2                            49      ;MOVE.B  #2,D0       ; from keyboard to store into input buffer Read string
+000009A2                            50      ;TRAP    #15         ;execute the task
+000009A2                            51  
+000009A2                            52  
+000009A2                            53      ;LEA test_buffer,A1  ;LOAD THE LOCATION where THIS STRING WILL BE PUT INTO
+000009A2                            54      ; MOVE.B  #' ',(A1)+  ENTER space
+000009A2                            55      ;MOVE.B  #' ',(A1)+  ENTER space
+000009A2                            56      ;MOVE.B  #'D',(A1)+  load D
+000009A2                            57      ;MOVE.B  #'A',(A1)+  load A
+000009A2                            58      ;MOVE.B  #'N',(A1)+  Load N
+000009A2                            59      ;MOVE.B  #'N',(A1)+  Load N    
+000009A2                            60      ;MOVE.B  #'Y',(A1)+  Load Y
+000009A2                            61      ; MOVE.B  #' ',(A1)+  ENTER space
+000009A2                            62      ;  MOVE.B  #' ',(A1)+  ENTER space
+000009A2                            63      ;   MOVE.B  #' ',(A1)+  ENTER space
+000009A2                            64      
+000009A2                            65      ;LEA     MESSAGE2,A1 *Loads message into address register A1
+000009A2                            66      ;MOVE.B  #13,D0      *Moves number 14 into data regiter D0
+000009A2                            67      ;TRAP    #15         *Displays Message
+000009A2                            68  
+000009A2                            69      ;LEA     test_buffer,A1   ;NOT SINCE THE STRING IS STORED AT THE BUFFER WHICH IS A LOCATIOIN FOR THE STRING TO LIVE is LOADED
+000009A2                            70                              ; BACK INTO A1 for the trap task to execute what sin a1 String 
+000009A2                            71      ;MOVE.B  #13,D0      ; Display string with newline
+000009A2                            72      ;TRAP    #15
+000009A2                            73  
+000009A2                            74      ;MOVE.B   #9,D0
+000009A2                            75      ;TRAP   #15          ; halt simulator
+000009A2                            76     
+000009A2= 65 6E 74 65 72 20 ...     77  message1 dc.b 'enter your string: ',0
+000009B6= 73 74 72 69 6E 67 ...     78  message2 dc.b 'string you have entered is: ',0
+000009D4                            79  test_buffer ds.w    85    
+00000A7E                            80  ;    ds.w    0       ; force even address
+00000A7E                            81  ;buffer  ds.b    80  ; input string storage
+00000A7E                            82  
+00000A7E                            83  *    LEA     MSG,A1
+00000A7E                            84  *    MOVE.B  #14, D0
+00000A7E                            85  *    TRAP    #15
+00000A7E                            86      
+00000A7E                            87      
+00000A7E                            88  *    MOVE.B  #2,D0
+00000A7E                            89  *    TRAP    #15
+00000A7E                            90   
+00000A7E                            91  *    MOVEA.W $300,A2
+00000A7E                            92  *    MOVE.W  D1,D2   THE INPUT IS STORED INTO D1 WE MOVE IT TO D2
+00000A7E                            93      
+00000A7E                            94  *    MOVE.W  D2,(A2)
+00000A7E                            95      
+00000A7E                            96      
+00000A7E                            97      
+00000A7E                            98      
+00000A7E  FFFF FFFF                 99      SIMHALT             ; halt simulator
+00000A82                           100  
+00000A82                           101  * Put variables and constants here
+00000A82                           102  ;MSG     DC.L    'ENTER A NUMBER: ',0
+00000A82                           103  inputbuffer    ds.w    9999  input string storage
+000058A0                           104  
+000058A0                           105      END    START        ; last line of source
 
 No errors detected
 No warnings generated
@@ -101,9 +116,9 @@ SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
 CR                  D
-INPUTBUFFER         A78
+INPUTBUFFER         A82
 LF                  A
-MESSAGE1            998
-MESSAGE2            9AC
+MESSAGE1            9A2
+MESSAGE2            9B6
 START               996
-TEST_BUFFER         9CA
+TEST_BUFFER         9D4

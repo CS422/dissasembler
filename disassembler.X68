@@ -11,6 +11,19 @@ CR  EQU $0D
 LF  EQU $0A
 startLoc    EQU $7000
 
+*-----------------------------------------------------------
+* Title      : (!!!!!!STABLE!!!!) Master branch
+* Written by : Danny Ly & Edward Chang
+* Date       : 4/27/2017
+* Description: Our dissasembler for 68K
+*-----------------------------------------------------------
+*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
+    ORG    $1000
+    
+CR  EQU $0D
+LF  EQU $0A
+startLoc    EQU $7000
+
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
 * A4 will be our main pointer to current memory address and current data
@@ -26,78 +39,99 @@ START:
             MOVE.B  #14,D0
             TRAP    #15
             
-           
-*- FOR TEST RANGE FROM 996 - 9CF PUT CODES OR NOP ANYWHERE BETWEEN
-
-* Put program code here
-*-----
-*This program starts by given a starting address and an ending address disassemble
-*the binary code that is at that location.
+*           
+**- FOR TEST RANGE FROM 996 - 9CF PUT CODES OR NOP ANYWHERE BETWEEN
+*
+** Put program code here
+**-----
+**This program starts by given a starting address and an ending address disassemble
+**the binary code that is at that location.
+**
+**
+**----
+*
+**-------
+** Needs to check for odd addressing**
+**
+**
+**-----
+*                *---------------------I/O SECTION
+*                * Grabs ascii from user and converts to hex stored into memory
+*                * A4 is used as our pointer for the program, ending addresses can be stored
+*                * statically in memory and retrieved when needed to compare
+*                * this free's up a adress/data register to use
+*                *-----------------------
+*                
+*                
+*get_input_start_addr 
+*                MOVE.L  #0,A3
+*                CLR     D1
+*                LEA     enter_start_AD,A1
+*                MOVE.L  #14,D0
+*                TRAP    #15
+*                
+*                
+*
+*      
+*                LEA     userStartAddrInput,A1   load address to store the input from user
+*                MOVE.L  #2,D0
+*                TRAP    #15
+*                JSR     parse_input             parse the starting address
+*                
+*                
+*                MOVE.L  D6,A5                   MOVE OUR STARTING ADDRESS TO A6
+*                
+*                                                *----MIGHT NEED TO CHECK FOR ODD ADDRESSING ?
+*                                                *----CHECK FOR ADDRESS OUT OF BOUNDS DOMAIN?
 *
 *
-*----
-
-*-------
-* Needs to check for odd addressing**
+*get_input_end_addr
+*                MOVE.L  #0,A3
+*                CLR     D1
+*                LEA     userEnd,A1
+*                MOVE.L  #14,D0
+*                TRAP    #15
+*                
 *
 *
-*-----
-                *---------------------I/O SECTION
-                * Grabs ascii from user and converts to hex stored into memory
-                * A4 is used as our pointer for the program, ending addresses can be stored
-                * statically in memory and retrieved when needed to compare
-                * this free's up a adress/data register to use
-                *-----------------------
-get_input_start_addr 
-                MOVE.L  #0,A3
-                CLR     D1
-                LEA     enter_start_AD,A1
-                MOVE.L  #14,D0
-                TRAP    #15
-                
-                
-
-      
-                LEA     userStartAddrInput,A1   load address to store the input from user
-                MOVE.L  #2,D0
-                TRAP    #15
-                JSR     parse_input         parse the starting address
-                
-                
-                MOVE.L  D6,A5   MOVE OUR STARTING ADDRESS TO A6
-                
-                *----MIGHT NEED TO CHECK FOR ODD ADDRESSING ?
-                *----CHECK FOR ADDRESS OUT OF BOUNDS DOMAIN?
-
-
-get_input_end_addr
-                MOVE.L  #0,A3
-                CLR     D1
-                LEA     userEnd,A1
-                MOVE.L  #14,D0
-                TRAP    #15
-                
-
-
-                LEA     userEndAddrInput,A1
-                MOVE.B  userEnd,D1
-                MOVE.L  #2,D0
-                TRAP    #15
-                JSR     parse_end
-
-                
-                MOVE.L  D6,A6   MOVE OUT ENDING ADDRESS TO A7
-  
-             
-STORE_SRT_END:
-               
-                      ;store the starting and ending address into memory out of range
-            SUB.W   A5,D6   SUBTRACT THE STARTING ADDRESS FROM THE ENDING ADDRESS TO GET THE SIZE OF INSTRUCTIONS
+*                LEA     userEndAddrInput,A1
+*                MOVE.B  userEnd,D1
+*                MOVE.L  #2,D0
+*                TRAP    #15
+*                JSR     parse_end
+*
+*                
+*                MOVE.L  D6,A6           MOVE OUT ENDING ADDRESS TO A7
+*  
+*             
+*STORE_SRT_END:
+*               
+*                      ;store the starting and ending address into memory out of range
+*            SUB.W   A5,D6           SUBTRACT THE STARTING ADDRESS FROM THE ENDING ADDRESS TO GET THE SIZE OF INSTRUCTIONS
+*            MOVE.L  A5,$00FFFF00    STORE USER START ADDRESS SO WE CAN FREE UP REG
+*            MOVE.L  A6,$00FFFF10    STORE USER END ADDRESS SO WE CAN FREE UP REG
+*            MOVE.L  D6,$00FFFF20    STORE SIZE OF INSTRCTIONS
+*            MOVE.L  A5,A4
+            
+            *----------FOR TESTING PURPOSES FOR RELEASE UNCOMMENT THE ABOVE----------------
+            *       Testing Code Starts the address at 996 to 9CF about 30 entries
+            *
+            MOVE.L  #$996,D6    Starting address loads into D6
+            MOVE.L  D6,A5       Move D6 into a5
+            
+            MOVE.L  #$9CF,D6
+            MOVE.L  D6,A6
+            
+            
             MOVE.L  A5,$00FFFF00    STORE USER START ADDRESS SO WE CAN FREE UP REG
             MOVE.L  A6,$00FFFF10    STORE USER END ADDRESS SO WE CAN FREE UP REG
-            MOVE.L  D6,$00FFFF20    STORE SIZE OF INSTRCTIONS
-            MOVE.L  A5,A4
+            MOVE.L  A5,A4           A4 is our starting.current pointer
+            *
+            *
+            *-------------END OF TESING CODE-----------
+        
             BRA get_next_instruction
+                         
                          
    
 *---move_addresses:
@@ -106,7 +140,8 @@ STORE_SRT_END:
                 
                 ;JSR     LOOP
                 *----LEA     good_code_buffer,a2 ;load the code buffer
-                *-STORE THE OLD ADDRESS/STARTING/CURRENT INTO A0
+                *-STORE THE OLD ADDRESS/STARTING/CURRENT INTO 
+                
                 *----MOVE.W  A4,A0
                 
                 *-STORE 2 AT DATA REG MAYBE FOR INCREMNTEATION
@@ -202,6 +237,7 @@ get_next_instruction:
                 JSR addressCount    *-CHECKS IF WE REACHED OUT ENDING ADDRESS YET
                 *-line count
                 CLR D5             *-CLEAR THIS REGISTER/
+                
                 Lea good_code_buffer,A2 ;reset A2, LOADS THE BUFFER TO GET READY TO PRINT TO IT/WRITE TO IT
                 MOVE.W  A4,A0   UPDATE OUR OLD ADDRESS STORED AT 10 WITH THE MOST CURRENT POINTER ADDRESS *INCRMENTED BY A WORD
                 MOVE.L  #2,D7   *-CHECKER FOR ERROR
@@ -219,6 +255,7 @@ get_next_instruction:
                 CLR.L   D6
                 CLR.L   D3
                 
+                MOVE.W  A4,A5    Load the instruction address into the designated address resgister A5 to decode operand if needed
                 MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
                                    *-WHICH WOULD BE THE OPCODE DATA, INTO D6
                 MOVE.W  D6,D3
@@ -349,11 +386,27 @@ M0100                               ;-(An)
 
 * -----------------------------------------------------------            
 * Subroutine M0111 -------------------------Not finished-----
+* Register is stored at D1
+* ----case 1 : Register 100 => #imm => #XX 3 spaces
+* ----case 2 : Register 000 => (XXX).W => 
+* ----case 3 : Register 001 => (XXX).L
+* 
+* MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
+
 M0111                               ;(xxx).W, (xxx).L, #imm
-            MOVE.B  #'7',(A2)+      ;display 7
+            CMP.B   #100,D1         ; #imm => #XX 3 spaces
+
+            BEQ     immediateData   ;branch to immediateData   
+
+            
             RTS
 
 * -----------------------------------------------------------
+* Subroutine immediateData 
+immediateData     
+            RTS
+* -----------------------------------------------------------
+
 * Subroutine registerPrint----------------------------------- 
 registerPrint
             LEA     numTable,A7 Load the table into A7
@@ -880,6 +933,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
