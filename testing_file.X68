@@ -4,7 +4,7 @@
 * Date       :
 * Description:
 *-----------------------------------------------------------
-    ORG    $998
+    ORG    $996
 CR  EQU $0D
 LF  EQU $0A
 *------
@@ -16,28 +16,23 @@ START:                  ; first instruction of program
     
 * Put program code here
     
-    MOVE.B  d,D0
-    
-    NOP
-    
-    NOP
-    NOP
-    
-    RTS
-        NOP
-    
-    RTS
-        NOP
-    
-    RTS
-        NOP
-    
-    RTS
-        NOP
-    
-    RTS
-        NOP
-    
+*    MOVE.B  D0,D1       ; Testing Dn
+*    MOVE.B  D0,D2       ; Testing Dn
+**   MOVE.B  A0,D1       ; Testing An
+*    MOVE.B  (A1),D7     ; Testing  (An)
+*    MOVE.B  (A2),D7     ; Testing  (An)
+*    MOVE.B  (A3),D7     ; Testing  (An)
+*    MOVE.B  (A4),D7     ; Testing  (An)
+*    
+*    MOVE.B  (A7)+,D3     ; Testing  (An)+
+*    MOVE.B  (A6)+,D5     ; Testing  (An)+
+*    MOVE.B  -(A5),D4     ; Testing  -(An)
+*    MOVE.B  #34,D4 
+*    MOVE.B  -(A5),D4     ; Testing  -(An)
+*    MOVE.W  #3434,D4
+     MOVE.B  $0000A000,D5
+     MOVE.B  $A000,D5      
+            
  
     
     
@@ -108,6 +103,11 @@ test_buffer ds.w    85
 inputbuffer    ds.w    9999  input string storage
 
     END    START        ; last line of source
+
+
+
+
+
 
 
 
