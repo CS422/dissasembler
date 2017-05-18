@@ -403,8 +403,8 @@ M0111                               ;(xxx).W, (xxx).L, #imm
 
 * -----------------------------------------------------------
 * Subroutine immediateData 
-immediateData     
-            RTS
+;immediateData     
+;            RTS
 * -----------------------------------------------------------
 
 * Subroutine registerPrint----------------------------------- 
@@ -933,6 +933,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 

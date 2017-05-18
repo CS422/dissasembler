@@ -30,7 +30,7 @@ START:                  ; first instruction of program
 *    MOVE.B  #34,D4 
 *    MOVE.B  -(A5),D4     ; Testing  -(An)
 *    MOVE.W  #3434,D4
-     MOVE.B  $0000A000,D5
+     MOVE.B  #34,D5
      MOVE.B  $A000,D5      
             
  
@@ -103,6 +103,7 @@ test_buffer ds.w    85
 inputbuffer    ds.w    9999  input string storage
 
     END    START        ; last line of source
+
 
 
 
