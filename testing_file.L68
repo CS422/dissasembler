@@ -1,6 +1,6 @@
 00000996 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 5/18/2017 3:35:47 AM
+Created On: 5/18/2017 3:33:11 PM
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      :
@@ -34,7 +34,7 @@ Created On: 5/18/2017 3:35:47 AM
 00000996                            30  *    MOVE.B  #34,D4 
 00000996                            31  *    MOVE.B  -(A5),D4     ; Testing  -(An)
 00000996                            32  *    MOVE.W  #3434,D4
-00000996  1A3C 0022                 33       MOVE.B  #34,D5
+00000996  1A3C 0063                 33       MOVE.B  #99,D5
 0000099A  1A39 0000A000             34       MOVE.B  $A000,D5      
 000009A0                            35              
 000009A0                            36   

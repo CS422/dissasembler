@@ -58,9 +58,7 @@ op0001
             MULU    #8,D2       value adjusted for jumping
             LEA     modeTable,A6 Load the table into A6
             JSR     (A6,D2)     Jump to subroutine of value at D0
-            CMP.B   #100,D1         ; #imm => #XX 3 spaces
-            BEQ     immediateData   ;branch to immediateData
-*------------------------------------------------------------
+            *------------------------------------------------------------
 * MachineCode: 0001 **** **** **** *BIT
 * Only last 3 bits which is stored at D0 => Source Register
             
@@ -70,6 +68,8 @@ op0001
             MULU    #8,D1       value adjusted for jumping
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
+            CMP.B   #32,D1         ; #imm => #XX 3 spaces
+            BEQ.W   immediateData   ;branch to immediateData
 
 *------------------------------------------------------------
             MOVE.B  #',',(A2)+  comma between operands
@@ -97,18 +97,25 @@ op0001
             MULU    #8,D1       value adjusted for jumping
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1    
-*------------------------------------------------------------         
+*------------------------------------------------------------       
+  
 * end of decoding
 *------------------------------------------------------------
 * -----------------------------------------------------------
 * Subroutine immediateData 
-immediateData 
+immediateData
+            MOVE.B  #'#',(A2)+ 
             MOVE.W  (A5)+,D2    WE got the address for the operand
             MOVE.W  (A5),D2     Got the value of operand, immeditae data
+            JSR     hexToAscii
             RTS
+            
 * -----------------------------------------------------------
 * printing          
             BRA     printCode
+
+
+
 
 
 

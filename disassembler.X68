@@ -330,8 +330,13 @@ modeTable   JSR     M0000   ;Dn, Data Register
             RTS             ;return, done printing
             JSR     M0011   ;(An)+, Address with Postincrement
             RTS             ;return, done printing
+            
             JSR     M0100   ;-(An), Address with Predecrement
             RTS             ;return, done printing
+            JSR     M0101
+            RTS
+            JSR     M0110
+            RTS
             JSR     M0111   ;(xxx).W, (xxx).L, #imm
             RTS             ;return, done printing           
 * -----------------------------------------------------------            
@@ -384,7 +389,21 @@ M0100                               ;-(An)
             RTS
 
 
-* -----------------------------------------------------------            
+* -----------------------------------------------------------    
+* Subroutine M0101 ------------------------------------------
+M0101                               ;do nothing
+           
+            RTS
+
+
+* -----------------------------------------------------------   
+* Subroutine M0110 ------------------------------------------
+M0110                               ;do nothing
+           
+            RTS
+
+
+* -----------------------------------------------------------     
 * Subroutine M0111 -------------------------Not finished-----
 * Register is stored at D1
 * ----case 1 : Register 100 => #imm => #XX 3 spaces
@@ -394,9 +413,8 @@ M0100                               ;-(An)
 * MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
 
 M0111                               ;(xxx).W, (xxx).L, #imm
-            CMP.B   #100,D1         ; #imm => #XX 3 spaces
-
-            BEQ     immediateData   ;branch to immediateData   
+            
+  
 
             
             RTS
@@ -794,6 +812,17 @@ FINISH:
 *-390 -> 406 WITH NOP AT 400
 
 
+hexToAscii:
+ones:
+    MOVE.W  D2,D5
+    MULU    #8,D5       value adjusted for jumping
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    *-adding res
+    ;ADD     D2,D7
+    
+
+    RTS
 
 
 
@@ -933,6 +962,9 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
+
+
 
 
 

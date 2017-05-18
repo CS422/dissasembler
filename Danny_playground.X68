@@ -35,6 +35,10 @@ thousands:
     LSR.L   #8,D5
     LSL.L   #8,D5
     LSL.L   #4,D5
+    MULU    #8,D5       value adjusted for jumping
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    *-adding result, concatenate the result to A2
     ADD     D5,D7
     
 hundreds:                                        
@@ -52,6 +56,10 @@ hundreds:
     CLR     D6
     MOVE.W  D5,D6 Move the remainder to D6
     LSR.L   #8,D5
+    MULU    #8,D5       value adjusted for jumping
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    *-adding res
     ADD     D5,D7   ;add the end result to D7   
    
 tens:
@@ -65,6 +73,7 @@ tens:
     LSR.L     #8,D6   Shift out the Quotient
     LSL.L     #8,D6   Shift back the deleted Quotient
     SWAP    D6      D6 equald the remainder of the current computation
+    MOVE.W  D6,D5
 *    MOVE.W  D6,D5 Move entire result to D5 to split
 *    ;Get the remainder from D6
 *    MOVE.L  D6,D3 get the remainder move D6 long-word to d3 to shift
@@ -74,7 +83,16 @@ tens:
 *    LSL.W   #4,D5
 *
 *    ADD     D3,D5 Add the remainder to the end of the quotient
+    MULU    #8,D5       value adjusted for jumping
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    *-adding res
 ones:
+    MOVE.W  D6,D5
+    MULU    #8,D5       value adjusted for jumping
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    *-adding res
     ADD     D6,D7
     
     
@@ -94,6 +112,7 @@ ones:
 * Put variables and constants here
 
     END    START        ; last line of source
+
 
 *~Font name~Courier New~
 *~Font size~10~
