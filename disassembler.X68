@@ -192,8 +192,8 @@ mainLoop
             ;BEQ     op0111      ;branch to op0111                        
             CMP.B   #bin0100,D3     MOVEM.L, MOVEM.W, LEA, CLR, JSR,NOP(DONE), RTS(DONE)
             BEQ     op0100          branch to op0100                        
-            ;CMP.B   #bin1101,D3 ;ADD, ADDA
-            ;BEQ     op1101      ;branch to op1101            
+            CMP.B   #bin1101,D3 ;ADD, ADDA
+            BEQ     op1101      ;branch to op1101            
             ;CMP.B   #bin1001,D3 ;SUB, SUBA
             ;BEQ     op1001      ;branch to op1001                        
             ;CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
@@ -785,6 +785,69 @@ N1110
 N1111   
             MOVE.B  #'F',(A2)+      ;display F
             RTS   
+*-------------------- HELPER FUCNTION LOCATION -----------
+*- For Mode always D2
+*-- For Register always D1
+*-  Original Machine code In D6
+
+
+*            HELPER LOCATION
+*            HELPER LOCATION
+*            HELPER LOCATION
+*            HELPER LOCATION
+*            HELPER LOCATION
+
+get_0_3_bit
+    
+
+get_3_5bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** **** **BI T***
+* Only next last 3 bits which is stored at D0 => Source Address mode
+            CLR     D2
+            CLR     D1
+            MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+            LSL.B   #2,D2       **** **** BIT* **00
+            LSR.B   #5,D2       **** **** 0000 0BIT
+            RTS
+            *------------------------------------------------------------
+
+
+*-----------------------FUNCTION word or Long --------------
+*----------Used to decipher if we are decoding a word or long
+*-  This subroutine determines f the operations is a word or a long, 
+*- we use the AND operator to clear out everything except for the 
+*-3 bit which will be found in D3, we play with our data in D3
+*-the word or LONG can be found in the OPCODE FIELD which is 
+*-bits 8 _6
+
+WordOrLong  
+        *-find this OPMODE          
+        CLR.L   D3
+        MOVE.W  D6,D3 ;D6 holds the ORIGINAL CODE
+        *-we will store this in D3
+        *-using a shortcut the AND operator
+        *-we need these bits
+        *-[**** XXXX X[XXX] ****]
+            *- starts repersenting bits we do not need
+            *-shortcut we do not need to shift as much
+            *-minor optimization
+            *-AND F to keep 0 to throw away
+        AND.W   #$0FF0,D3 means turn the zeros into zeros keep the F's
+        LSR.W   #6,D3
+        *- now weneed to get the last 3 bits
+        *-shift to the right by 6 makes the last 3 bits in the 
+        *-byte postion
+        *-[**** **** XXXX X[XXX]]m we need to clear everything else
+        AND.W   #$000F,D3 clear everything except the last byte we need
+        LSL.W   #1,D3   shift the remaining bit out [X<-[XXX]]
+        *-make sure everyhting is clearn except the last byte
+        AND.W   #$000F,D3
+        *-Shift back by 1 bit to the right
+        LSR.W   #1,D3
+        RTS 
+        
+            
             
             
             
@@ -794,7 +857,11 @@ N1111
             *-------------------------------------
             INCLUDE 'op0100.x68'    IN a different file, modulated design        
             INCLUDE 'op0001.x68'    MOVE.b Differetn file
+            INCLUDE 'op1101.x68'    ADD,ADDA
 
+
+            
+           
 
             
 opError                             
@@ -859,7 +926,23 @@ bin1100     EQU     %1100   ;AND, MULS.W
 bin1101     EQU     %1101   ;ADD, ADDA
 bin1110     EQU     %1110   ;ASR, ASL, ROL, ROR
 
-
+*Binary HEX values*---------------------------------------------------------------
+hex_0   EQU     %0000 ;0 percent syntax means binary repersentation of this value
+hex_1   EQU     %0001 ;1
+hex_2   EQU     %0010 ;2    
+hex_3   EQU     %0011 ;3
+hex_4   EQU     %0100 ;4
+hex_5   EQU     %0101 ;5
+hex_6   EQU     %0110 ;6
+hex_7   EQU     %0111 ;7
+hex_8   EQU     %1000 ;8
+hex_9   EQU     %1001 ;9
+hex_A   EQU     %1010 ;A
+hex_B   EQU     %1011 ;B
+hex_C   EQU     %1100 ;C
+hex_D   EQU     %1101 ;D
+hex_E   EQU     %1110 ;E
+hex_F   EQU     %1111 ;F      
             
 ;LOOP:
                 *-compare the adress pointers current address with ending address to see if we need to continue
@@ -1113,6 +1196,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
