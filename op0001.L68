@@ -1,6 +1,6 @@
 00000000 Starting Address
 Assembler used: EASy68K Editor/Assembler v5.15.04
-Created On: 5/18/2017 3:37:31 PM
+Created On: 2017-05-21 ¿ÀÈÄ 10:43:10
 
 00000000                             1  *-----------------------------------------------------------
 00000000                             2  * Title      : OPCODE for 0001 MOVE.B
@@ -10,12 +10,12 @@ Created On: 5/18/2017 3:37:31 PM
 00000000                             6  *-----------------------------------------------------------
 00000000                             7  *------------------
 00000000                             8  * Original Machine Code stored in D6(DO not Touch)
-00000000                             9  * D0 - Desinated register for 3 bit decoding
-00000000                            10  * D1 - register value for jumping to numTable with
-00000000                            11  * D2 - mode value for jumping to modTable with
+00000000                             9  * D0 - Desinated register for jumping table
+00000000                            10  * D1 - register value 
+00000000                            11  * D2 - mode value 
 00000000                            12  *----------------------
 00000000                            13  * Order of Decoding
-00000000                            14  * 1. Decode 3bits for Destination Register => Store value at D0
+00000000                            14  * 1. Decode 3bits for Source Mode => Store value at D2
 00000000                            15  * current at (A2) : ex)MOVE.B 
 00000000                            16  * 2. Decode 3bits for Destination Mode 
 00000000                            17  * => Jump to Mode Table => Store chars in order at (A2)
@@ -50,7 +50,7 @@ Created On: 5/18/2017 3:37:31 PM
 00000022  14FC 002E                 46              MOVE.B  #'.',(A2)+
 00000026  14FC 0042                 47              MOVE.B  #'B',(A2)+
 0000002A                            48  *------------------------------------------------------------
-0000002A  14FC 0020                 49              MOVE.B  #' ',(A2)+  comma between operands
+0000002A  14FC 0020                 49              MOVE.B  #' ',(A2)+   
 0000002E                            50  *------------------------------------------------------------
 0000002E                            51  * MachineCode: 0001 **** **** **BI T***
 0000002E                            52  * Only next last 3 bits which is stored at D0 => Source Address mode
@@ -59,186 +59,243 @@ Created On: 5/18/2017 3:37:31 PM
 00000032  1406                      55              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
 00000034  E50A                      56              LSL.B   #2,D2       **** **** BIT* **00
 00000036  EA0A                      57              LSR.B   #5,D2       **** **** 0000 0BIT
-00000038  C4FC 0008                 58              MULU    #8,D2       value adjusted for jumping
-Line 59 ERROR: Undefined symbol
-0000003C  4DF9 004DBB8E             59              LEA     modeTable,A6 Load the table into A6
-00000042  4EB6 2000                 60              JSR     (A6,D2)     Jump to subroutine of value at D0
-00000046                            61              *------------------------------------------------------------
-00000046                            62  * MachineCode: 0001 **** **** **** *BIT
-00000046                            63  * Only last 3 bits which is stored at D0 => Source Register
-00000046                            64              
-00000046  1206                      65              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
-00000048  EB09                      66              LSL.B   #5,D1       **** **** BIT0 0000
-0000004A  EA09                      67              LSR.B   #5,D1       **** **** 0000 0BIT      
-0000004C  C2FC 0008                 68              MULU    #8,D1       value adjusted for jumping
-Line 69 ERROR: Undefined symbol
-00000050  4FF9 004DBB8E             69              LEA     regNumTable ,A7 Load the table into A7
-00000056  4EB7 1000                 70              JSR     (A7,D1)     Jump to subroutine of value at D1
-0000005A  B23C 0020                 71              CMP.B   #32,D1         ; #imm => #XX 3 spaces
-0000005E  6700 0036                 72              BEQ     immediateData   ;branch to immediateData
-00000062                            73  
-00000062                            74  *------------------------------------------------------------
-00000062  14FC 002C                 75              MOVE.B  #',',(A2)+  comma between operands
-00000066                            76  *------------------------------------------------------------
-00000066                            77  * MachineCode: 0001 **** ***B IT** ****
-00000066                            78  * Only next last 3 bits which is stored at D0 => Destination Address mode
-00000066  4242                      79              CLR     D2
-00000068  4241                      80              CLR     D1
-0000006A  3406                      81              MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
-0000006C  EF4A                      82              LSL.W   #7,D2       BIT* **** **** 0000
-0000006E  E04A                      83              LSR.W   #8,D2       0000 0000 BIT* ****
-00000070  EA4A                      84              LSR.W   #5,D2       0000 0000 0000 0BIT 
-00000072  C4FC 0008                 85              MULU    #8,D2       value adjusted for jumping
-Line 86 ERROR: Undefined symbol
-00000076  4DF9 004DBB8E             86              LEA     modeTable,A6 Load the table into A6
-0000007C  4EB6 2000                 87              JSR     (A6,D2)     Jump to subroutine of value at D2
-00000080                            88  *------------------------------------------------------------
-00000080                            89  * MachineCode: 0001 **** BIT* **** ****
-00000080                            90  * Decode 3 bits => Destination Register
-00000080                            91  * Stored at D1
-00000080                            92             
-00000080  3206                      93              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
-00000082  E949                      94              LSL.W   #4,D1       BIT* **** **** 0000
-00000084  E049                      95              LSR.W   #8,D1       0000 0000 BIT* ****
-00000086  EA49                      96              LSR.W   #5,D1       0000 0000 0000 0BIT     
-00000088  C2FC 0008                 97              MULU    #8,D1       value adjusted for jumping
-Line 98 ERROR: Undefined symbol
-0000008C  4FF9 004DBB8E             98              LEA     regNumTable ,A7 Load the table into A7
-00000092  4EB7 1000                 99              JSR     (A7,D1)     Jump to subroutine of value at D1    
-00000096                           100  *------------------------------------------------------------         
-00000096                           101  * end of decoding
-00000096                           102  *------------------------------------------------------------
-00000096                           103  * -----------------------------------------------------------
-00000096                           104  * Subroutine immediateData 
-00000096                           105  immediateData
-00000096  14FC 0023                106              MOVE.B  #'#',(A2)+ 
-0000009A  341D                     107              MOVE.W  (A5)+,D2    WE got the address for the operand
-0000009C  3415                     108              MOVE.W  (A5),D2     Got the value of operand, immeditae data
-0000009E                           109              
-0000009E                           110              
-0000009E                           111              
-0000009E                           112              
-0000009E                           113  thousands:
-0000009E  B47C 03E8                114      CMP     #1000,D2
-000000A2  6D00 0026                115      BLT     hundreds
-000000A6  2A02                     116      MOVE.L    D2,D5
-000000A8  8AFC 03E8                117      DIVU    #1000,D5
-000000AC  4845                     118      SWAP    D5
-000000AE  4242                     119      CLR     D2
-000000B0  3405                     120      MOVE.W  D5,D2
-000000B2  E08D                     121      LSR.L   #8,D5
-000000B4  E08D                     122      LSR.L   #8,D5
-000000B6  E18D                     123      LSL.L   #8,D5
-000000B8  E98D                     124      LSL.L   #4,D5
-000000BA  CAFC 0008                125      MULU    #8,D5       value adjusted for jumping
-Line 126 ERROR: Undefined symbol
-000000BE  4FF9 004DBB8E            126      LEA     numTable ,A7 Load the table into A7
-000000C4  4EB7 5000                127      JSR     (A7,D5)     Jump to subroutine of value at D1 
-000000C8                           128      *-adding result, concatenate the result to A2
-000000C8  DE45                     129      ADD     D5,D7
-000000CA                           130      
-000000CA                           131  hundreds:          
-000000CA  2A02                     132      MOVE.L  D2,D5                              
-000000CC  B47C 0064                133      CMP     #100,D2
-000000D0  6D00 0020                134      BLT     tens    if less than 100 then go to tens
-000000D4                           135      ;MOVE.W  D6,D7   MOVE to play with, D7 is result register
-000000D4                           136      
-000000D4                           137  
-000000D4  84FC 0064                138      DIVU    #100,D2 WE HAVE [REMAINDER][QUOTIENT]
-000000D8                           139      *-D7 Holds remainder
-000000D8                           140      *-move the remainder back into d6 to get remainder of coversion
-000000D8  3A02                     141      MOVE.W  D2,D5
-000000DA  CAFC 0008                142      MULU    #8,D5       value adjusted for jumping
-Line 143 ERROR: Undefined symbol
-000000DE  4FF9 004DBB8E            143      LEA     numTable ,A7 Load the table into A7
-000000E4  4EB7 5000                144      JSR     (A7,D5)     Jump to subroutine of value at D1 
-000000E8                           145      
-000000E8                           146      
-000000E8                           147      
-000000E8  4842                     148      SWAP    D2  get the remainder to put reminader in to mess with
-000000EA  E18A                     149      LSL.L   #8,D2
-000000EC  E18A                     150      LSL.L   #8,D2
-000000EE  E08A                     151      LSR.L   #8,D2
-000000F0  E08A                     152      LSR.L   #8,D2
-000000F2                           153      *-adding res
-000000F2                           154      ;ADD     D5,D7   ;add the end result to D7   
-000000F2                           155     
-000000F2                           156  tens:
-000000F2                           157  
-000000F2  2A02                     158      MOVE.L  D2,D5                         
-000000F4  B47C 000A                159      CMP     #10,D2
-000000F8  6F00 0018                160      BLE     ones                               
-000000FC  84FC 000A                161      DIVU    #10,D2 splits the result in [Remainder][Quotient] each taking a word in size
-00000100  3A02                     162      MOVE.W  D2,D5   ;move the quotient into D5 and print it out to the buffer
-00000102  CAFC 0008                163      MULU    #8,D5       value adjusted for jumping
-Line 164 ERROR: Undefined symbol
-00000106  4FF9 004DBB8E            164      LEA     numTable ,A7 Load the table into A7
-0000010C  4EB7 5000                165      JSR     (A7,D5)     Jump to subroutine of value at D1 
-00000110                           166                                      
-00000110                           167      ;LSL     #4,D2   #add'0'
-00000110                           168      ;ADD.W   D2,D7   Add the current quotient to the RESULTING register
-00000110  4842                     169      SWAP    D2
-00000112                           170      ;MOVE.W  D2,D5   ;move the remainder to divid again
-00000112                           171  *    
-00000112                           172  *    LSR.L     #8,D2   Shift out the Quotient
-00000112                           173  *    LSL.L     #8,D2   Shift back the deleted Quotient
-00000112                           174  *    SWAP    D2      D6 equald the remainder of the current computation
-00000112                           175      ;MOVE.W  D2,D5
-00000112                           176  *    MOVE.W  D6,D5 Move entire result to D5 to split
-00000112                           177  *    ;Get the remainder from D6
-00000112                           178  *    MOVE.L  D6,D3 get the remainder move D6 long-word to d3 to shift
-00000112                           179  *                                        
-00000112                           180  *    LSR.L   #8,D3 Shift right 16 bits to get the remainder by itself
-00000112                           181  *    LSR.L   #8,D3
-00000112                           182  *    LSL.W   #4,D5
-00000112                           183  *
-00000112                           184  *    ADD     D3,D5 Add the remainder to the end of the quotient
-00000112                           185  
-00000112                           186      *-adding res
-00000112                           187  ones:
-00000112  3A02                     188      MOVE.W  D2,D5
-00000114  CAFC 0008                189      MULU    #8,D5       value adjusted for jumping
-Line 190 ERROR: Undefined symbol
-00000118  4FF9 004DBB8E            190      LEA     numTable ,A7 Load the table into A7
-0000011E  4EB7 5000                191      JSR     (A7,D5)     Jump to subroutine of value at D1 
-00000122                           192      *-adding res
-00000122                           193      ;ADD     D2,D7
-00000122                           194      
-00000122                           195  
-00000122  4E75                     196      RTS
-00000124                           197  * -----------------------------------------------------------
-00000124                           198  * printing          
-Line 199 ERROR: Undefined symbol
-00000124  6000 BA68                199              BRA     printCode
-00000128                           200  
-00000128                           201  
-00000128                           202  
-00000128                           203  
-00000128                           204  
-00000128                           205  
-00000128                           206  
-00000128                           207  
-00000128                           208  
-00000128                           209  
-00000128                           210  
-00000128                           211  
-00000128                           212  
-00000128                           213  
-00000128                           214  
-00000128                           215  
-00000128                           216  
-Line 217 WARNING: END directive missing, starting address not set
+00000038  1002                      58              MOVE.B  D2,D0
+0000003A  C0FC 0008                 59              MULU    #8,D0       value adjusted for jumping
+Line 60 ERROR: Undefined symbol
+0000003E  4DF9 004DBB8E             60              LEA     modeTable,A6 Load the table into A6
+00000044  4EB6 0000                 61              JSR     (A6,D0)     Jump to subroutine of value at D0
+00000048                            62  *------------------------------------------------------------
+00000048                            63  * MachineCode: 0001 **** **** **** *BIT
+00000048                            64  * Only last 3 bits which is stored at D0 => Source Register
+00000048                            65              
+00000048  1206                      66              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+0000004A  EB09                      67              LSL.B   #5,D1       **** **** BIT0 0000
+0000004C  EA09                      68              LSR.B   #5,D1       **** **** 0000 0BIT
+0000004E  1001                      69              MOVE.B  D1,D0      
+00000050  C0FC 0008                 70              MULU    #8,D0       value adjusted for jumping
+Line 71 ERROR: Undefined symbol
+00000054  4FF9 004DBB8E             71              LEA     regNumTable ,A7 Load the table into A7
+0000005A  4EB7 0000                 72              JSR     (A7,D0)     Jump to subroutine of value at D1
+0000005E                            73  *------------------------------------------------------------
+0000005E                            74  * Check for #imm or Absolute addressing with D1: register value
+0000005E  B23C 0004                 75              CMP.B   #4,D1         ; 100 => #imm => #XX 3 spaces
+00000062  6748                      76              BEQ.B   immediateData   ;branch to immediateData
+00000064  B23C 0000                 77              CMP.B   #0,D1         ; 000 => (xxx).W => #XXXX 5 spaces
+00000068  6700 0052                 78              BEQ.W   absoulteWord   ;branch to absoulteWord   
+0000006C  B23C 0001                 79              CMP.B   #1,D1         ; 001 => (xxx).L => #XXXXXXXX 9 spaces
+00000070  6700 00AC                 80              BEQ.W   absoulteLong   ;branch to absoulteLong   
+00000074                            81  
+00000074                            82  
+00000074                            83  *------------------------------------------------------------
+00000074  14FC 002C                 84              MOVE.B  #',',(A2)+  comma between operands
+00000078                            85  *------------------------------------------------------------
+00000078                            86  * MachineCode: 0001 **** ***B IT** ****
+00000078                            87  * Only next last 3 bits which is stored at D0 => Destination Address mode
+00000078  4242                      88              CLR     D2
+0000007A  4241                      89              CLR     D1
+0000007C  3406                      90              MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
+0000007E  EF4A                      91              LSL.W   #7,D2       BIT* **** **** 0000
+00000080  E04A                      92              LSR.W   #8,D2       0000 0000 BIT* ****
+00000082  EA4A                      93              LSR.W   #5,D2       0000 0000 0000 0BIT 
+00000084  C4FC 0008                 94              MULU    #8,D2       value adjusted for jumping
+Line 95 ERROR: Undefined symbol
+00000088  4DF9 004DBB8E             95              LEA     modeTable,A6 Load the table into A6
+0000008E  4EB6 2000                 96              JSR     (A6,D2)     Jump to subroutine of value at D2
+00000092                            97  *------------------------------------------------------------
+00000092                            98  * MachineCode: 0001 **** BIT* **** ****
+00000092                            99  * Decode 3 bits => Destination Register
+00000092                           100  * Stored at D1
+00000092                           101             
+00000092  3206                     102              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+00000094  E949                     103              LSL.W   #4,D1       BIT* **** **** 0000
+00000096  E049                     104              LSR.W   #8,D1       0000 0000 BIT* ****
+00000098  EA49                     105              LSR.W   #5,D1       0000 0000 0000 0BIT     
+0000009A  C2FC 0008                106              MULU    #8,D1       value adjusted for jumping
+Line 107 ERROR: Undefined symbol
+0000009E  4FF9 004DBB8E            107              LEA     regNumTable ,A7 Load the table into A7
+000000A4  4EB7 1000                108              JSR     (A7,D1)     Jump to subroutine of value at D1    
+000000A8                           109  *------------------------------------------------------------       
+000000A8                           110  * end of decoding
+000000A8                           111  *------------------------------------------------------------
+000000A8                           112  * printing          
+Line 113 ERROR: Undefined symbol
+000000A8  6000 BAE4                113              BRA     printCode
+000000AC                           114  * Subroutine immediateData 
+000000AC                           115  * need to think about $ hex and % binary 
+000000AC                           116  *------------------------------------------------------------
+000000AC                           117  immediateData
+000000AC  14FC 0023                118              MOVE.B  #'#',(A2)+ 
+000000B0  341D                     119              MOVE.W  (A5)+,D2    WE got the address for the operand
+000000B2  3415                     120              MOVE.W  (A5),D2     Got the value of operand, immeditae data
+Line 121 ERROR: Undefined symbol
+000000B4  4EB9 004DBB8E            121              JSR     hexToAscii
+000000BA  4E75                     122              RTS
+000000BC                           123              
+000000BC                           124  * -----------------------------------------------------------
+000000BC                           125  * Subroutine absoulteWord   XXXX
+000000BC                           126  *------------------------------------------------------------
+000000BC                           127  absoulteWord   
+000000BC  14FC 0024                128              MOVE.B  #'$',(A2)+ 
+000000C0  E08C                     129              LSR.L   #8,D4       XXXX **** => 00XX XX**
+000000C2  E08C                     130              LSR.L   #8,D4       00XX XX** => 0000 XXXX
+000000C4                           131              *4MSB   X***
+000000C4  4241                     132              CLR     D1
+000000C6  3204                     133              MOVE.W  D4,D1       X***
+000000C8  E049                     134              LSR.W   #8,D1       00X*
+000000CA  E849                     135              LSR.W   #4,D1       000X
+Line 136 ERROR: Undefined symbol
+000000CC  4FF9 004DBB8E            136              LEA     numTable ,A7 Load the table into A7
+000000D2  C2FC 0008                137              MULU    #8,D1
+000000D6  4EB7 1000                138              JSR     (A7,D1)     Jump to subroutine of value at D1 
+000000DA                           139              *next 4MSB  *X**
+000000DA  4241                     140              CLR     D1
+000000DC  3204                     141              MOVE.W  D4,D1       *X**
+000000DE  E949                     142              LSL.W   #4,D1       X**0        
+000000E0  E049                     143              LSR.W   #8,D1       00X*
+000000E2  E849                     144              LSR.W   #4,D1       000X
+Line 145 ERROR: Undefined symbol
+000000E4  4FF9 004DBB8E            145              LEA     numTable ,A7 Load the table into A7
+000000EA  C2FC 0008                146              MULU    #8,D1
+000000EE  4EB7 1000                147              JSR     (A7,D1)     Jump to subroutine of value at D1
+000000F2                           148              *next 4MSB  **X*
+000000F2  4241                     149              CLR     D1
+000000F4  1204                     150              MOVE.B  D4,D1       00X*
+000000F6  E809                     151              LSR.B   #4,D1       000X
+Line 152 ERROR: Undefined symbol
+000000F8  4FF9 004DBB8E            152              LEA     numTable ,A7 Load the table into A7
+000000FE  C2FC 0008                153                          MULU    #8,D1
+00000102  4EB7 1000                154              JSR     (A7,D1)     Jump to subroutine of value at D1
+00000106                           155              *last 4  bits   ***X
+00000106  4241                     156              CLR     D1
+00000108  1204                     157              MOVE.B  D4,D1       00*X
+0000010A  E909                     158              LSL.B   #4,D1       00X0    
+0000010C  E809                     159              LSR.B   #4,D1       000X
+Line 160 ERROR: Undefined symbol
+0000010E  4FF9 004DBB8E            160              LEA     numTable ,A7 Load the table into A7
+00000114  C2FC 0008                161                          MULU    #8,D1
+00000118  4EB7 1000                162              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000011C  4E75                     163              RTS            
+0000011E                           164  * -----------------------------------------------------------
+0000011E                           165  * Subroutine absoulteLong   XXXX XXXX
+0000011E                           166  *------------------------------------------------------------
+0000011E                           167  absoulteLong   
+0000011E  4241                     168              CLR     D1
+00000120  4242                     169              CLR     D2 
+00000122  14FC 0024                170              MOVE.B  #'$',(A2)+ 
+00000126  2404                     171              MOVE.L  D4,D2       D2 will be used for later
+00000128                           172  *----------- first Word Value D4
+00000128  E08C                     173              LSR.L   #8,D4       XXXX **** => 00XX XX**
+0000012A  E08C                     174              LSR.L   #8,D4       00XX XX** => 0000 XXXX
+0000012C                           175              *4MSB   X***
+0000012C  4241                     176              CLR     D1
+0000012E  3204                     177              MOVE.W  D4,D1       X***
+00000130  E049                     178              LSR.W   #8,D1       00X*
+00000132  E849                     179              LSR.W   #4,D1       000X
+Line 180 ERROR: Undefined symbol
+00000134  4FF9 004DBB8E            180              LEA     numTable ,A7 Load the table into A7
+0000013A  C2FC 0008                181              MULU    #8,D1
+0000013E  4EB7 1000                182              JSR     (A7,D1)     Jump to subroutine of value at D1 
+00000142                           183              *next 4MSB  *X**
+00000142  4241                     184              CLR     D1
+00000144  3204                     185              MOVE.W  D4,D1       *X**
+00000146  E949                     186              LSL.W   #4,D1       X**0        
+00000148  E049                     187              LSR.W   #8,D1       00X*
+0000014A  E849                     188              LSR.W   #4,D1       000X
+Line 189 ERROR: Undefined symbol
+0000014C  4FF9 004DBB8E            189              LEA     numTable ,A7 Load the table into A7
+00000152  C2FC 0008                190              MULU    #8,D1
+00000156  4EB7 1000                191              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000015A                           192              *next 4MSB  **X*
+0000015A  4241                     193              CLR     D1
+0000015C  1204                     194              MOVE.B  D4,D1       00X*
+0000015E  E809                     195              LSR.B   #4,D1       000X
+Line 196 ERROR: Undefined symbol
+00000160  4FF9 004DBB8E            196              LEA     numTable ,A7 Load the table into A7
+00000166  C2FC 0008                197                          MULU    #8,D1
+0000016A  4EB7 1000                198              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000016E                           199              *last 4  bits   ***X
+0000016E  4241                     200              CLR     D1
+00000170  1204                     201              MOVE.B  D4,D1       00*X
+00000172  E909                     202              LSL.B   #4,D1       00X0    
+00000174  E809                     203              LSR.B   #4,D1       000X
+Line 204 ERROR: Undefined symbol
+00000176  4FF9 004DBB8E            204              LEA     numTable ,A7 Load the table into A7
+0000017C  C2FC 0008                205                          MULU    #8,D1
+00000180  4EB7 1000                206              JSR     (A7,D1)     Jump to subroutine of value at D1
+00000184                           207  *---------  Second Word Value D2    **** XXXX
+00000184                           208              *4MSB   X***
+00000184  4241                     209              CLR     D1
+00000186  3202                     210              MOVE.W  D2,D1
+00000188  E049                     211              LSR.W   #8,D1            00X*
+0000018A  E849                     212              LSR.W   #4,D1            000X
+0000018C  C2FC 0008                213              MULU    #8,D1
+Line 214 ERROR: Undefined symbol
+00000190  4FF9 004DBB8E            214              LEA     numTable ,A7 Load the table into A7
+00000196  4EB7 1000                215              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000019A                           216              *next 4MSB  *X**
+0000019A  4241                     217              CLR     D1
+0000019C  3202                     218              MOVE.W  D2,D1
+0000019E  E949                     219              LSL.W   #4,D1       X**0
+000001A0  E049                     220              LSR.W   #8,D1       00X*
+000001A2  E809                     221              LSR.B   #4,D1       000X
+000001A4  C2FC 0008                222              MULU    #8,D1
+Line 223 ERROR: Undefined symbol
+000001A8  4FF9 004DBB8E            223              LEA     numTable ,A7 Load the table into A7
+000001AE  4EB7 1000                224              JSR     (A7,D1)     Jump to subroutine of value at D1
+000001B2                           225              *next 4MSB  **X*
+000001B2  4241                     226              CLR     D1
+000001B4  1202                     227              MOVE.B  D2,D1       00X*
+000001B6  E809                     228              LSR.B   #4,D1       000X
+000001B8  C2FC 0008                229              MULU    #8,D1
+Line 230 ERROR: Undefined symbol
+000001BC  4FF9 004DBB8E            230              LEA     numTable ,A7 Load the table into A7
+000001C2  4EB7 1000                231              JSR     (A7,D1)     Jump to subroutine of value at D1
+000001C6                           232              *next 4MSB  ***X
+000001C6  4241                     233              CLR     D1
+000001C8  1202                     234              MOVE.B  D2,D1       00*X
+000001CA  E909                     235              LSL.B   #4,D1       00X0
+000001CC  E809                     236              LSR.B   #4,D1       000X
+000001CE  C2FC 0008                237              MULU    #8,D1
+Line 238 ERROR: Undefined symbol
+000001D2  4FF9 004DBB8E            238              LEA     numTable ,A7 Load the table into A7
+000001D8  4EB7 1000                239              JSR     (A7,D1)     Jump to subroutine of value at D1
+000001DC                           240             
+000001DC                           241  
+000001DC  4E75                     242              RTS
+000001DE                           243  *------------------------------------------------------------
+000001DE                           244  * end of file            
+000001DE                           245  *------------------------------------------------------------
+000001DE                           246  
+000001DE                           247  
+000001DE                           248  
+000001DE                           249  
+000001DE                           250  
+000001DE                           251  
+000001DE                           252  
+000001DE                           253  
+000001DE                           254  
+000001DE                           255  
+000001DE                           256  
+000001DE                           257  
+000001DE                           258  
+000001DE                           259  
+000001DE                           260  
+000001DE                           261  
+000001DE                           262  
+000001DE                           263  
+000001DE                           264  
+000001DE                           265  
+000001DE                           266  
+Line 267 WARNING: END directive missing, starting address not set
 
-9 errors detected
+18 errors detected
 1 warning generated
 
 
 SYMBOL TABLE INFORMATION
 Symbol-name         Value
 -------------------------
-HUNDREDS            CA
-IMMEDIATEDATA       96
-ONES                112
+ABSOULTELONG        11E
+ABSOULTEWORD        BC
+IMMEDIATEDATA       AC
 OP0001              0
-TENS                F2
-THOUSANDS           9E

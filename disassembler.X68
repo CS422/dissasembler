@@ -256,8 +256,11 @@ get_next_instruction:
                 CLR.L   D3
                 
                 MOVE.W  A4,A5    Load the instruction address into the designated address resgister A5 to decode operand if needed
+                
                 MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
                                    *-WHICH WOULD BE THE OPCODE DATA, INTO D6
+
+                MOVE.L  (A4),D4  If absolute addressing => this will be operand                 
                 MOVE.W  D6,D3
                 LSR.W   #8,D3
                 
@@ -317,7 +320,166 @@ write_data_in_D3_to_buffer:
                 JSR     (A6,D3)
                 ADDI.B  #4,D5
                 RTS
-                
+* -----------------------------------------------------------            
+* Jump Table immAbTable *************************************
+*** matches the associated Addressing mode     
+*************************************************************
+immAbTable  JSR     IA000   ;Absoulute Word
+            RTS             ;return, done printing
+            JSR     IA001   ;Aboulute Long
+            RTS             ;return, done printing
+            JSR     IA010   ;blank
+            RTS             ;return, done printing
+            JSR     IA011   ;blank
+            RTS             ;return, done printing  
+            JSR     IA100   ;immediate Data
+            RTS             ;return, done printing
+* -----------------------------------------------------------            
+IA010       RTS
+IA011       RTS
+* -----------------------------------------------------------            
+* Subroutine IA000   ------------------------------------------
+IA000                               ;absoulteWord   
+            MOVE.B  #'$',(A2)+ 
+            LSR.L   #8,D4       XXXX **** => 00XX XX**
+            LSR.L   #8,D4       00XX XX** => 0000 XXXX
+            *4MSB   X***
+            CLR     D1
+            MOVE.W  D4,D1       X***
+            LSR.W   #8,D1       00X*
+            LSR.W   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+            MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1 
+            *next 4MSB  *X**
+            CLR     D1
+            MOVE.W  D4,D1       *X**
+            LSL.W   #4,D1       X**0        
+            LSR.W   #8,D1       00X*
+            LSR.W   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+            MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *next 4MSB  **X*
+            CLR     D1
+            MOVE.B  D4,D1       00X*
+            LSR.B   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+                        MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *last 4  bits   ***X
+            CLR     D1
+            MOVE.B  D4,D1       00*X
+            LSL.B   #4,D1       00X0    
+            LSR.B   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+                        MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            RTS           
+* -----------------------------------------------------------            
+* Subroutine IA001   ------------------------------------------
+IA001                               ;absoulteLong
+            CLR     D1
+            CLR     D2 
+            MOVE.B  #'$',(A2)+ 
+            MOVE.L  D4,D2       D2 will be used for later
+*----------- first Word Value D4
+            LSR.L   #8,D4       XXXX **** => 00XX XX**
+            LSR.L   #8,D4       00XX XX** => 0000 XXXX
+            *4MSB   X***
+            CLR     D1
+            MOVE.W  D4,D1       X***
+            LSR.W   #8,D1       00X*
+            LSR.W   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+            MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1 
+            *next 4MSB  *X**
+            CLR     D1
+            MOVE.W  D4,D1       *X**
+            LSL.W   #4,D1       X**0        
+            LSR.W   #8,D1       00X*
+            LSR.W   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+            MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *next 4MSB  **X*
+            CLR     D1
+            MOVE.B  D4,D1       00X*
+            LSR.B   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+                        MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *last 4  bits   ***X
+            CLR     D1
+            MOVE.B  D4,D1       00*X
+            LSL.B   #4,D1       00X0    
+            LSR.B   #4,D1       000X
+            LEA     numTable ,A7 Load the table into A7
+                        MULU    #8,D1
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+*---------  Second Word Value D2    **** XXXX
+            *4MSB   X***
+            CLR     D1
+            MOVE.W  D2,D1
+            LSR.W   #8,D1            00X*
+            LSR.W   #4,D1            000X
+            MULU    #8,D1
+            LEA     numTable ,A7 Load the table into A7
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *next 4MSB  *X**
+            CLR     D1
+            MOVE.W  D2,D1
+            LSL.W   #4,D1       X**0
+            LSR.W   #8,D1       00X*
+            LSR.B   #4,D1       000X
+            MULU    #8,D1
+            LEA     numTable ,A7 Load the table into A7
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *next 4MSB  **X*
+            CLR     D1
+            MOVE.B  D2,D1       00X*
+            LSR.B   #4,D1       000X
+            MULU    #8,D1
+            LEA     numTable ,A7 Load the table into A7
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+            *next 4MSB  ***X
+            CLR     D1
+            MOVE.B  D2,D1       00*X
+            LSL.B   #4,D1       00X0
+            LSR.B   #4,D1       000X
+            MULU    #8,D1
+            LEA     numTable ,A7 Load the table into A7
+            JSR     (A7,D1)     Jump to subroutine of value at D1
+           
+
+            RTS
+ 
+* -----------------------------------------------------------            
+* Subroutine IA100   ------------------------------------------
+IA100                               ;immediateData
+            MOVE.B  #'#',(A2)+ 
+            MOVE.W  (A5)+,D4    WE got the address for the operand
+            MOVE.W  (A5),D4     Got the value of operand, immeditae data
+            *4MSB   00X*
+            CLR     D2
+            MOVE.B  D4,D2       00X*
+            LSR.B   #4,D2       000X
+            MULU    #8,D2   
+            LEA     numTable ,A7 Load the table into A7
+            JSR     (A7,D2)     Jump to subroutine of value at D2
+            *last 4bits 00*X
+            CLR     D2
+            MOVE.B  D4,D2       00*X
+            LSL.B   #4,D2       00X*
+            LSR.B   #4,D2       000X
+            MULU    #8,D2   
+           
+            JSR     (A7,D2)     Jump to subroutine of value at D2
+
+            RTS
+
+                          
 * -----------------------------------------------------------            
 * Jump Table modeTable ***************************************
 *** matches the associated Addressing mode     
@@ -333,9 +495,9 @@ modeTable   JSR     M0000   ;Dn, Data Register
             
             JSR     M0100   ;-(An), Address with Predecrement
             RTS             ;return, done printing
-            JSR     M0101
+            JSR     M0101   ; blank - not assigned for this project
             RTS
-            JSR     M0110
+            JSR     M0110   ; blank - not assigned for this project
             RTS
             JSR     M0111   ;(xxx).W, (xxx).L, #imm
             RTS             ;return, done printing           
@@ -376,7 +538,6 @@ M0011                               ;(An)+
             MOVE.B  #'+',(A2)+      ;display +
             RTS
 
-
 * -----------------------------------------------------------            
 * Subroutine M0100 ------------------------------------------
 M0100                               ;-(An)
@@ -388,21 +549,14 @@ M0100                               ;-(An)
             MOVE.B  #')',(A2)+      ;display )
             RTS
 
-
 * -----------------------------------------------------------    
 * Subroutine M0101 ------------------------------------------
 M0101                               ;do nothing
-           
             RTS
-
-
 * -----------------------------------------------------------   
 * Subroutine M0110 ------------------------------------------
 M0110                               ;do nothing
-           
             RTS
-
-
 * -----------------------------------------------------------     
 * Subroutine M0111 -------------------------Not finished-----
 * Register is stored at D1
@@ -413,10 +567,7 @@ M0110                               ;do nothing
 * MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
 
 M0111                               ;(xxx).W, (xxx).L, #imm
-            
-  
-
-            
+                                    ; This will be taken care under opcode subroutine
             RTS
 
 * -----------------------------------------------------------
@@ -962,6 +1113,10 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
+
+
+
 
 
 
