@@ -43,7 +43,7 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Immediate Data
 *----------------------------------------------------------
-    MOVE.B  #34,D4 
+    *MOVE.B  #34,D4 
 *     MOVE.B  #99,D5        
 *----------------------------------------------------------
 * Absolute Addressing - Word
@@ -56,12 +56,22 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * end of MOVE.B
 *----------------------------------------------------------
-
-            
- 
+*-------------------------------------
+*   ADD
+*------------------------
+*    ADDA.L  D5,A5
+*    ADDA.W  D2,A7
+**    
+*    MOVE.B  #34,D5
+*    MOVE.B  D6,D7           
+*    ADDA.W  #34,A5
+*    MOVE.B  #$22,D5
+     ;ADD     #$5,D5 ;ADDQ
     
-    
-    
+    ;MOVE.B   #$22,D5
+    ADD.B   D6,D5
+    ADD.W   A5,D6
+    ADD.L   D7,D4
     
     
     
@@ -128,6 +138,7 @@ test_buffer ds.w    85
 inputbuffer    ds.w    9999  input string storage
 
     END    START        ; last line of source
+
 
 
 

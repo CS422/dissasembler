@@ -11,18 +11,6 @@ CR  EQU $0D
 LF  EQU $0A
 startLoc    EQU $7000
 
-*-----------------------------------------------------------
-* Title      : (!!!!!!STABLE!!!!) Master branch
-* Written by : Danny Ly & Edward Chang
-* Date       : 4/27/2017
-* Description: Our dissasembler for 68K
-*-----------------------------------------------------------
-*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
-    ORG    $1000
-    
-CR  EQU $0D
-LF  EQU $0A
-startLoc    EQU $7000
 
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
@@ -408,7 +396,7 @@ IA001                               ;absoulteLong
             MOVE.B  D4,D1       00X*
             LSR.B   #4,D1       000X
             LEA     numTable ,A7 Load the table into A7
-                        MULU    #8,D1
+            MULU    #8,D1
             JSR     (A7,D1)     Jump to subroutine of value at D1
             *last 4  bits   ***X
             CLR     D1
@@ -416,7 +404,7 @@ IA001                               ;absoulteLong
             LSL.B   #4,D1       00X0    
             LSR.B   #4,D1       000X
             LEA     numTable ,A7 Load the table into A7
-                        MULU    #8,D1
+            MULU    #8,D1
             JSR     (A7,D1)     Jump to subroutine of value at D1
 *---------  Second Word Value D2    **** XXXX
             *4MSB   X***
@@ -452,13 +440,14 @@ IA001                               ;absoulteLong
             LEA     numTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
            
-
             RTS
  
 * -----------------------------------------------------------            
 * Subroutine IA100   ------------------------------------------
 IA100                               ;immediateData
+
             MOVE.B  #'#',(A2)+ 
+            MOVE.B  #'$',(A2)+
             MOVE.W  (A5)+,D4    WE got the address for the operand
             MOVE.W  (A5),D4     Got the value of operand, immeditae data
             *4MSB   00X*
@@ -1196,6 +1185,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 

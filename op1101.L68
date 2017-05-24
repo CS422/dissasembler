@@ -1,0 +1,616 @@
+00000000 Starting Address
+Assembler used: EASy68K Editor/Assembler v5.15.04
+Created On: 5/24/2017 3:23:37 AM
+
+00000000                             1  op1101 
+00000000                             2      ;ADD, ADDA
+00000000                             3      
+00000000                             4      ; we need to determine what its size is (B,W,L) putting the data in D6
+Line 5 ERROR: Undefined symbol
+00000000  4EB9 004DBB8E              5      JSR   WordOrLong ; WordOrLong decodes the OPMODE field and stores the output into D3 where
+00000006                             6      ; we use to decode and branch
+00000006                             7      *-now D3 contains the OPMODE FIELD telling us wether this is
+00000006                             8      *-a LONG or a WORD
+00000006                             9      
+00000006                            10      *-now we need to decipher if its any of the adds
+Line 11 ERROR: Undefined symbol
+00000006  B63C 008E                 11      CMP.B   #hex_0,D3 is this ADD.B
+0000000A  6700 0032                 12      BEQ add_B   ;<EA> -> Dn
+0000000E                            13  *    
+Line 14 ERROR: Undefined symbol
+0000000E  B63C 008E                 14      CMP.B   #hex_1,D3   is it ADD.W
+00000012  6700 00B6                 15      BEQ add_W ;<EA> ->Dn
+00000016                            16  *    
+Line 17 ERROR: Undefined symbol
+00000016  B63C 008E                 17      CMP.B   #hex_2,D3   is it ADD.L
+0000001A  6700 013A                 18      BEQ add_L ;<EA> ->Dn
+0000001E                            19      
+Line 20 ERROR: Undefined symbol
+0000001E  B63C 008E                 20      CMP.B   #hex_3,D3
+00000022  6700 01BE                 21      BEQ adda_W
+00000026                            22      
+Line 23 ERROR: Undefined symbol
+00000026  B63C 008E                 23      CMP.B   #hex_4,D3
+0000002A  6700 02D6                 24      BEQ add_B_EA Dn -> EA
+Line 25 ERROR: Undefined symbol
+0000002E  B63C 008E                 25      CMP.B   #hex_5,D3
+00000032  6700 036E                 26      BEQ add_W_EA Dn ->EA
+00000036                            27  *    CMP.B   #hex_6,D3
+00000036                            28  *    BEQ add_L_EA Dn - >EA
+00000036                            29  *    
+Line 30 ERROR: Undefined symbol
+00000036  B63C 008E                 30      CMP.B   #hex_7,D3
+0000003A  6700 0236                 31      BEQ adda_L
+0000003E                            32  
+0000003E                            33  add_B   ;add.B EA->Dn
+0000003E                            34      
+0000003E                            35      *-store the size of the operation for immediate decoding use here/below
+0000003E                            36      *-D7 equals storage of size of operation
+0000003E                            37      *- #3 is byte , #2 is word #1 is long
+0000003E                            38      ;MOVE.B  #3,D7
+0000003E                            39      
+0000003E                            40  
+0000003E  14FC 0020                 41      MOVE.B  #' ',(A2)+
+00000042  14FC 0020                 42      MOVE.B  #' ',(A2)+
+00000046  14FC 0020                 43      MOVE.B  #' ',(A2)+
+0000004A  14FC 0020                 44      MOVE.B  #' ',(A2)+
+0000004E  14FC 0041                 45      MOVE.B  #'A',(A2)+
+00000052  14FC 0044                 46      MOVE.B  #'D',(A2)+
+00000056  14FC 0044                 47      MOVE.B  #'D',(A2)+
+0000005A  14FC 002E                 48      MOVE.B  #'.',(A2)+
+0000005E  14FC 0042                 49      MOVE.B  #'B',(A2)+
+00000062                            50      *-always allow 4 spaces
+00000062  14FC 0020                 51      MOVE.B  #' ',(A2)+
+00000066  14FC 0020                 52      MOVE.B  #' ',(A2)+
+0000006A  14FC 0020                 53      MOVE.B  #' ',(A2)+
+0000006E  14FC 0020                 54      MOVE.B  #' ',(A2)+
+00000072                            55      
+00000072                            56      *-deCDOE EA (Dn,Dn
+00000072                            57          * MachineCode: 0001 **** **** **BI T***
+00000072                            58  * Only next last 3 bits which is stored at D0 => Source Address mode
+00000072                            59      *-insert immediate addressing here
+00000072  4242                      60              CLR     D2
+00000074  4241                      61              CLR     D1
+00000076  1406                      62              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+00000078  E50A                      63              LSL.B   #2,D2       **** **** BIT* **00
+0000007A  EA0A                      64              LSR.B   #5,D2       **** **** 0000 0BIT
+0000007C  C4FC 0008                 65              MULU    #8,D2       value adjusted for jumping
+Line 66 ERROR: Undefined symbol
+00000080  4DF9 004DBB8E             66              LEA     modeTable,A6 Load the table into A6
+00000086  4EB6 2000                 67              JSR     (A6,D2)     Jump to subroutine of value at D0   
+0000008A                            68  
+0000008A                            69  
+0000008A                            70   * MachineCode: 0001 **** **** **** *BIT
+0000008A                            71  * Only last 3 bits which is stored at D0 => Source Register
+0000008A                            72              
+0000008A  1206                      73              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+0000008C  EB09                      74              LSL.B   #5,D1       **** **** BIT0 0000
+0000008E  EA09                      75              LSR.B   #5,D1       **** **** 0000 0BIT      
+00000090  C2FC 0008                 76              MULU    #8,D1       value adjusted for jumping
+Line 77 ERROR: Undefined symbol
+00000094  4FF9 004DBB8E             77              LEA     regNumTable ,A7 Load the table into A7
+0000009A  4EB7 1000                 78              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000009E  B23C 0020                 79              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 80 ERROR: Undefined symbol
+000000A2  6700 BAEA                 80              BEQ.W   immediateData   ;branch to immediateData
+000000A6  14FC 002C                 81              MOVE.B  #',',(A2)+
+000000AA  14FC 0044                 82              MOVE.B  #'D',(A2)+
+000000AE                            83              
+000000AE                            84    *------------------------------------------------------------
+000000AE                            85  * MachineCode: 0001 **** BIT* **** ****
+000000AE                            86  * Decode 3 bits => Destination Register
+000000AE                            87  * Stored at D1
+000000AE  4241                      88              CLR     D1
+000000B0  3206                      89              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+000000B2  E949                      90              LSL.W   #4,D1       BIT* **** **** 0000
+000000B4  E049                      91              LSR.W   #8,D1       0000 0000 BIT* ****
+000000B6  EA49                      92              LSR.W   #5,D1       0000 0000 0000 0BIT     
+000000B8  C2FC 0008                 93              MULU    #8,D1       value adjusted for jumping
+Line 94 ERROR: Undefined symbol
+000000BC  4FF9 004DBB8E             94              LEA     numTable ,A7 Load the table into A7
+000000C2  4EB7 1000                 95              JSR     (A7,D1)     Jump to subroutine of value at D1   
+Line 96 ERROR: Undefined symbol
+000000C6  6000 BAC6                 96              BRA printcode  
+000000CA                            97      
+000000CA                            98       
+000000CA                            99  add_W   ;add.B EA->Dn
+000000CA                           100      
+000000CA                           101      *-store the size of the operation for immediate decoding use here/below
+000000CA                           102      *-D7 equals storage of size of operation
+000000CA                           103      *- #3 is byte , #2 is word #1 is long
+000000CA                           104      ;MOVE.B  #3,D7
+000000CA                           105      
+000000CA                           106  
+000000CA  14FC 0020                107      MOVE.B  #' ',(A2)+
+000000CE  14FC 0020                108      MOVE.B  #' ',(A2)+
+000000D2  14FC 0020                109      MOVE.B  #' ',(A2)+
+000000D6  14FC 0020                110      MOVE.B  #' ',(A2)+
+000000DA  14FC 0041                111      MOVE.B  #'A',(A2)+
+000000DE  14FC 0044                112      MOVE.B  #'D',(A2)+
+000000E2  14FC 0044                113      MOVE.B  #'D',(A2)+
+000000E6  14FC 002E                114      MOVE.B  #'.',(A2)+
+000000EA  14FC 0057                115      MOVE.B  #'W',(A2)+
+000000EE                           116      *-always allow 4 spaces
+000000EE  14FC 0020                117      MOVE.B  #' ',(A2)+
+000000F2  14FC 0020                118      MOVE.B  #' ',(A2)+
+000000F6  14FC 0020                119      MOVE.B  #' ',(A2)+
+000000FA  14FC 0020                120      MOVE.B  #' ',(A2)+
+000000FE                           121      
+000000FE                           122      *-deCDOE EA (Dn,Dn
+000000FE                           123          * MachineCode: 0001 **** **** **BI T***
+000000FE                           124  * Only next last 3 bits which is stored at D0 => Source Address mode
+000000FE                           125      *-insert immediate addressing here
+000000FE  4242                     126              CLR     D2
+00000100  4241                     127              CLR     D1
+00000102  1406                     128              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+00000104  E50A                     129              LSL.B   #2,D2       **** **** BIT* **00
+00000106  EA0A                     130              LSR.B   #5,D2       **** **** 0000 0BIT
+00000108  C4FC 0008                131              MULU    #8,D2       value adjusted for jumping
+Line 132 ERROR: Undefined symbol
+0000010C  4DF9 004DBB8E            132              LEA     modeTable,A6 Load the table into A6
+00000112  4EB6 2000                133              JSR     (A6,D2)     Jump to subroutine of value at D0   
+00000116                           134  
+00000116                           135  
+00000116                           136   * MachineCode: 0001 **** **** **** *BIT
+00000116                           137  * Only last 3 bits which is stored at D0 => Source Register
+00000116                           138              
+00000116  1206                     139              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+00000118  EB09                     140              LSL.B   #5,D1       **** **** BIT0 0000
+0000011A  EA09                     141              LSR.B   #5,D1       **** **** 0000 0BIT      
+0000011C  C2FC 0008                142              MULU    #8,D1       value adjusted for jumping
+Line 143 ERROR: Undefined symbol
+00000120  4FF9 004DBB8E            143              LEA     regNumTable ,A7 Load the table into A7
+00000126  4EB7 1000                144              JSR     (A7,D1)     Jump to subroutine of value at D1
+0000012A  B23C 0020                145              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 146 ERROR: Undefined symbol
+0000012E  6700 BA5E                146              BEQ.W   immediateData   ;branch to immediateData
+00000132  14FC 002C                147              MOVE.B  #',',(A2)+
+00000136  14FC 0044                148              MOVE.B  #'D',(A2)+
+0000013A                           149              
+0000013A                           150                *------------------------------------------------------------
+0000013A                           151  * MachineCode: 0001 **** BIT* **** ****
+0000013A                           152  * Decode 3 bits => Destination Register
+0000013A                           153  * Stored at D1
+0000013A  4241                     154              CLR     D1
+0000013C  3206                     155              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+0000013E  E949                     156              LSL.W   #4,D1       BIT* **** **** 0000
+00000140  E049                     157              LSR.W   #8,D1       0000 0000 BIT* ****
+00000142  EA49                     158              LSR.W   #5,D1       0000 0000 0000 0BIT     
+00000144  C2FC 0008                159              MULU    #8,D1       value adjusted for jumping
+Line 160 ERROR: Undefined symbol
+00000148  4FF9 004DBB8E            160              LEA     numTable ,A7 Load the table into A7
+0000014E  4EB7 1000                161              JSR     (A7,D1)     Jump to subroutine of value at D1   
+Line 162 ERROR: Undefined symbol
+00000152  6000 BA3A                162              BRA printcode  
+00000156                           163     
+00000156                           164  add_L   ;add.B EA->Dn
+00000156                           165      
+00000156                           166      *-store the size of the operation for immediate decoding use here/below
+00000156                           167      *-D7 equals storage of size of operation
+00000156                           168      *- #3 is byte , #2 is word #1 is long
+00000156                           169      ;MOVE.B  #3,D7
+00000156                           170      
+00000156                           171  
+00000156  14FC 0020                172      MOVE.B  #' ',(A2)+
+0000015A  14FC 0020                173      MOVE.B  #' ',(A2)+
+0000015E  14FC 0020                174      MOVE.B  #' ',(A2)+
+00000162  14FC 0020                175      MOVE.B  #' ',(A2)+
+00000166  14FC 0041                176      MOVE.B  #'A',(A2)+
+0000016A  14FC 0044                177      MOVE.B  #'D',(A2)+
+0000016E  14FC 0044                178      MOVE.B  #'D',(A2)+
+00000172  14FC 002E                179      MOVE.B  #'.',(A2)+
+00000176  14FC 004C                180      MOVE.B  #'L',(A2)+
+0000017A                           181      *-always allow 4 spaces
+0000017A  14FC 0020                182      MOVE.B  #' ',(A2)+
+0000017E  14FC 0020                183      MOVE.B  #' ',(A2)+
+00000182  14FC 0020                184      MOVE.B  #' ',(A2)+
+00000186  14FC 0020                185      MOVE.B  #' ',(A2)+
+0000018A                           186      
+0000018A                           187      *-deCDOE EA (Dn,Dn
+0000018A                           188          * MachineCode: 0001 **** **** **BI T***
+0000018A                           189  * Only next last 3 bits which is stored at D0 => Source Address mode
+0000018A                           190      *-insert immediate addressing here
+0000018A  4242                     191              CLR     D2
+0000018C  4241                     192              CLR     D1
+0000018E  1406                     193              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+00000190  E50A                     194              LSL.B   #2,D2       **** **** BIT* **00
+00000192  EA0A                     195              LSR.B   #5,D2       **** **** 0000 0BIT
+00000194  C4FC 0008                196              MULU    #8,D2       value adjusted for jumping
+Line 197 ERROR: Undefined symbol
+00000198  4DF9 004DBB8E            197              LEA     modeTable,A6 Load the table into A6
+0000019E  4EB6 2000                198              JSR     (A6,D2)     Jump to subroutine of value at D0   
+000001A2                           199  
+000001A2                           200  
+000001A2                           201   * MachineCode: 0001 **** **** **** *BIT
+000001A2                           202  * Only last 3 bits which is stored at D0 => Source Register
+000001A2                           203              
+000001A2  1206                     204              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+000001A4  EB09                     205              LSL.B   #5,D1       **** **** BIT0 0000
+000001A6  EA09                     206              LSR.B   #5,D1       **** **** 0000 0BIT      
+000001A8  C2FC 0008                207              MULU    #8,D1       value adjusted for jumping
+Line 208 ERROR: Undefined symbol
+000001AC  4FF9 004DBB8E            208              LEA     regNumTable ,A7 Load the table into A7
+000001B2  4EB7 1000                209              JSR     (A7,D1)     Jump to subroutine of value at D1
+000001B6  B23C 0020                210              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 211 ERROR: Undefined symbol
+000001BA  6700 B9D2                211              BEQ.W   immediateData   ;branch to immediateData
+000001BE  14FC 002C                212              MOVE.B  #',',(A2)+
+000001C2  14FC 0044                213              MOVE.B  #'D',(A2)+
+000001C6                           214              
+000001C6                           215                *------------------------------------------------------------
+000001C6                           216  * MachineCode: 0001 **** BIT* **** ****
+000001C6                           217  * Decode 3 bits => Destination Register
+000001C6                           218  * Stored at D1
+000001C6  4241                     219              CLR     D1
+000001C8  3206                     220              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+000001CA  E949                     221              LSL.W   #4,D1       BIT* **** **** 0000
+000001CC  E049                     222              LSR.W   #8,D1       0000 0000 BIT* ****
+000001CE  EA49                     223              LSR.W   #5,D1       0000 0000 0000 0BIT     
+000001D0  C2FC 0008                224              MULU    #8,D1       value adjusted for jumping
+Line 225 ERROR: Undefined symbol
+000001D4  4FF9 004DBB8E            225              LEA     numTable ,A7 Load the table into A7
+000001DA  4EB7 1000                226              JSR     (A7,D1)     Jump to subroutine of value at D1   
+Line 227 ERROR: Undefined symbol
+000001DE  6000 B9AE                227              BRA printcode  
+000001E2                           228      
+000001E2                           229  adda_W  ;ADDA.W
+000001E2                           230      *-maybe error checking
+000001E2                           231      *-we know its ADDA.W so print it to our buffer
+000001E2                           232      *-ex ADDA.W D2,D7
+000001E2                           233      
+000001E2  14FC 0020                234      MOVE.B  #' ',(A2)+
+000001E6  14FC 0020                235      MOVE.B  #' ',(A2)+
+000001EA  14FC 0020                236      MOVE.B  #' ',(A2)+
+000001EE  14FC 0020                237      MOVE.B  #' ',(A2)+
+000001F2  14FC 0041                238      MOVE.B  #'A',(A2)+
+000001F6  14FC 0044                239      MOVE.B  #'D',(A2)+
+000001FA  14FC 0044                240      MOVE.B  #'D',(A2)+
+000001FE  14FC 0041                241      MOVE.B  #'A',(A2)+
+00000202  14FC 002E                242      MOVE.B  #'.',(A2)+
+00000206  14FC 0057                243      MOVE.B  #'W',(A2)+
+0000020A                           244      *-always allow 4 spaces
+0000020A  14FC 0020                245      MOVE.B  #' ',(A2)+
+0000020E  14FC 0020                246      MOVE.B  #' ',(A2)+
+00000212  14FC 0020                247      MOVE.B  #' ',(A2)+
+00000216  14FC 0020                248      MOVE.B  #' ',(A2)+
+0000021A                           249      
+0000021A                           250      * MachineCode: 0001 **** **** **BI T***
+0000021A                           251  * Only next last 3 bits which is stored at D0 => Source Address mode
+0000021A                           252      *-insert immediate addressing here
+0000021A  4242                     253              CLR     D2
+0000021C  4241                     254              CLR     D1
+0000021E  1406                     255              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+00000220  E50A                     256              LSL.B   #2,D2       **** **** BIT* **00
+00000222  EA0A                     257              LSR.B   #5,D2       **** **** 0000 0BIT
+00000224  C4FC 0008                258              MULU    #8,D2       value adjusted for jumping
+Line 259 ERROR: Undefined symbol
+00000228  4DF9 004DBB8E            259              LEA     modeTable,A6 Load the table into A6
+0000022E  4EB6 2000                260              JSR     (A6,D2)     Jump to subroutine of value at D0   
+00000232                           261  
+00000232                           262  
+00000232                           263   * MachineCode: 0001 **** **** **** *BIT
+00000232                           264  * Only last 3 bits which is stored at D0 => Source Register
+00000232                           265              
+00000232  1206                     266              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+00000234  EB09                     267              LSL.B   #5,D1       **** **** BIT0 0000
+00000236  EA09                     268              LSR.B   #5,D1       **** **** 0000 0BIT      
+00000238  C2FC 0008                269              MULU    #8,D1       value adjusted for jumping
+Line 270 ERROR: Undefined symbol
+0000023C  4FF9 004DBB8E            270              LEA     regNumTable ,A7 Load the table into A7
+00000242  4EB7 1000                271              JSR     (A7,D1)     Jump to subroutine of value at D1
+00000246  B23C 0020                272              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 273 ERROR: Undefined symbol
+0000024A  6700 B942                273              BEQ.W   immediateData   ;branch to immediateData
+0000024E                           274      
+0000024E  14FC 002C                275          MOVE.B  #',',(A2)+
+00000252  14FC 0041                276          MOVE.B  #'A',(A2)+
+00000256                           277  *------------------------------------------------------------
+00000256                           278  * MachineCode: 0001 **** BIT* **** ****
+00000256                           279  * Decode 3 bits => Destination Register
+00000256                           280  * Stored at D1
+00000256  4241                     281              CLR     D1
+00000258  3206                     282              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+0000025A  E949                     283              LSL.W   #4,D1       BIT* **** **** 0000
+0000025C  E049                     284              LSR.W   #8,D1       0000 0000 BIT* ****
+0000025E  EA49                     285              LSR.W   #5,D1       0000 0000 0000 0BIT     
+00000260  C2FC 0008                286              MULU    #8,D1       value adjusted for jumping
+Line 287 ERROR: Undefined symbol
+00000264  4FF9 004DBB8E            287              LEA     numTable ,A7 Load the table into A7
+0000026A  4EB7 1000                288              JSR     (A7,D1)     Jump to subroutine of value at D1    
+0000026E                           289  *------------------------------------------------------------       
+0000026E                           290          
+0000026E                           291      
+0000026E                           292  *    *-IDEA; so after we do this we need to get the
+0000026E                           293  *    *-EA decoding which resides between the 3_5 bit location
+0000026E                           294  *    *-call a function that will decode this, which is the SOURCE
+0000026E                           295  *    JSR EA_prep_3_5
+0000026E                           296  *    
+0000026E                           297  *    *-print the coma
+0000026E                           298  *    MOVE.B  #',',(A2)+
+0000026E                           299  *    MOVE.B  #'A',(A2)+ ; address register is static
+0000026E                           300  *    
+0000026E                           301  *    JSR get_bit_9_11    now get the bits from 9 to 11 these are the destimation bits
+0000026E                           302  *    
+0000026E                           303  *    *-since D3 contains the register number 
+0000026E                           304  *    LEA numTable,A6
+0000026E                           305  *    MULU    #8,D3
+0000026E                           306  *    JSR     (A6,D3)
+Line 307 ERROR: Undefined symbol
+0000026E  6000 B91E                307          BRA printCode
+00000272                           308          
+00000272                           309          
+00000272                           310          
+00000272                           311  
+00000272                           312  adda_L  ;ADDA.L
+00000272                           313      *-maybe error checking
+00000272                           314      *-we know its ADDA.L so print it to our buffer
+00000272                           315      *-ex ADDA.L D2,D7
+00000272                           316      
+00000272  14FC 0020                317      MOVE.B  #' ',(A2)+
+00000276  14FC 0020                318      MOVE.B  #' ',(A2)+
+0000027A  14FC 0020                319      MOVE.B  #' ',(A2)+
+0000027E  14FC 0020                320      MOVE.B  #' ',(A2)+
+00000282  14FC 0041                321          MOVE.B  #'A',(A2)+
+00000286  14FC 0044                322          MOVE.B  #'D',(A2)+
+0000028A  14FC 0044                323          MOVE.B  #'D',(A2)+
+0000028E  14FC 0041                324          MOVE.B  #'A',(A2)+
+00000292  14FC 002E                325          MOVE.B  #'.',(A2)+
+00000296  14FC 004C                326          MOVE.B  #'L',(A2)+
+0000029A                           327      *-always allow 4 spaces
+0000029A  14FC 0020                328          MOVE.B  #' ',(A2)+
+0000029E  14FC 0020                329          MOVE.B  #' ',(A2)+
+000002A2  14FC 0020                330          MOVE.B  #' ',(A2)+
+000002A6  14FC 0020                331          MOVE.B  #' ',(A2)+      
+000002AA                           332      
+000002AA                           333      * MachineCode: 0001 **** **** **BI T***
+000002AA                           334  * Only next last 3 bits which is stored at D0 => Source Address mode
+000002AA                           335      *-insert immediate addressing here
+000002AA  4242                     336              CLR     D2
+000002AC  4241                     337              CLR     D1
+000002AE  1406                     338              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+000002B0  E50A                     339              LSL.B   #2,D2       **** **** BIT* **00
+000002B2  EA0A                     340              LSR.B   #5,D2       **** **** 0000 0BIT
+000002B4  C4FC 0008                341              MULU    #8,D2       value adjusted for jumping
+Line 342 ERROR: Undefined symbol
+000002B8  4DF9 004DBB8E            342              LEA     modeTable,A6 Load the table into A6
+000002BE  4EB6 2000                343              JSR     (A6,D2)     Jump to subroutine of value at D0   
+000002C2                           344  
+000002C2                           345  
+000002C2                           346   * MachineCode: 0001 **** **** **** *BIT
+000002C2                           347  * Only last 3 bits which is stored at D0 => Source Register
+000002C2                           348              
+000002C2  1206                     349              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+000002C4  EB09                     350              LSL.B   #5,D1       **** **** BIT0 0000
+000002C6  EA09                     351              LSR.B   #5,D1       **** **** 0000 0BIT      
+000002C8  C2FC 0008                352              MULU    #8,D1       value adjusted for jumping
+Line 353 ERROR: Undefined symbol
+000002CC  4FF9 004DBB8E            353              LEA     regNumTable ,A7 Load the table into A7
+000002D2  4EB7 1000                354              JSR     (A7,D1)     Jump to subroutine of value at D1
+000002D6  B23C 0020                355              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 356 ERROR: Undefined symbol
+000002DA  6700 B8B2                356              BEQ.W   immediateData   ;branch to immediateData
+000002DE                           357      
+000002DE  14FC 002C                358              MOVE.B  #',',(A2)+
+000002E2  14FC 0041                359              MOVE.B  #'A',(A2)+
+000002E6                           360  *------------------------------------------------------------
+000002E6                           361  * MachineCode: 0001 **** BIT* **** ****
+000002E6                           362  * Decode 3 bits => Destination Register
+000002E6                           363  * Stored at D1
+000002E6  4241                     364              CLR     D1
+000002E8  3206                     365              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+000002EA  E949                     366              LSL.W   #4,D1       BIT* **** **** 0000
+000002EC  E049                     367              LSR.W   #8,D1       0000 0000 BIT* ****
+000002EE  EA49                     368              LSR.W   #5,D1       0000 0000 0000 0BIT     
+000002F0  C2FC 0008                369              MULU    #8,D1       value adjusted for jumping
+Line 370 ERROR: Undefined symbol
+000002F4  4FF9 004DBB8E            370              LEA     numTable ,A7 Load the table into A7
+000002FA  4EB7 1000                371              JSR     (A7,D1)     Jump to subroutine of value at D1    
+000002FE                           372  *------------------------------------------------------------       
+000002FE                           373          
+000002FE                           374      
+000002FE                           375  *    *-IDEA; so after we do this we need to get the
+000002FE                           376  *    *-EA decoding which resides between the 3_5 bit location
+000002FE                           377  *    *-call a function that will decode this, which is the SOURCE
+000002FE                           378  *    JSR EA_prep_3_5
+000002FE                           379  *    
+000002FE                           380  *    *-print the coma
+000002FE                           381  *    MOVE.B  #',',(A2)+
+000002FE                           382  *    MOVE.B  #'A',(A2)+ ; address register is static
+000002FE                           383  *    
+000002FE                           384  *    JSR get_bit_9_11    now get the bits from 9 to 11 these are the destimation bits
+000002FE                           385  *    
+000002FE                           386  *    *-since D3 contains the register number 
+000002FE                           387  *    LEA numTable,A6
+000002FE                           388  *    MULU    #8,D3
+000002FE                           389  *    JSR     (A6,D3)
+Line 390 ERROR: Undefined symbol
+000002FE  6000 B88E                390          BRA printCode
+00000302                           391  
+00000302                           392  
+00000302                           393      
+00000302                           394  add_B_EA   ;add.B Dn -> EA
+00000302                           395      
+00000302                           396      *-store the size of the operation for immediate decoding use here/below
+00000302                           397      *-D7 equals storage of size of operation
+00000302                           398      *- #3 is byte , #2 is word #1 is long
+00000302                           399      ;MOVE.B  #3,D7
+00000302                           400      
+00000302                           401  
+00000302  14FC 0020                402      MOVE.B  #' ',(A2)+
+00000306  14FC 0020                403      MOVE.B  #' ',(A2)+
+0000030A  14FC 0020                404      MOVE.B  #' ',(A2)+
+0000030E  14FC 0020                405      MOVE.B  #' ',(A2)+
+00000312  14FC 0041                406      MOVE.B  #'A',(A2)+
+00000316  14FC 0044                407      MOVE.B  #'D',(A2)+
+0000031A  14FC 0044                408      MOVE.B  #'D',(A2)+
+0000031E  14FC 002E                409      MOVE.B  #'.',(A2)+
+00000322  14FC 0042                410      MOVE.B  #'B',(A2)+
+00000326                           411      *-always allow 4 spaces
+00000326  14FC 0020                412      MOVE.B  #' ',(A2)+
+0000032A  14FC 0020                413      MOVE.B  #' ',(A2)+
+0000032E  14FC 0020                414      MOVE.B  #' ',(A2)+
+00000332  14FC 0020                415      MOVE.B  #' ',(A2)+
+00000336                           416      
+00000336                           417      *-deCDOE EA (Dn,Dn
+00000336                           418          * MachineCode: 0001 **** **** **BI T***
+00000336                           419  * Only next last 3 bits which is stored at D0 => Source Address mode
+00000336                           420      *-insert immediate addressing here
+00000336  4242                     421              CLR     D2
+00000338  4241                     422              CLR     D1
+0000033A  1406                     423              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+0000033C  E50A                     424              LSL.B   #2,D2       **** **** BIT* **00
+0000033E  EA0A                     425              LSR.B   #5,D2       **** **** 0000 0BIT
+00000340  C4FC 0008                426              MULU    #8,D2       value adjusted for jumping
+Line 427 ERROR: Undefined symbol
+00000344  4DF9 004DBB8E            427              LEA     modeTable,A6 Load the table into A6
+0000034A  4EB6 2000                428              JSR     (A6,D2)     Jump to subroutine of value at D0   
+0000034E                           429  
+0000034E                           430  
+0000034E                           431   * MachineCode: 0001 **** **** **** *BIT
+0000034E                           432  * Only last 3 bits which is stored at D0 => Source Register
+0000034E                           433              
+0000034E  1206                     434              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+00000350  EB09                     435              LSL.B   #5,D1       **** **** BIT0 0000
+00000352  EA09                     436              LSR.B   #5,D1       **** **** 0000 0BIT      
+00000354  C2FC 0008                437              MULU    #8,D1       value adjusted for jumping
+Line 438 ERROR: Undefined symbol
+00000358  4FF9 004DBB8E            438              LEA     regNumTable ,A7 Load the table into A7
+0000035E  4EB7 1000                439              JSR     (A7,D1)     Jump to subroutine of value at D1
+00000362  B23C 0020                440              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 441 ERROR: Undefined symbol
+00000366  6700 B826                441              BEQ.W   immediateData   ;branch to immediateData
+0000036A  14FC 002C                442              MOVE.B  #',',(A2)+
+0000036E                           443   ;           MOVE.B  #'D',(A2)+
+0000036E                           444              
+0000036E                           445  * MachineCode: 0001 **** ***B IT** ****
+0000036E                           446  * Only next last 3 bits which is stored at D0 => Destination Address mode
+0000036E  4242                     447              CLR     D2
+00000370  4241                     448              CLR     D1
+00000372  3406                     449              MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
+00000374  EF4A                     450              LSL.W   #7,D2       BIT* **** **** 0000
+00000376  E04A                     451              LSR.W   #8,D2       0000 0000 BIT* ****
+00000378  EA4A                     452              LSR.W   #5,D2       0000 0000 0000 0BIT 
+0000037A  C4FC 0008                453              MULU    #8,D2       value adjusted for jumping
+Line 454 ERROR: Undefined symbol
+0000037E  4DF9 004DBB8E            454              LEA     modeTable,A6 Load the table into A6
+00000384  4EB6 2000                455              JSR     (A6,D2)     Jump to subroutine of value at D2
+00000388                           456  *------------------------------------------------------------
+00000388                           457  * MachineCode: 0001 **** BIT* **** ****
+00000388                           458  * Decode 3 bits => Destination Register
+00000388                           459  * Stored at D1
+00000388                           460             
+00000388  3206                     461              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+0000038A  E949                     462              LSL.W   #4,D1       BIT* **** **** 0000
+0000038C  E049                     463              LSR.W   #8,D1       0000 0000 BIT* ****
+0000038E  EA49                     464              LSR.W   #5,D1       0000 0000 0000 0BIT     
+00000390  C2FC 0008                465              MULU    #8,D1       value adjusted for jumping
+Line 466 ERROR: Undefined symbol
+00000394  4FF9 004DBB8E            466              LEA     regNumTable ,A7 Load the table into A7
+0000039A  4EB7 1000                467              JSR     (A7,D1)     Jump to subroutine of value at D1   
+Line 468 ERROR: Undefined symbol
+0000039E  6000 B7EE                468              BRA printcode  
+000003A2                           469              
+000003A2                           470              
+000003A2                           471  
+000003A2                           472     
+000003A2                           473  add_W_EA   ;add.B Dn -> EA
+000003A2                           474      
+000003A2                           475      *-store the size of the operation for immediate decoding use here/below
+000003A2                           476      *-D7 equals storage of size of operation
+000003A2                           477      *- #3 is byte , #2 is word #1 is long
+000003A2                           478      ;MOVE.B  #3,D7
+000003A2                           479      
+000003A2                           480  
+000003A2  14FC 0020                481      MOVE.B  #' ',(A2)+
+000003A6  14FC 0020                482      MOVE.B  #' ',(A2)+
+000003AA  14FC 0020                483      MOVE.B  #' ',(A2)+
+000003AE  14FC 0020                484      MOVE.B  #' ',(A2)+
+000003B2  14FC 0041                485      MOVE.B  #'A',(A2)+
+000003B6  14FC 0044                486      MOVE.B  #'D',(A2)+
+000003BA  14FC 0044                487      MOVE.B  #'D',(A2)+
+000003BE  14FC 002E                488      MOVE.B  #'.',(A2)+
+000003C2  14FC 0057                489      MOVE.B  #'W',(A2)+
+000003C6                           490      *-always allow 4 spaces
+000003C6  14FC 0020                491      MOVE.B  #' ',(A2)+
+000003CA  14FC 0020                492      MOVE.B  #' ',(A2)+
+000003CE  14FC 0020                493      MOVE.B  #' ',(A2)+
+000003D2  14FC 0020                494      MOVE.B  #' ',(A2)+
+000003D6                           495      
+000003D6                           496      *-deCDOE EA (Dn,Dn
+000003D6                           497          * MachineCode: 0001 **** **** **BI T***
+000003D6                           498  * Only next last 3 bits which is stored at D0 => Source Address mode
+000003D6                           499      *-insert immediate addressing here
+000003D6  4242                     500              CLR     D2
+000003D8  4241                     501              CLR     D1
+000003DA  1406                     502              MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+000003DC  E50A                     503              LSL.B   #2,D2       **** **** BIT* **00
+000003DE  EA0A                     504              LSR.B   #5,D2       **** **** 0000 0BIT
+000003E0  C4FC 0008                505              MULU    #8,D2       value adjusted for jumping
+Line 506 ERROR: Undefined symbol
+000003E4  4DF9 004DBB8E            506              LEA     modeTable,A6 Load the table into A6
+000003EA  4EB6 2000                507              JSR     (A6,D2)     Jump to subroutine of value at D0   
+000003EE                           508  
+000003EE                           509  
+000003EE                           510   * MachineCode: 0001 **** **** **** *BIT
+000003EE                           511  * Only last 3 bits which is stored at D0 => Source Register
+000003EE                           512              
+000003EE  1206                     513              MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+000003F0  EB09                     514              LSL.B   #5,D1       **** **** BIT0 0000
+000003F2  EA09                     515              LSR.B   #5,D1       **** **** 0000 0BIT      
+000003F4  C2FC 0008                516              MULU    #8,D1       value adjusted for jumping
+Line 517 ERROR: Undefined symbol
+000003F8  4FF9 004DBB8E            517              LEA     regNumTable ,A7 Load the table into A7
+000003FE  4EB7 1000                518              JSR     (A7,D1)     Jump to subroutine of value at D1
+00000402  B23C 0020                519              CMP.B   #32,D1         ; #imm => #XX 3 spaces
+Line 520 ERROR: Undefined symbol
+00000406  6700 B786                520              BEQ.W   immediateData   ;branch to immediateData
+0000040A  14FC 002C                521              MOVE.B  #',',(A2)+
+0000040E                           522   ;           MOVE.B  #'D',(A2)+
+0000040E                           523              
+0000040E                           524  * MachineCode: 0001 **** ***B IT** ****
+0000040E                           525  * Only next last 3 bits which is stored at D0 => Destination Address mode
+0000040E  4242                     526              CLR     D2
+00000410  4241                     527              CLR     D1
+00000412  3406                     528              MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
+00000414  EF4A                     529              LSL.W   #7,D2       BIT* **** **** 0000
+00000416  E04A                     530              LSR.W   #8,D2       0000 0000 BIT* ****
+00000418  EA4A                     531              LSR.W   #5,D2       0000 0000 0000 0BIT 
+0000041A  C4FC 0008                532              MULU    #8,D2       value adjusted for jumping
+Line 533 ERROR: Undefined symbol
+0000041E  4DF9 004DBB8E            533              LEA     modeTable,A6 Load the table into A6
+00000424  4EB6 2000                534              JSR     (A6,D2)     Jump to subroutine of value at D2
+00000428                           535  *------------------------------------------------------------
+00000428                           536  * MachineCode: 0001 **** BIT* **** ****
+00000428                           537  * Decode 3 bits => Destination Register
+00000428                           538  * Stored at D1
+00000428                           539             
+00000428  3206                     540              MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+0000042A  E949                     541              LSL.W   #4,D1       BIT* **** **** 0000
+0000042C  E049                     542              LSR.W   #8,D1       0000 0000 BIT* ****
+0000042E  EA49                     543              LSR.W   #5,D1       0000 0000 0000 0BIT     
+00000430  C2FC 0008                544              MULU    #8,D1       value adjusted for jumping
+Line 545 ERROR: Undefined symbol
+00000434  4FF9 004DBB8E            545              LEA     regNumTable ,A7 Load the table into A7
+0000043A  4EB7 1000                546              JSR     (A7,D1)     Jump to subroutine of value at D1   
+Line 547 ERROR: Undefined symbol
+0000043E  6000 B74E                547              BRA printcode  
+00000442                           548              
+00000442                           549              
+00000442                           550  
+Line 551 WARNING: END directive missing, starting address not set
+
+45 errors detected
+1 warning generated
+
+
+SYMBOL TABLE INFORMATION
+Symbol-name         Value
+-------------------------
+ADDA_L              272
+ADDA_W              1E2
+ADD_B               3E
+ADD_B_EA            302
+ADD_L               156
+ADD_W               CA
+ADD_W_EA            3A2
+OP1101              0
