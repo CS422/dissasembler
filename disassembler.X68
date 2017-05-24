@@ -176,8 +176,8 @@ mainLoop
             ;BEQ     op0011      ;branch to op0011
             ;CMP.B   #bin0010,D3 ;MOVE.L 
             ;BEQ     op0010      ;branch to op0010           
-            ;CMP.B   #bin0111,D3 ;MOVEQ
-            ;BEQ     op0111      ;branch to op0111                        
+            CMP.B   #bin0111,D3 ;MOVEQ
+            BEQ     op0111      ;branch to op0111                        
             CMP.B   #bin0100,D3     MOVEM.L, MOVEM.W, LEA, CLR, JSR,NOP(DONE), RTS(DONE)
             BEQ     op0100          branch to op0100                        
             CMP.B   #bin1101,D3 ;ADD, ADDA
@@ -848,6 +848,7 @@ WordOrLong
             INCLUDE 'op0001.x68'    MOVE.b Differetn file
             INCLUDE 'op1101.x68'    ADD,ADDA
             INCLUDE 'op1001.x68'    SUB,SUBA
+            INCLUDE 'op0111.x68'    MOVEQ
         
             
            
