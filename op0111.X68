@@ -20,7 +20,7 @@ op0111
             MOVE.B  #' ',(A2)+
             MOVE.B  #' ',(A2)+
             MOVE.B  #'#',(A2)+  ;print #
-            MOVE.B  #'$',(A2)+  ;print $
+            MOVE.B  #'$',(A2)+  ;print 
             *-REMEMBER MOVEQ TAKES ONLY A BTYE OF DATA
             
             ;MOVE.B  #12,D5      ;counter for output

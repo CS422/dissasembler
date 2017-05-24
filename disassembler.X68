@@ -190,8 +190,8 @@ mainLoop
             ;BEQ     op0101      ;branch to op0101                         
             ;CMP.B   #bin0110,D3 ;Bcc
             ;BEQ     op0110      ;branch to op0110            
-            ;CMP.B   #bin1000,D3 ;DIVU.W
-            ;BEQ     op1000      ;branch to op1000                                      
+            CMP.B   #bin1000,D3 ;DIVU.W
+            BEQ     op1000      ;branch to op1000                                      
             ;CMP.B   #bin1011,D3 ;CMP, CMPA, EOR
             ;BEQ     op1011      ;branch to op1011 
             ;CMP.B   #bin1100,D3 ;AND, MULS.W
@@ -849,7 +849,7 @@ WordOrLong
             INCLUDE 'op1101.x68'    ADD,ADDA
             INCLUDE 'op1001.x68'    SUB,SUBA
             INCLUDE 'op0111.x68'    MOVEQ
-        
+            INCLUDE 'op1000.x68'    DIVU
             
            
 
