@@ -1,41 +1,46 @@
-op1101 
-    ;ADD, ADDA
+
+
+op1001
+
+*-SUB, SUBA
     
-    ; we need to determine what its size is (B,W,L) putting the data in D6
+        ; we need to determine what its size is (B,W,L) putting the data in D6
     JSR   WordOrLong ; WordOrLong decodes the OPMODE field and stores the output into D3 where
     ; we use to decode and branch
     *-now D3 contains the OPMODE FIELD telling us wether this is
     *-a LONG or a WORD
     
-    *-now we need to decipher if its any of the adds
-    CMP.B   #hex_0,D3 is this ADD.B
-    BEQ add_B   ;<EA> -> Dn
-*    
-    CMP.B   #hex_1,D3   is it ADD.W
-    BEQ add_W ;<EA> ->Dn
-*    
-    CMP.B   #hex_2,D3   is it ADD.L
-    BEQ add_L ;<EA> ->Dn
-    
-    CMP.B   #hex_3,D3
-    BEQ adda_W
-    
-    CMP.B   #hex_4,D3
-    BEQ add_B_EA Dn -> EA
-    
-    CMP.B   #hex_5,D3
-    BEQ add_W_EA Dn ->EA
-    
-*    
-    CMP.B   #hex_6,D3
-    BEQ add_L_EA Dn - >EA
-*    
-    CMP.B   #hex_7,D3
-    BEQ adda_L
+    *-now we need to decipher if its any of the subs
+    CMP.B   #hex_0,D3 is this SUB.B
+    BEQ sub_B   ;<EA> -> Dn
+**    
+**    CMP.B   #hex_1,D3   is it SUB.W
+**    BEQ sub_W ;<EA> ->Dn
+**    
+**    CMP.B   #hex_2,D3   is it SUB.L
+**    BEQ sub_L ;<EA> ->Dn
+**    
+**    CMP.B   #hex_3,D3
+**    BEQ suba_W
+**    
+**    CMP.B   #hex_4,D3
+**    BEQ sub_B_EA Dn -> EA
+**    
+**    CMP.B   #hex_5,D3
+**    BEQ sub_W_EA Dn ->EA
+**    
+**    
+**    CMP.B   #hex_6,D3
+**    BEQ sub_L_EA Dn - >EA
+**    
+**    CMP.B   #hex_7,D3
+**    BEQ suba_L
 
-add_B   ;add.B EA->Dn
+
+sub_B
+    ;EA ->Dn
     
-    *-store the size of the operation for immediate decoding use here/below
+        *-store the size of the operation for immediate decoding use here/below
     *-D7 equals storage of size of operation
     *- #3 is byte , #2 is word #1 is long
     ;MOVE.B  #3,D7
@@ -45,9 +50,9 @@ add_B   ;add.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #'A',(A2)+
-    MOVE.B  #'D',(A2)+
-    MOVE.B  #'D',(A2)+
+    MOVE.B  #'S',(A2)+
+    MOVE.B  #'U',(A2)+
+    MOVE.B  #'B',(A2)+
     MOVE.B  #'.',(A2)+
     MOVE.B  #'B',(A2)+
     *-always allow 4 spaces
@@ -56,10 +61,10 @@ add_B   ;add.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     
-    *-deCDOE EA (Dn,Dn
+        *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -98,8 +103,9 @@ add_B   ;add.B EA->Dn
             JSR     (A7,D1)     Jump to subroutine of value at D1   
             BRA printcode  
     
+    
      
-add_W   ;add.B EA->Dn
+sub_W   ;sub.B EA->Dn
     
     *-store the size of the operation for immediate decoding use here/below
     *-D7 equals storage of size of operation
@@ -124,8 +130,8 @@ add_W   ;add.B EA->Dn
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -164,7 +170,7 @@ add_W   ;add.B EA->Dn
             JSR     (A7,D1)     Jump to subroutine of value at D1   
             BRA printcode  
    
-add_L   ;add.B EA->Dn
+sub_L   ;sub.B EA->Dn
     
     *-store the size of the operation for immediate decoding use here/below
     *-D7 equals storage of size of operation
@@ -189,8 +195,8 @@ add_L   ;add.B EA->Dn
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -229,18 +235,18 @@ add_L   ;add.B EA->Dn
             JSR     (A7,D1)     Jump to subroutine of value at D1   
             BRA printcode  
     
-adda_W  ;ADDA.W
+suba_W  ;subA.W
     *-maybe error checking
-    *-we know its ADDA.W so print it to our buffer
-    *-ex ADDA.W D2,D7
+    *-we know its subA.W so print it to our buffer
+    *-ex subA.W D2,D7
     
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #'A',(A2)+
-    MOVE.B  #'D',(A2)+
-    MOVE.B  #'D',(A2)+
+    MOVE.B  #'S',(A2)+
+    MOVE.B  #'U',(A2)+
+    MOVE.B  #'B',(A2)+
     MOVE.B  #'A',(A2)+
     MOVE.B  #'.',(A2)+
     MOVE.B  #'W',(A2)+
@@ -251,8 +257,8 @@ adda_W  ;ADDA.W
     MOVE.B  #' ',(A2)+
     
     * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -299,7 +305,7 @@ adda_W  ;ADDA.W
 *    
 *    *-print the coma
 *    MOVE.B  #',',(A2)+
-*    MOVE.B  #'A',(A2)+ ; address register is static
+*    MOVE.B  #'A',(A2)+ ; subress register is static
 *    
 *    JSR get_bit_9_11    now get the bits from 9 to 11 these are the destimation bits
 *    
@@ -312,18 +318,18 @@ adda_W  ;ADDA.W
         
         
 
-adda_L  ;ADDA.L
+suba_L  ;subA.L
     *-maybe error checking
-    *-we know its ADDA.L so print it to our buffer
-    *-ex ADDA.L D2,D7
+    *-we know its subA.L so print it to our buffer
+    *-ex subA.L D2,D7
     
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-        MOVE.B  #'A',(A2)+
-        MOVE.B  #'D',(A2)+
-        MOVE.B  #'D',(A2)+
+        MOVE.B  #'S',(A2)+
+        MOVE.B  #'U',(A2)+
+        MOVE.B  #'B',(A2)+
         MOVE.B  #'A',(A2)+
         MOVE.B  #'.',(A2)+
         MOVE.B  #'L',(A2)+
@@ -334,8 +340,8 @@ adda_L  ;ADDA.L
         MOVE.B  #' ',(A2)+      
     
     * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -382,7 +388,7 @@ adda_L  ;ADDA.L
 *    
 *    *-print the coma
 *    MOVE.B  #',',(A2)+
-*    MOVE.B  #'A',(A2)+ ; address register is static
+*    MOVE.B  #'A',(A2)+ ; subress register is static
 *    
 *    JSR get_bit_9_11    now get the bits from 9 to 11 these are the destimation bits
 *    
@@ -394,7 +400,7 @@ adda_L  ;ADDA.L
 
 
     
-add_B_EA   ;add.B Dn -> EA
+sub_B_EA   ;sub.B Dn -> EA
     
     *-store the size of the operation for immediate decoding use here/below
     *-D7 equals storage of size of operation
@@ -406,9 +412,9 @@ add_B_EA   ;add.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #'A',(A2)+
-    MOVE.B  #'D',(A2)+
-    MOVE.B  #'D',(A2)+
+    MOVE.B  #'S',(A2)+
+    MOVE.B  #'U',(A2)+
+    MOVE.B  #'B',(A2)+
     MOVE.B  #'.',(A2)+
     MOVE.B  #'B',(A2)+
     *-always allow 4 spaces
@@ -419,8 +425,8 @@ add_B_EA   ;add.B Dn -> EA
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+* Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -446,7 +452,7 @@ add_B_EA   ;add.B Dn -> EA
  ;           MOVE.B  #'D',(A2)+
             
 * MachineCode: 0001 **** ***B IT** ****
-* Only next last 3 bits which is stored at D0 => Destination Address mode
+* Only next last 3 bits which is stored at D0 => Destination subress mode
             CLR     D2
             CLR     D1
             MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
@@ -473,7 +479,7 @@ add_B_EA   ;add.B Dn -> EA
             
 
    
-add_W_EA   ;add.B Dn -> EA
+sub_W_EA   ;sub.B Dn -> EA
     
     *-store the size of the operation for immediate decoding use here/below
     *-D7 equals storage of size of operation
@@ -486,9 +492,9 @@ add_W_EA   ;add.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #'A',(A2)+
-    MOVE.B  #'D',(A2)+
-    MOVE.B  #'D',(A2)+
+    MOVE.B  #'S',(A2)+
+    MOVE.B  #'U',(A2)+
+    MOVE.B  #'B',(A2)+
     MOVE.B  #'.',(A2)+
     MOVE.B  #'W',(A2)+
     *-always allow 4 spaces
@@ -518,8 +524,8 @@ add_W_EA   ;add.B Dn -> EA
             *-INSERT IMMEDIATE DATA HERE
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
- *Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+ *Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -547,7 +553,7 @@ add_W_EA   ;add.B Dn -> EA
             
 *            
 *  
-add_L_EA   ;add.L Dn -> EA
+sub_L_EA   ;sub.L Dn -> EA
 *    
 *    *-store the size of the operation for immediate decoding use here/below
 *    *-D7 equals storage of size of operation
@@ -560,9 +566,9 @@ add_L_EA   ;add.L Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #'A',(A2)+
-    MOVE.B  #'D',(A2)+
-    MOVE.B  #'D',(A2)+
+    MOVE.B  #'S',(A2)+
+    MOVE.B  #'U',(A2)+
+    MOVE.B  #'B',(A2)+
     MOVE.B  #'.',(A2)+
     MOVE.B  #'L',(A2)+
     *-always allow 4 spaces
@@ -592,8 +598,8 @@ add_L_EA   ;add.L Dn -> EA
             *-INSERT IMMEDIATE DATA HERE
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
- *Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+ *Only next last 3 bits which is stored at D0 => Source subress mode
+    *-insert immediate subressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -614,7 +620,7 @@ add_L_EA   ;add.L Dn -> EA
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             
-            *-ERROR HERE NOT SURE WHY AFTER ADD.L D2,(A2)+ it goines into this lower loop D1 = 20 no matchs
+            *-ERROR HERE NOT SURE WHY AFTER sub.L D2,(A2)+ it goines into this lower loop D1 = 20 no matchs
 *            CMP.B   #32,D1         ; #imm => #XX 3 spaces
 *            BEQ.W   immediateData   ;branch to immediateData
 
@@ -624,6 +630,7 @@ add_L_EA   ;add.L Dn -> EA
 *            
 *
 *
+
 
 *~Font name~Courier New~
 *~Font size~10~

@@ -182,8 +182,8 @@ mainLoop
             BEQ     op0100          branch to op0100                        
             CMP.B   #bin1101,D3 ;ADD, ADDA
             BEQ     op1101      ;branch to op1101            
-            ;CMP.B   #bin1001,D3 ;SUB, SUBA
-            ;BEQ     op1001      ;branch to op1001                        
+            CMP.B   #bin1001,D3 ;SUB, SUBA
+            BEQ     op1001      ;branch to op1001                        
             ;CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
             ;BEQ     op0000      ;branch to op0000                       
             ;CMP.B   #bin0101,D3 ;SUBQ
@@ -847,8 +847,8 @@ WordOrLong
             INCLUDE 'op0100.x68'    IN a different file, modulated design        
             INCLUDE 'op0001.x68'    MOVE.b Differetn file
             INCLUDE 'op1101.x68'    ADD,ADDA
-
-
+            INCLUDE 'op1001.x68'    SUB,SUBA
+        
             
            
 
@@ -1185,6 +1185,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
