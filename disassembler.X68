@@ -89,7 +89,7 @@ START:
 *                JSR     parse_end
 *
 *                
-*                MOVE.L  D6,A6           MOVE OUT ENDING ADDRESS TO A7
+*                MOVE.L  D6,A6           MOVE OUT ENDING ADDRESS TO A6
 *  
 *             
 *STORE_SRT_END:
@@ -336,33 +336,33 @@ IA000                               ;absoulteWord
             MOVE.W  D4,D1       X***
             LSR.W   #8,D1       00X*
             LSR.W   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1 
+            JSR     (A6,D1)     Jump to subroutine of value at D1 
             *next 4MSB  *X**
             CLR     D1
             MOVE.W  D4,D1       *X**
             LSL.W   #4,D1       X**0        
             LSR.W   #8,D1       00X*
             LSR.W   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *next 4MSB  **X*
             CLR     D1
             MOVE.B  D4,D1       00X*
             LSR.B   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
                         MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *last 4  bits   ***X
             CLR     D1
             MOVE.B  D4,D1       00*X
             LSL.B   #4,D1       00X0    
             LSR.B   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
                         MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             RTS           
 * -----------------------------------------------------------            
 * Subroutine IA001   ------------------------------------------
@@ -379,33 +379,33 @@ IA001                               ;absoulteLong
             MOVE.W  D4,D1       X***
             LSR.W   #8,D1       00X*
             LSR.W   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1 
+            JSR     (A6,D1)     Jump to subroutine of value at D1 
             *next 4MSB  *X**
             CLR     D1
             MOVE.W  D4,D1       *X**
             LSL.W   #4,D1       X**0        
             LSR.W   #8,D1       00X*
             LSR.W   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *next 4MSB  **X*
             CLR     D1
             MOVE.B  D4,D1       00X*
             LSR.B   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *last 4  bits   ***X
             CLR     D1
             MOVE.B  D4,D1       00*X
             LSL.B   #4,D1       00X0    
             LSR.B   #4,D1       000X
-            LEA     numTable ,A7 Load the table into A7
+            LEA     numTable ,A6 Load the table into A6
             MULU    #8,D1
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            JSR     (A6,D1)     Jump to subroutine of value at D1
 *---------  Second Word Value D2    **** XXXX
             *4MSB   X***
             CLR     D1
@@ -413,8 +413,8 @@ IA001                               ;absoulteLong
             LSR.W   #8,D1            00X*
             LSR.W   #4,D1            000X
             MULU    #8,D1
-            LEA     numTable ,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            LEA     numTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *next 4MSB  *X**
             CLR     D1
             MOVE.W  D2,D1
@@ -422,23 +422,23 @@ IA001                               ;absoulteLong
             LSR.W   #8,D1       00X*
             LSR.B   #4,D1       000X
             MULU    #8,D1
-            LEA     numTable ,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            LEA     numTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *next 4MSB  **X*
             CLR     D1
             MOVE.B  D2,D1       00X*
             LSR.B   #4,D1       000X
             MULU    #8,D1
-            LEA     numTable ,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            LEA     numTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1
             *next 4MSB  ***X
             CLR     D1
             MOVE.B  D2,D1       00*X
             LSL.B   #4,D1       00X0
             LSR.B   #4,D1       000X
             MULU    #8,D1
-            LEA     numTable ,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+            LEA     numTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1
            
             RTS
  
@@ -455,8 +455,8 @@ IA100                               ;immediateData
             MOVE.B  D4,D2       00X*
             LSR.B   #4,D2       000X
             MULU    #8,D2   
-            LEA     numTable ,A7 Load the table into A7
-            JSR     (A7,D2)     Jump to subroutine of value at D2
+            LEA     numTable ,A6 Load the table into A6
+            JSR     (A6,D2)     Jump to subroutine of value at D2
             *last 4bits 00*X
             CLR     D2
             MOVE.B  D4,D2       00*X
@@ -464,7 +464,7 @@ IA100                               ;immediateData
             LSR.B   #4,D2       000X
             MULU    #8,D2   
            
-            JSR     (A7,D2)     Jump to subroutine of value at D2
+            JSR     (A6,D2)     Jump to subroutine of value at D2
 
             RTS
 
@@ -567,8 +567,8 @@ M0111                               ;(xxx).W, (xxx).L, #imm
 
 * Subroutine registerPrint----------------------------------- 
 registerPrint
-            LEA     numTable,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to numTable with value at D1
+            LEA     numTable,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to numTable with value at D1
             RTS
 
 * -----------------------------------------------------------            
@@ -786,8 +786,7 @@ N1111
 *            HELPER LOCATION
 *            HELPER LOCATION
 
-get_0_3_bit
-    
+
 
 get_3_5bit
 *------------------------------------------------------------
@@ -1036,12 +1035,12 @@ FINISH:
 *-390 -> 406 WITH NOP AT 400
 
 
-hexToAscii:
+
 ones:
     MOVE.W  D2,D5
     MULU    #8,D5       value adjusted for jumping
-    LEA     numTable ,A7 Load the table into A7
-    JSR     (A7,D5)     Jump to subroutine of value at D1 
+    LEA     numTable ,A6 Load the table into A6
+    JSR     (A6,D5)     Jump to subroutine of value at D1 
     *-adding res
     ;ADD     D2,D7
     
@@ -1186,6 +1185,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
