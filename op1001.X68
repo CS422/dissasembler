@@ -56,7 +56,7 @@ sub_B
     *-always allow 4 spaces
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     MOVE.B  #' ',(A2)+
     
         *-deCDOE EA (Dn,Dn
@@ -124,7 +124,6 @@ sub_W   ;sub.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -189,7 +188,6 @@ sub_L   ;sub.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -249,7 +247,6 @@ suba_W  ;subA.W
     MOVE.B  #'.',(A2)+
     MOVE.B  #'W',(A2)+
     *-always allow 4 spaces
-    MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
@@ -332,7 +329,6 @@ suba_L  ;subA.L
         MOVE.B  #'.',(A2)+
         MOVE.B  #'L',(A2)+
     *-always allow 4 spaces
-        MOVE.B  #' ',(A2)+
         MOVE.B  #' ',(A2)+
         MOVE.B  #' ',(A2)+
         MOVE.B  #' ',(A2)+      
@@ -419,7 +415,6 @@ sub_B_EA   ;sub.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -499,7 +494,6 @@ sub_W_EA   ;sub.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
     
     
     
@@ -573,7 +567,6 @@ sub_L_EA   ;sub.L Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
     
     
     
@@ -628,6 +621,7 @@ sub_L_EA   ;sub.L Dn -> EA
 *            
 *
 *
+
 
 
 

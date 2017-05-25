@@ -161,19 +161,22 @@ START:                  ; first instruction of program
 *    ADD.L   D7,D4
 *    
 ;ISSUE (A3)/(A2) does not correctly print to the console if there are more than 1 OPCODE
-*    ADD.W   D6,D2
-*    ADD.L   D7,D1    
-*    
-*    ADD.W   D2,(A2)+
+    ADD.W   D6,D2
+;    ADD.L   D7,D1    
+    
+    ADD.W   D2,(A2)+
+    SUB.W   (A5),D6
+    SUB.L   D1,D0
 
+    ADD.L   D5,(A4)+
 
-
-*    ADD.L   D5,(A4)+
-
-;    SUB.B   D2,D6
+    SUB.B   D2,D6
 *- immediate data prints 45 which is HEX equalivent of 69(decimal)
 *-idea convert from decimal to hex to ascii
     MOVEQ   #69,D2
+    
+    ADD.W   D2,D7
+    ADD.L   D4,D5
     
 
 
@@ -244,6 +247,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 

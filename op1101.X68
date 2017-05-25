@@ -53,7 +53,7 @@ add_B   ;add.B EA->Dn
     *-always allow 4 spaces
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     MOVE.B  #' ',(A2)+
     
     *-deCDOE EA (Dn,Dn
@@ -120,7 +120,7 @@ add_W   ;add.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -185,7 +185,7 @@ add_L   ;add.B EA->Dn
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -248,7 +248,7 @@ adda_W  ;ADDA.W
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     
     * MachineCode: 0001 **** **** **BI T***
 * Only next last 3 bits which is stored at D0 => Source Address mode
@@ -331,7 +331,7 @@ adda_L  ;ADDA.L
         MOVE.B  #' ',(A2)+
         MOVE.B  #' ',(A2)+
         MOVE.B  #' ',(A2)+
-        MOVE.B  #' ',(A2)+      
+   
     
     * MachineCode: 0001 **** **** **BI T***
 * Only next last 3 bits which is stored at D0 => Source Address mode
@@ -415,7 +415,7 @@ add_B_EA   ;add.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     
     *-deCDOE EA (Dn,Dn
         * MachineCode: 0001 **** **** **BI T***
@@ -495,7 +495,7 @@ add_W_EA   ;add.B Dn -> EA
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     
     
     
@@ -568,7 +568,7 @@ add_L_EA   ;add.L Dn -> EA
     *-always allow 4 spaces
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
-    MOVE.B  #' ',(A2)+
+
     MOVE.B  #' ',(A2)+
     
     
@@ -624,6 +624,7 @@ add_L_EA   ;add.L Dn -> EA
 *            
 *
 *
+
 
 
 
