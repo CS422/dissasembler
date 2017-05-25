@@ -5,8 +5,7 @@
 * Description:
 *-----------------------------------------------------------
     ORG    $996
-CR  EQU $0D
-LF  EQU $0A
+
 *------
 *Test memory address between 996 and 9CF
 *
@@ -15,31 +14,95 @@ LF  EQU $0A
 START:                  ; first instruction of program
     
 * Put program code here
-    
+*----------------------------------------------------------
+* Testing: MOVE.B
+*----------------------------------------------------------
+* Direct Addressing
+*----------------------------------------------------------
 *    MOVE.B  D0,D1       ; Testing Dn
 *    MOVE.B  D0,D2       ; Testing Dn
 **   MOVE.B  A0,D1       ; Testing An
+*----------------------------------------------------------
+* Indriect Addressing
+*----------------------------------------------------------
 *    MOVE.B  (A1),D7     ; Testing  (An)
 *    MOVE.B  (A2),D7     ; Testing  (An)
 *    MOVE.B  (A3),D7     ; Testing  (An)
 *    MOVE.B  (A4),D7     ; Testing  (An)
-*    
+*----------------------------------------------------------
+* Indriect Addressing with Post Increment 
+*----------------------------------------------------------
 *    MOVE.B  (A7)+,D3     ; Testing  (An)+
 *    MOVE.B  (A6)+,D5     ; Testing  (An)+
+*----------------------------------------------------------
+* Indriect Addressing with Pre Decrement
+*----------------------------------------------------------
 *    MOVE.B  -(A5),D4     ; Testing  -(An)
-*    MOVE.B  #34,D4 
 *    MOVE.B  -(A5),D4     ; Testing  -(An)
-*    MOVE.W  #3434,D4
-     MOVE.B  #99,D5
-     MOVE.B  $A000,D5      
-            
+*----------------------------------------------------------
+* Immediate Data
+*----------------------------------------------------------
+    *MOVE.B  #34,D4 
+*     MOVE.B  #99,D5        
+*----------------------------------------------------------
+* Absolute Addressing - Word
+*----------------------------------------------------------
+    * MOVE.B  $4214,D5
+*----------------------------------------------------------
+* Absolute Addressing - Long
+*----------------------------------------------------------
+    * MOVE.B   $A000,D5
+*----------------------------------------------------------
+* end of MOVE.B
+*----------------------------------------------------------
+*-------------------------------------
+*   ADD
+*------------------------
+*    ADDA.L  D5,A5
+*    ADDA.W  D2,A7
+**    
+*    MOVE.B  #34,D5
+*    MOVE.B  D6,D7           
+*    ADDA.W  #34,A5
+*    MOVE.B  #$22,D5
+     ;ADD     #$5,D5 ;ADDQ
+    
+    ;MOVE.B   #$22,D5
+;    ADD.B   D6,D5
+*- BROken below, the buffer (A3) will not print the regnum 7, not sure why
+;    ADD.W   A5,D6
+; why does it print out wrong if i print multiple opcodes 
  
-    
-    
-    
-    
-    
-    
+*    ADD.L   D7,D4
+*    
+;ISSUE (A3)/(A2) does not correctly print to the console if there are more than 1 OPCODE
+*    ADD.W   D6,D2
+*    ADD.L   D7,D1    
+*    
+*    ADD.W   D2,(A2)+
+
+
+
+*    ADD.L   D5,(A4)+
+
+    SUB.B   D2,D6
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+*-***********************************************************
     
     ;LEA     MESSAGE1,A1 *Loads message into address register A1
     ;MOVE.B  #14,D0      *Moves number 14 into data regiter D0
@@ -74,9 +137,6 @@ START:                  ; first instruction of program
     ;MOVE.B   #9,D0
     ;TRAP   #15          ; halt simulator
    
-message1 dc.b 'enter your string: ',0
-message2 dc.b 'string you have entered is: ',0
-test_buffer ds.w    85    
 ;    ds.w    0       ; force even address
 ;buffer  ds.b    80  ; input string storage
 
@@ -95,14 +155,12 @@ test_buffer ds.w    85
     
     
     
-    
-    SIMHALT             ; halt simulator
-
-* Put variables and constants here
-;MSG     DC.L    'ENTER A NUMBER: ',0
-inputbuffer    ds.w    9999  input string storage
 
     END    START        ; last line of source
+
+
+
+
 
 
 
