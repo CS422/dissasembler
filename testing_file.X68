@@ -85,9 +85,11 @@ START:                  ; first instruction of program
 
 *    ADD.L   D5,(A4)+
 
-    SUB.B   D2,D6
-
-
+;    SUB.B   D2,D6
+*- immediate data prints 45 which is HEX equalivent of 69(decimal)
+*-idea convert from decimal to hex to ascii
+    MOVEQ   #69,D2
+    
 
 
 
@@ -157,6 +159,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 
