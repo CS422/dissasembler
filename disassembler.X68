@@ -172,10 +172,10 @@ mainLoop
             CMP.B   #bin0001,D3 ;MOVE.B
             *- Machine code saved in D6
             BEQ     op0001      ;branch to op0001
-            ;CMP.B   #bin0011,D3 ;MOVE.W
-            ;BEQ     op0011      ;branch to op0011
-            ;CMP.B   #bin0010,D3 ;MOVE.L 
-            ;BEQ     op0010      ;branch to op0010           
+            CMP.B   #bin0011,D3 ;MOVE.W
+            BEQ     op0011      ;branch to op0011
+            CMP.B   #bin0010,D3 ;MOVE.L 
+            BEQ     op0010      ;branch to op0010           
             CMP.B   #bin0111,D3 ;MOVEQ
             BEQ     op0111      ;branch to op0111                        
             CMP.B   #bin0100,D3     MOVEM.L, MOVEM.W, LEA, CLR, JSR,NOP(DONE), RTS(DONE)
@@ -849,9 +849,11 @@ WordOrLong
             INCLUDE 'op1001.x68'    SUB,SUBA
             INCLUDE 'op0111.x68'    MOVEQ
             INCLUDE 'op1000.x68'    DIVU
+            INCLUDE 'op0010.x68'    MOVE.L
+            INCLUDE 'op0011.x68'    MOVE.W MOVEA.W
             
            
-
+            
             
 opError                             
             MOVE.L  A0,D3
@@ -1185,6 +1187,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 

@@ -4,7 +4,7 @@ op0111
             MOVE.B  D6,D3       ;copy data to D3
             ;MOVE.L  #2,D7       ;size of data is long
       
-            MOVE.B  #' ',(A2)+  ;
+
             MOVE.B  #' ',(A2)+  ;print some spaces
             MOVE.B  #' ',(A2)+
             MOVE.B  #' ',(A2)+
@@ -16,8 +16,6 @@ op0111
             MOVE.B  #'Q',(A2)+  ;ptint Q
             MOVE.B  #' ',(A2)+  ;
             MOVE.B  #' ',(A2)+  ;print some spaces
-            MOVE.B  #' ',(A2)+
-            MOVE.B  #' ',(A2)+
             MOVE.B  #' ',(A2)+
             MOVE.B  #'#',(A2)+  ;print #
             MOVE.B  #'$',(A2)+  ;print 
@@ -54,6 +52,7 @@ op0111
             JSR     (A7,D1)     Jump to subroutine of value at D1  
             
             BRA     printCode
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

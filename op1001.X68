@@ -1,5 +1,3 @@
-
-
 op1001
 
 *-SUB, SUBA
@@ -85,7 +83,7 @@ sub_B
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -152,7 +150,7 @@ sub_W   ;sub.B EA->Dn
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -217,7 +215,7 @@ sub_L   ;sub.B EA->Dn
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -279,7 +277,7 @@ suba_W  ;subA.W
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
     
         MOVE.B  #',',(A2)+
         MOVE.B  #'A',(A2)+
@@ -362,7 +360,7 @@ suba_L  ;subA.L
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
     
             MOVE.B  #',',(A2)+
             MOVE.B  #'A',(A2)+
@@ -447,7 +445,7 @@ sub_B_EA   ;sub.B Dn -> EA
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
  ;           MOVE.B  #'D',(A2)+
             
@@ -546,7 +544,7 @@ sub_W_EA   ;sub.B Dn -> EA
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
 
 
             BRA printcode  
@@ -622,7 +620,7 @@ sub_L_EA   ;sub.L Dn -> EA
             
             *-ERROR HERE NOT SURE WHY AFTER sub.L D2,(A2)+ it goines into this lower loop D1 = 20 no matchs
 *            CMP.B   #32,D1         ; #imm => #XX 3 spaces
-*            BEQ.W   immediateData   ;branch to immediateData
+*            ;BEQ.W   immediateData   ;branch to immediateData
 
 
             BRA printcode  
@@ -630,6 +628,8 @@ sub_L_EA   ;sub.L Dn -> EA
 *            
 *
 *
+
+
 
 
 *~Font name~Courier New~

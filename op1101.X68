@@ -80,7 +80,7 @@ add_B   ;add.B EA->Dn
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -145,8 +145,8 @@ add_W   ;add.B EA->Dn
             MULU    #8,D1       value adjusted for jumping
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
-            CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;CMP.B   #32,D1         ; #imm => #XX 3 spaces
+            ;;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -211,7 +211,7 @@ add_L   ;add.B EA->Dn
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
             MOVE.B  #'D',(A2)+
             
@@ -273,7 +273,7 @@ adda_W  ;ADDA.W
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
     
         MOVE.B  #',',(A2)+
         MOVE.B  #'A',(A2)+
@@ -356,7 +356,7 @@ adda_L  ;ADDA.L
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
     
             MOVE.B  #',',(A2)+
             MOVE.B  #'A',(A2)+
@@ -441,7 +441,7 @@ add_B_EA   ;add.B Dn -> EA
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
  ;           MOVE.B  #'D',(A2)+
             
@@ -540,7 +540,7 @@ add_W_EA   ;add.B Dn -> EA
             LEA     regNumTable ,A7 Load the table into A7
             JSR     (A7,D1)     Jump to subroutine of value at D1
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
-            BEQ.W   immediateData   ;branch to immediateData
+            ;BEQ.W   immediateData   ;branch to immediateData
 
 
             BRA printcode  
@@ -616,7 +616,7 @@ add_L_EA   ;add.L Dn -> EA
             
             *-ERROR HERE NOT SURE WHY AFTER ADD.L D2,(A2)+ it goines into this lower loop D1 = 20 no matchs
 *            CMP.B   #32,D1         ; #imm => #XX 3 spaces
-*            BEQ.W   immediateData   ;branch to immediateData
+*            ;BEQ.W   immediateData   ;branch to immediateData
 
 
             BRA printcode  
@@ -624,6 +624,9 @@ add_L_EA   ;add.L Dn -> EA
 *            
 *
 *
+
+
+
 
 *~Font name~Courier New~
 *~Font size~10~
