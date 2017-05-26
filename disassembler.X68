@@ -337,6 +337,13 @@ immAbTable  JSR     IA000   ;Absoulute Word
 * -----------------------------------------------------------            
 IA010       RTS
 IA011       RTS
+* ----------------------------------------------------------- 
+moveIntPointerWord
+            MOVE.W  (A4)+,D4     MOVE insturction pointer by WORD to get next
+            RTS
+moveIntPointerLong
+            MOVE.L  (A4)+,D4     MOVE insturction pointer by LONG to get next
+            RTS
 * -----------------------------------------------------------            
 * Subroutine IA000   ------------------------------------------
 IA000                               ;absoulteWord   
@@ -375,6 +382,7 @@ IA000                               ;absoulteWord
             LEA     numTable ,A6 Load the table into A6
                         MULU    #8,D1
             JSR     (A6,D1)     Jump to subroutine of value at D1
+            JSR     moveIntPointerWord
             RTS           
 * -----------------------------------------------------------            
 * Subroutine IA001   ------------------------------------------
@@ -451,14 +459,14 @@ IA001                               ;absoulteLong
             MULU    #8,D1
             LEA     numTable ,A6 Load the table into A6
             JSR     (A6,D1)     Jump to subroutine of value at D1
-           
-
+            JSR     moveIntPointerLong
             RTS
  
 * -----------------------------------------------------------            
 * Subroutine IA100   ------------------------------------------
 IA100                               ;immediateData
-            MOVE.B  #'#',(A2)+ 
+            MOVE.B  #'#',(A2)+
+            MOVE.B  #'$',(A2)+  
             MOVE.W  (A5)+,D4    WE got the address for the operand
             MOVE.W  (A5),D4     Got the value of operand, immeditae data
             *4MSB   00X*
@@ -1156,6 +1164,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 

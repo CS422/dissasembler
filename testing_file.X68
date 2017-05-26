@@ -11,7 +11,18 @@
 *
 *----
 START:                  ; first instruction of program
-    
+    MOVE.W  $A000,D1
+    MOVE.W  D0,D1
+    MOVE.w  $4563,D0
+    MOVE.w  D0,D1
+    MOVE.w  #34,D1
+    MOVE.w  D0,D1
+    MOVE.l  $A000,D1
+    MOVE.l  D0,D1
+    MOVE.l  $4563,D0
+    MOVE.l  D0,D1
+    MOVE.l  #34,D1
+    MOVE.l  D0,D1
 * Put program code here
 *----------------------------------------------------------
 * Testing:  4MSB opcode 0001 => MOVE.B and MOVEA.B 
@@ -46,7 +57,7 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Absolute Addressing - Word
 *----------------------------------------------------------
-     MOVE.B  $4214,D5
+*   MOVE.B  $4214,D5
 *----------------------------------------------------------
 * Absolute Addressing - Long
 *----------------------------------------------------------
@@ -181,7 +192,7 @@ START:                  ; first instruction of program
 *    MOVE.W  D1,D2
 *    MOVE.W  $8964,D4
 *    
-     ADD.W  D2,D5
+    * ADD.W  D2,D5
 
 
 
@@ -250,6 +261,8 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
+
 
 
 
