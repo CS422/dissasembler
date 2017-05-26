@@ -59,8 +59,8 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Direct Addressing
 *----------------------------------------------------------
-   MOVE.W   D0,D1       ; Testing Dn
-   MOVEA.W  A0,A1       ; Testing An
+*   MOVE.W   D0,D1       ; Testing Dn
+*   MOVEA.W  A0,A1       ; Testing An
 
 *    MOVE.B  D0,D2       ; Testing Dn
 **   MOVE.B  A0,D1       ; Testing An
@@ -102,7 +102,7 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Direct Addressing
 *----------------------------------------------------------
-   MOVE.L   D0,D1       ; Testing Dn
+*   MOVE.L   D0,D1       ; Testing Dn
 *   MOVEA.L  A0,A1       ; Testing An
 
 *    MOVE.B  D0,D2       ; Testing Dn
@@ -153,7 +153,7 @@ START:                  ; first instruction of program
      ;ADD     #$5,D5 ;ADDQ
     
     ;MOVE.B   #$22,D5
-;    ADD.B   D6,D5
+*    ADD.B   D6,D5
 *- BROken below, the buffer (A3) will not print the regnum 7, not sure why
 ;    ADD.W   A5,D6
 ; why does it print out wrong if i print multiple opcodes 
@@ -161,24 +161,27 @@ START:                  ; first instruction of program
 *    ADD.L   D7,D4
 *    
 ;ISSUE (A3)/(A2) does not correctly print to the console if there are more than 1 OPCODE
-    ADD.W   D6,D2
+*    ADD.W   D6,D2
 ;    ADD.L   D7,D1    
-    
-    ADD.W   D2,(A2)+
-    SUB.W   (A5),D6
-    SUB.L   D1,D0
-
-    ADD.L   D5,(A4)+
-
-    SUB.B   D2,D6
+*    
+*    ADD.W   D2,(A2)+
+*    SUB.W   (A5),D6
+*    SUB.L   D1,D0
+*
+*    ADD.L   D5,(A4)+
+*
+*    SUB.B   D2,D6
 *- immediate data prints 45 which is HEX equalivent of 69(decimal)
 *-idea convert from decimal to hex to ascii
-    MOVEQ   #69,D2
+*    MOVEQ   #69,D2
+*    
+*    ADD.W   D2,D7
+*    ADD.L   D4,D5
     
-    ADD.W   D2,D7
-    ADD.L   D4,D5
-    
-
+*    MOVE.W  D1,D2
+*    MOVE.W  $8964,D4
+*    
+     ADD.W  D2,D5
 
 
 
@@ -247,6 +250,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 

@@ -11,6 +11,18 @@ CR  EQU $0D
 LF  EQU $0A
 startLoc    EQU $7000
 
+*-----------------------------------------------------------
+* Title      : (!!!!!!STABLE!!!!) Master branch
+* Written by : Danny Ly & Edward Chang
+* Date       : 4/27/2017
+* Description: Our dissasembler for 68K
+*-----------------------------------------------------------
+*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
+    ORG    $1000
+    
+CR  EQU $0D
+LF  EQU $0A
+startLoc    EQU $7000
 
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
@@ -89,7 +101,8 @@ START:
 *                JSR     parse_end
 *
 *                
-*                MOVE.L  D6,A6           MOVE OUT ENDING ADDRESS TO A6
+*                MOVE.L  D6,A6           MOVE OUT ENDING ADDRESS TO 
+
 *  
 *             
 *STORE_SRT_END:
@@ -168,13 +181,12 @@ mainLoop
             LSR     #4,D3       SHIFT 4 BITS TO GET THE MSB OF THE WORD
             
             ;compare bits to instructions
-            
-            CMP.B   #bin0001,D3 ;MOVE.B
             *- Machine code saved in D6
+            CMP.B   #bin0001,D3 ;MOVE.B, MOVEA.B
             BEQ     op0001      ;branch to op0001
-            CMP.B   #bin0011,D3 ;MOVE.W
+            CMP.B   #bin0011,D3 ;MOVE.W, MOVEA.W
             BEQ     op0011      ;branch to op0011
-            CMP.B   #bin0010,D3 ;MOVE.L 
+            CMP.B   #bin0010,D3 ;MOVE.L, MOVEA.W 
             BEQ     op0010      ;branch to op0010           
             CMP.B   #bin0111,D3 ;MOVEQ
             BEQ     op0111      ;branch to op0111                        
@@ -396,7 +408,7 @@ IA001                               ;absoulteLong
             MOVE.B  D4,D1       00X*
             LSR.B   #4,D1       000X
             LEA     numTable ,A6 Load the table into A6
-            MULU    #8,D1
+                        MULU    #8,D1
             JSR     (A6,D1)     Jump to subroutine of value at D1
             *last 4  bits   ***X
             CLR     D1
@@ -404,7 +416,7 @@ IA001                               ;absoulteLong
             LSL.B   #4,D1       00X0    
             LSR.B   #4,D1       000X
             LEA     numTable ,A6 Load the table into A6
-            MULU    #8,D1
+                        MULU    #8,D1
             JSR     (A6,D1)     Jump to subroutine of value at D1
 *---------  Second Word Value D2    **** XXXX
             *4MSB   X***
@@ -440,14 +452,13 @@ IA001                               ;absoulteLong
             LEA     numTable ,A6 Load the table into A6
             JSR     (A6,D1)     Jump to subroutine of value at D1
            
+
             RTS
  
 * -----------------------------------------------------------            
 * Subroutine IA100   ------------------------------------------
 IA100                               ;immediateData
-
             MOVE.B  #'#',(A2)+ 
-            MOVE.B  #'$',(A2)+
             MOVE.W  (A5)+,D4    WE got the address for the operand
             MOVE.W  (A5),D4     Got the value of operand, immeditae data
             *4MSB   00X*
@@ -786,7 +797,8 @@ N1111
 *            HELPER LOCATION
 *            HELPER LOCATION
 
-
+get_0_3_bit
+    
 
 get_3_5bit
 *------------------------------------------------------------
@@ -844,16 +856,26 @@ WordOrLong
             *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
             *-------------------------------------
             INCLUDE 'op0100.x68'    IN a different file, modulated design        
-            INCLUDE 'op0001.x68'    MOVE.b Differetn file
+            INCLUDE 'op0001.x68'    MOVE.B MOVEA.B 
+            INCLUDE 'op0011.x68'    MOVE.W, MOVEA.W
+            INCLUDE 'op0010.x68'    MOVE.L, MOVEA.L
+
             INCLUDE 'op1101.x68'    ADD,ADDA
-            INCLUDE 'op1001.x68'    SUB,SUBA
-            INCLUDE 'op0111.x68'    MOVEQ
+            INCLUDE 'op1001.x68'    SUB, SUBA
             INCLUDE 'op1000.x68'    DIVU
-            INCLUDE 'op0010.x68'    MOVE.L
-            INCLUDE 'op0011.x68'    MOVE.W MOVEA.W
+            INCLUDE 'op0111.x68'    MOVEQ
+            
+            
+
+
+
+
+
+
+
             
            
-            
+
             
 opError                             
             MOVE.L  A0,D3
@@ -949,60 +971,7 @@ hex_F   EQU     %1111 ;F
 
         
         *----------END OF I/O SECTION*---
-        *----------Start of OPCODE SUBROUTINE
-stack            EQU        $A000  
-shift            EQU        12                   * Shift 12 bits 
-                 ORG        $400
-         
-get_opcode       LEA        stack,SP        *Load the SP
-                 LEA        jmp_table,A0    *Index into the table
-                 CLR.L      D0              *Zero it       
-                 MOVE.L     #$00009000,A1        *We'll play with it here
-                 MOVE.W     (A1),D0
-                 MOVE.B     #shift,D1       *Shift 12 bits to the right  
-                 LSR.W      D1,D0           *Move the bits
-                 MULU       #6,D0           *Form offset     
-                 JSR        0(A0,D0)        *Jump indirect with index
-                 
-jmp_table        JMP        code0000        *Bit manipulation/MOVEP/Immediate
-                 JMP        code0001        *MOVE.B
-                 JMP        code0010        *MOVE.L
-                 JMP        code0011        *MOVE.W
-                 JMP        code0100        *Miscellaneous
-                 JMP        code0101        *ADDQ/SUBQ/Scc/DBcc
-                 JMP        code0110        *BSR,BRA,Bcc
-                 JMP        code0111        *MOVEQ
-                 JMP        code1000        *OR/DIV/SBCD
-                 JMP        code1001        *SUB/SUBX
-                 JMP        code1010        *Unassigned
-                 JMP        code1011        *CMP/EOR
-                 JMP        code1100        *AND/MUL/ABCD/EXG
-                 JMP        code1101        *ADD/ADDA/ADDX
-                 JMP        code1110        *Shift/Rotate
-                 JMP        code1111        *Special/Reserved
-                 
-code0000         STOP       #$2700
-code0001         STOP       #$2700
-code0010         STOP       #$2700
-code0011         STOP       #$2700
-code0100         MOVE.L     #0,A3
-                 CLR        D1
-                 LEA        enter_start_AD,A1
-                 MOVE.L     #14,D0
-                 TRAP       #15
-                 RTS
-code0101         STOP       #$2700
-code0110         STOP       #$2700
-code0111         STOP       #$2700
-code1000         STOP       #$2700
-code1001         STOP       #$2700
-code1010         STOP       #$2700
-code1011         STOP       #$2700
-code1100         STOP       #$2700
-code1101         STOP       #$2700
-code1110         STOP       #$2700
-code1111         STOP       #$2700
-
+        
 FINISH:
         *INCLUDE 'opcode_subroutine.x68'
             MOVE.L  A0,D3
@@ -1037,12 +1006,12 @@ FINISH:
 *-390 -> 406 WITH NOP AT 400
 
 
-
+hexToAscii:
 ones:
     MOVE.W  D2,D5
     MULU    #8,D5       value adjusted for jumping
-    LEA     numTable ,A6 Load the table into A6
-    JSR     (A6,D5)     Jump to subroutine of value at D1 
+    LEA     numTable ,A7 Load the table into A7
+    JSR     (A7,D5)     Jump to subroutine of value at D1 
     *-adding res
     ;ADD     D2,D7
     
@@ -1187,19 +1156,6 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

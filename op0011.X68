@@ -97,9 +97,9 @@ decode0011
             JSR     (A6,D0)     Jump to subroutine of value at D1
 *------------------------------------------------------------
 * Check for #imm or Absolute addressing with D1: register value
-*            LEA     immAbTable, A6
-*            MULU    #8,D1
-*            JSR     (A6,D1)    
+            LEA     immAbTable, A6
+            MULU    #8,D1
+            JSR     (A6,D1)    
 *            CMP.B   #4,D1         ; 100 => #imm => #XX 3 spaces
 *            BEQ.B   immediateData   ;branch to immediateData
 *            CMP.B   #0,D1         ; 000 => (xxx).W => #XXXX 5 spaces
@@ -142,6 +142,7 @@ decode0011
 *------------------------------------------------------------
 * end of file            
 *------------------------------------------------------------
+
 
 
 *~Font name~Courier New~

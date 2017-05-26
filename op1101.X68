@@ -8,11 +8,11 @@ op1101
     *-a LONG or a WORD
     
     *-now we need to decipher if its any of the adds
-    CMP.B   #hex_0,D3 is this ADD.B
-    BEQ add_B   ;<EA> -> Dn
+    CMP.B   #hex_0,D3   is this ADD.B
+    BEQ add_B           ;<EA> -> Dn
 *    
     CMP.B   #hex_1,D3   is it ADD.W
-    BEQ add_W ;<EA> ->Dn
+    BEQ add_W       ;<EA> ->Dn
 *    
     CMP.B   #hex_2,D3   is it ADD.L
     BEQ add_L ;<EA> ->Dn
@@ -126,25 +126,28 @@ add_W   ;add.B EA->Dn
         * MachineCode: 0001 **** **** **BI T***
 * Only next last 3 bits which is stored at D0 => Source Address mode
     *-insert immediate addressing here
-            CLR     D2
-            CLR     D1
-            MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
-            LSL.B   #2,D2       **** **** BIT* **00
-            LSR.B   #5,D2       **** **** 0000 0BIT
-            MULU    #8,D2       value adjusted for jumping
-            LEA     modeTable,A6 Load the table into A6
-            JSR     (A6,D2)     Jump to subroutine of value at D0   
-
-
- * MachineCode: 0001 **** **** **** *BIT
-* Only last 3 bits which is stored at D0 => Source Register
-            
-            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
-            LSL.B   #5,D1       **** **** BIT0 0000
-            LSR.B   #5,D1       **** **** 0000 0BIT      
-            MULU    #8,D1       value adjusted for jumping
-            LEA     regNumTable ,A7 Load the table into A7
-            JSR     (A7,D1)     Jump to subroutine of value at D1
+*            CLR     D2
+*            CLR     D1
+*            MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+*            LSL.B   #2,D2       **** **** BIT* **00
+*            LSR.B   #5,D2       **** **** 0000 0BIT
+*            MULU    #8,D2       value adjusted for jumping
+*            LEA     modeTable,A6 Load the table into A6
+*            JSR     (A6,D2)     Jump to subroutine of value at D0   
+*
+*
+* * MachineCode: 0001 **** **** **** *BIT
+** Only last 3 bits which is stored at D0 => Source Register
+*            
+*            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+*            LSL.B   #5,D1       **** **** BIT0 0000
+*            LSR.B   #5,D1       **** **** 0000 0BIT      
+*            MULU    #8,D1       value adjusted for jumping
+*            LEA     regNumTable ,A7 Load the table into A7
+*            JSR     (A7,D1)     Jump to subroutine of value at D1
+*            
+*            
+            JSR     immeData
             ;CMP.B   #32,D1         ; #imm => #XX 3 spaces
             ;;BEQ.W   immediateData   ;branch to immediateData
             MOVE.B  #',',(A2)+
@@ -250,9 +253,9 @@ adda_W  ;ADDA.W
     MOVE.B  #' ',(A2)+
 
     
-    * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-    *-insert immediate addressing here
+*    * MachineCode: 0001 **** **** **BI T***
+** Only next last 3 bits which is stored at D0 => Source Address mode
+*    *-insert immediate addressing here
             CLR     D2
             CLR     D1
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
@@ -275,6 +278,7 @@ adda_W  ;ADDA.W
             CMP.B   #32,D1         ; #imm => #XX 3 spaces
             ;BEQ.W   immediateData   ;branch to immediateData
     
+       
         MOVE.B  #',',(A2)+
         MOVE.B  #'A',(A2)+
 *------------------------------------------------------------
@@ -624,6 +628,13 @@ add_L_EA   ;add.L Dn -> EA
 *            
 *
 *
+immeData
+    *------------------------------------------------------------
+* Check for #imm or Absolute addressing with D1: register value
+            LEA     immAbTable, A6
+            MULU    #8,D1
+            JSR     (A6,D1)  
+            RTS
 
 
 
