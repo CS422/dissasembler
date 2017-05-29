@@ -13,67 +13,106 @@ op1110:
     JSR get_shift_normal
     
     *--------------------------------
-* ----------------------------------------------------------  
-*            CMP.B   #$04,D3     ;see if it's a ASR.B [to reg]
-*            BEQ     asrB_R      
-*            CMP.B   #$0C,D3     ;see if it's a ASR.W [to reg]
-*            BEQ     _asrW_R          
-*            CMP.B   #$14,D3     ;see if it's a ASR.L [to reg]
-*            BEQ     _asrL_R            
-*            CMP.B   #$00,D3     ;see if it's a ASR.B [to imm]
-*            BEQ     _asrB_I      
-*            CMP.B   #$08,D3     ;see if it's a ASR.W [to imm]
-*            BEQ     _asrW_I          
-*            CMP.B   #$10,D3     ;see if it's a ASR.L [to imm]
-*            BEQ     _asrL_I
-*
-*            CMP.B   #$25,D3     ;see if it's a LSL.B [to reg]
-*            BEQ     _lslB_R      
-*            CMP.B   #$2D,D3     ;see if it's a LSL.W [to reg]
-*            BEQ     _lslW_R          
-*            CMP.B   #$35,D3     ;see if it's a LSL.L [to reg]
-*            BEQ     _lslL_R            
-*            CMP.B   #$21,D3     ;see if it's a LSL.B [to imm]
-*            BEQ     _lslB_I      
-*            CMP.B   #$29,D3     ;see if it's a LSL.W [to imm]
-*            BEQ     _lslW_I          
-*            CMP.B   #$31,D3     ;see if it's a LSL.L [to imm]
-*            BEQ     _lslL_I
-*
-            CMP.B   #$07,D3     ;see if it's a ROR.B [to reg]
-            BEQ     rorB_RN      
-*            CMP.B   #$0F,D3     ;see if it's a ROR.W [to reg]
-*            BEQ     _rorW_R          
-*            CMP.B   #$17,D3     ;see if it's a ROR.L [to reg]
-*            BEQ     _rorL_R            
-            CMP.B   #$03,D3     ;see if it's a ROR.B [to imm]
+* -----------------------ASR
+            CMP.B   #$04,D3     ; ASR.B Dn
+            BEQ     asrB_RN   
+            CMP.B   #$00,D3     ; ASR.B Immidiate
+            BEQ     asrB_IN      
+
+  
+            CMP.B   #$0C,D3     ; ASR.W Dn
+            BEQ     asrW_RN          
+            CMP.B   #$08,D3     ; ASR.W Immidiate
+            BEQ     asrW_IN          
+
+
+            CMP.B   #$14,D3     ; ASR.L Dn
+            BEQ     asrL_RN            
+            CMP.B   #$10,D3     ; ASR.L Immidiate
+            BEQ     asrL_IN
+            
+            
+*--------------------------LSL
+            CMP.B   #$25,D3     ; LSL.B Dn
+            BEQ     lslB_RN      
+
+            CMP.B   #$21,D3     ; LSL.B Immidiate
+            BEQ     lslB_IN      
+
+
+            CMP.B   #$2D,D3     ; LSL.W Dn
+            BEQ     lslW_RN          
+            CMP.B   #$29,D3     ; LSL.W Immidiate
+            BEQ     lslW_IN          
+
+
+            CMP.B   #$35,D3     ; LSL.L Dn
+            BEQ     lslL_RN            
+
+            CMP.B   #$31,D3     ; LSL.L Immidiate
+            BEQ     lslL_IN
+            
+*-------------------------LSR
+
+            CMP.B   #$01,D3 LSR.B Immidiate
+            BEQ     lsrB_IN
+            CMP.B   #$05,D3 LSR.B   Dn
+            BEQ     lsrB_RN 
+            
+            CMP.B   #$09,D3 LSR.W   Immidiate
+            BEQ     lsrW_IN
+            CMP.B   #$0D,D3 LSR.W   DN
+            BEQ     lsrW_RN
+            
+            CMP.B   #$11,D3 LSR.L   Immidiate
+            BEQ     lsrL_IN 
+            
+            CMP.B   #$15,D3 LSR.L   Dn
+            BEQ     lsrL_RN
+            
+*--------------------------ROR
+            CMP.B   #$07,D3     ; ROR.B Dn            
+            BEQ     rorB_RN  
+            CMP.B   #$03,D3     ; ROR.B Immidiate
             BEQ     rorB_IN      
-*            CMP.B   #$0B,D3     ;see if it's a ROR.W [to imm]
-*            BEQ     _rorW_I          
-*            CMP.B   #$13,D3     ;see if it's a ROR.L [to imm]
-*            BEQ     _rorL_I
-*            
-*            CMP.B   #$27,D3     ;see if it's a ROL.B [to reg]
-*            BEQ     _rolB_R      
-*            CMP.B   #$2F,D3     ;see if it's a ROL.W [to reg]
-*            BEQ     _rolW_R          
-*            CMP.B   #$37,D3     ;see if it's a ROL.L [to reg]
-*            BEQ     _rolL_R            
-*            CMP.B   #$23,D3     ;see if it's a ROL.B [to imm]
-*            BEQ     _rolB_I      
-*            CMP.B   #$2B,D3     ;see if it's a ROL.W [to imm]
-*            BEQ     _rolW_I          
-*            CMP.B   #$33,D3     ;see if it's a ROL.L [to imm]
-*            BEQ     _rolL_I
+    
+            CMP.B   #$0B,D3     ; ROR.W Immidiate
+            BEQ     rorW_IN            
+            
+            CMP.B   #$0F,D3     ; ROR.W Dn
+            BEQ     rorW_RN  
+        
+        
+            CMP.B   #$17,D3     ; ROR.L Dn
+            BEQ     rorL_RN            
+
+  
+            CMP.B   #$13,D3     ; ROR.L Immidiate
+            BEQ     rorL_IN
+            
+*----------------------------ROL
+            CMP.B   #$27,D3     ; ROL.B Dn
+            BEQ     rolB_RN      
+            CMP.B   #$23,D3     ; ROL.B Immidiate
+            BEQ     rolB_IN      
+
+
+            CMP.B   #$2F,D3     ; ROL.W Dn
+            BEQ     rolW_RN          
+            CMP.B   #$2B,D3     ; ROL.W Immidiate
+            BEQ     rolW_IN        
+
+            CMP.B   #$37,D3     ; ROL.L Dn
+            BEQ     rolL_RN            
+            CMP.B   #$33,D3     ; ROL.L Immidiate
+            BEQ     rolL_IN
                   
 
     
 
     
 rorB_RN
-    
-rorB_IN
-    *-ROR.B #,D2
+    *-ROR.B D1,D2 dataregister ea
     MOVE.B  #' ',(A2)+  ;print some spaces 
     MOVE.B  #' ',(A2)+
     MOVE.B  #' ',(A2)+
@@ -86,17 +125,867 @@ rorB_IN
     MOVE.B  #' ',(A2)+  ;
     MOVE.B  #' ',(A2)+  ;print some spaces 
     MOVE.B  #' ',(A2)+
+
+    MOVE.B  #'D',(A2)+ 
+    JSR get_bit_9_11
+    LEA numTable,A6     load numtable
+    MULU    #8,D3   prepare for the jump
+    JSR     (A6,D3) get the register number
+    
+    MOVE.B  #',',(A2)+
+    
+    MOVE.B  #'D',(A2)+
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)     get the register number
+    
+    BRA printCode
+    
+    
+rorB_IN
+    *-ROR.B #,D2 immediate addressing
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
     MOVE.B  #' ',(A2)+
     MOVE.B  #'#',(A2)+  ;print #
     
     JSR get_bit_9_11
     CMP.B   #0,D3  *-check if value is 8
-    BNE rorB_N8
+    BNE shift_Not_8
     MOVE.B  #'8',(A2)+
-    BRA     ror_b_8
+    BRA     shift_complete
+    
+rorW_IN
+    *-immeidiate data from ROR.W
+        *-ROR.W #,D2 immediate addressing
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+  ;print #
+    
+    JSR get_bit_9_11    get the bits for the immidate data
+    CMP.B   #0,D3       check if its zero, meaning a move of 8
+    BNE     shift_Not_8     not 8(zero) move to get the value and print reg number
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+    
+
+rorW_RN
+    *-Register data from ROR.W
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+  ;print 
+    
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_9_11
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA printCode
+    
+rorL_RN
+    *-ROR.L #,D#
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+  ;print 
+    
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_9_11
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA printCode
+    
+rorL_IN
+    *-Immediate addressing for ROR.L    #,D2
+    
+
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+  ;print #
+    
+    JSR get_bit_9_11    get the bits for the immidate data
+    CMP.B   #0,D3       check if its zero, meaning a move of 8
+    BNE     shift_Not_8     not 8(zero) move to get the value and print reg number
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+    
+*--------------------------ROL.B
+    
+rolB_RN
+    *-ROL.B D1,D2 dataregister ea
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+
+    MOVE.B  #'D',(A2)+ 
+    JSR get_bit_9_11
+    LEA numTable,A6     load numtable
+    MULU    #8,D3   prepare for the jump
+    JSR     (A6,D3) get the register number
+    
+    MOVE.B  #',',(A2)+
+    
+    MOVE.B  #'D',(A2)+
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)     get the register number
+    
+    BRA printCode
     
     
-ror_b_8
+rolB_IN
+    *-ROR.B #,D2 immediate addressing
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+  ;print #
+    
+    JSR get_bit_9_11
+    CMP.B   #0,D3  *-check if value is 8
+    BNE shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+    
+
+
+*--------------------------ROL.W  
+rolW_RN
+    *-ROL.W D1,D2 dataregister ea
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+
+    MOVE.B  #'D',(A2)+ 
+    JSR get_bit_9_11
+    LEA numTable,A6     load numtable
+    MULU    #8,D3   prepare for the jump
+    JSR     (A6,D3) get the register number
+    
+    MOVE.B  #',',(A2)+
+    
+    MOVE.B  #'D',(A2)+
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)     get the register number
+    
+    BRA printCode
+    
+    
+rolW_IN
+    *-ROR.W #,D2 immediate addressing
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+  ;print #
+    
+    JSR get_bit_9_11
+    CMP.B   #0,D3  *-check if value is 8
+    BNE shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+*---------------------ROL.L
+  
+rolL_RN
+    *-ROL.L D1,D2 dataregister ea
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+
+    MOVE.B  #'D',(A2)+ 
+    JSR get_bit_9_11
+    LEA numTable,A6     load numtable
+    MULU    #8,D3   prepare for the jump
+    JSR     (A6,D3) get the register number
+    
+    MOVE.B  #',',(A2)+
+    
+    MOVE.B  #'D',(A2)+
+    JSR     get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)     get the register number
+    
+    BRA printCode
+    
+    
+rolL_IN
+    *-ROR.B #,D2 immediate addressing
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'O',(A2)+  ;print O
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+  ;print #
+    
+    JSR get_bit_9_11
+    CMP.B   #0,D3  *-check if value is 8
+    BNE shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+    
+
+
+*------------------------ ASR
+asrB_RN
+    *ASR.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+asrB_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+
+*------------------------ASR.W
+asrW_RN
+    *ASR.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+asrW_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+
+*-------------------------ASR.L
+
+asrL_RN
+    *ASR.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+asrL_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'A',(A2)+  ;print A
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+*-----------------------------LSL
+
+
+lslB_RN
+    *LSL.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lslB_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+*----------------------------LSL.W
+
+
+
+lslW_RN
+    *LSL.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lslW_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+*-----------------------------LSL.L
+
+
+
+lslL_RN
+    *LSL.B #,Dn
+    
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lslL_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+
+
+*--------------------------LSR.B
+lsrB_RN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lsrB_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+
+*--------------------------LSR.W
+lsrW_RN   
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lsrW_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+*------------------------LSR.L
+
+lsrL_RN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'D',(A2)+ 
+    JSR     get_bit_9_11
+   
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    MOVE.B  #',',(A2)+
+    MOVE.B  #'D',(A2)+
+    JSR get_bit_0_2
+    
+    LEA     numTable,A6
+    MULU    #8,D3
+    JSR     (A6,D3)
+    
+    BRA     printCode
+    
+    
+lsrL_IN
+    
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'S',(A2)+  ;print S
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #' ',(A2)+  ;
+    MOVE.B  #' ',(A2)+  ;print some spaces 
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'#',(A2)+
+    
+    JSR     get_bit_9_11
+    CMP.B   #0,D3
+    BNE     shift_Not_8
+    MOVE.B  #'8',(A2)+
+    BRA     shift_complete
+
+
+
+
+
+
+
+
+    *------------------HELPER FUNCTIONS*********************
+shift_complete
     MOVE.B  #',',(A2)+
     MOVE.B  #'D',(A2)+
     JSR get_bit_0_2
@@ -105,10 +994,11 @@ ror_b_8
     JSR     (A6,D3)
     BRA     printCode
     
-rorB_N8
+shift_Not_8
     MULU.W  #8,D3
     LEA numTable,A6
     JSR     (A6,D3)
+    JSR     shift_complete
     
 get_bit_0_2
     CLR     D3

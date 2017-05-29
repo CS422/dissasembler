@@ -193,14 +193,78 @@ START:                  ; first instruction of program
 *    ADDQ.L  #8,D4
     
 *    SUBQ.B  #5,D1
-
-    ROR.B   #1,D2
+*    ROR.B   #$3,D1
+*    ROR.B   #2,D7
+*    ROR.B   D1,D2
+*    
+*    ROR.W   #5,D2
+*    ROR.W   D2,D7
+*    ROR.W   #$8,D4
+*    
+*    ROR.L   D2,D7
+*    
+*    ROR.L   #$5,D2
+*    ROR.L   #8,D0
+*    
+*    ROL.B   #4,D1
+*    ROL.B   D0,D7
+*    ROL.B   #8,D0
+*    
+*    ROL.W   #$5,D6
+*    ROL.W   #2,D5
+*    ROL.W   #$8,D5
+*    
+*    ROL.L   #6,D6
+*    ROL.L   #8,D7
+    
+    ASR.B     #8,D2
+    
+    *    ROR.B   #$3,D1
+    ASR.B   #2,D7
+    ASR.B   D1,D2
+    
+    ASR.W   #5,D2
+    ASR.W   D2,D7
+    ASR.W   #$8,D4
+    
+    ASR.L   D2,D7
+    
+    ASR.L   #$5,D2
+    ASR.L   #8,D0
+    
+    ASR.B   #4,D1
+    ASR.B   D0,D7
+    ASR.B   #8,D0
+    
+    ASR.W   #$5,D6
+    ASR.W   #2,D5
+    ASR.W   #$8,D5
+    
+    ASR.L   #6,D6
+    ASR.L   #8,D7
+    
+    LSL.B   #$8,D2
+    LSL.B   #4,D0
+    
+    LSL.W   #8,D2
+    LSL.W   #$7,D7
+    LSL.W   D2,D1
+    
+    LSL.L   #6,D2
+    LSL.L   D4,D6
+    LSL.L   #$6,D7
+    
     
 
-
+    LSR.B   #5,D2
+    LSL.B   #5,D2
+    LSR.W   #5,D6
+    LSR.L   #5,D2
     
 
-
+    LSR.B   D2,D3
+    LSR.W   D1,D3
+    LSR.L   D6,D7
 
 
 
