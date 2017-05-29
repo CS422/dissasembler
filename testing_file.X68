@@ -10,9 +10,10 @@
 *
 *
 *----
-START:                  ; first instruction of program  
-      LEA    (A1),A2
-      LEA    $A000,A5
+START:                  ; first instruction of program
+    BRA     A1  
+*      LEA    (A1),A2
+*      LEA    $A000,A5
 *     JSR    (A0)
 *     JSR    $4214
 *     JSR    $A000
@@ -34,8 +35,8 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Direct Addressing
 *----------------------------------------------------------
-    MOVE.B  D0,D1       ; Testing Dn
-    MOVE.B  D0,D2       ; Testing Dn
+*    MOVE.B  D0,D1       ; Testing Dn
+*    MOVE.B  D0,D2       ; Testing Dn
 *    MOVE.B  A0,D1       ; Testing An
 *----------------------------------------------------------
 * Indriect Addressing
@@ -57,8 +58,8 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Immediate Data
 *----------------------------------------------------------
-   MOVE.B  #34,D4 
-     MOVE.B  #99,D5        
+*   MOVE.B  #34,D4 
+*     MOVE.B  #99,D5        
 *----------------------------------------------------------
 * Absolute Addressing - Word
 *----------------------------------------------------------
@@ -266,6 +267,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 
