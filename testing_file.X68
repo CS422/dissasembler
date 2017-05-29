@@ -46,7 +46,7 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Absolute Addressing - Word
 *----------------------------------------------------------
-     MOVE.B  $4214,D5
+*     MOVE.B  $4214,D5
 *----------------------------------------------------------
 * Absolute Addressing - Long
 *----------------------------------------------------------
@@ -181,15 +181,24 @@ START:                  ; first instruction of program
 *    MOVE.W  D1,D2
 *    MOVE.W  $8964,D4
 *    
-     ADD.W  D2,D5
+*     ADD.W  D2,D5
+    
+*    ADDI.L    #$50,d0
+*    ADDI.B  #$66,D7
+*    ADDI.W  #$999,D1
+*    
+*    ADDQ.B  #$7,D7
+*    ADDQ.W  #$3,D2
+*    
+*    ADDQ.L  #8,D4
+    
+*    SUBQ.B  #5,D1
+
+    ROR.B   #1,D2
+    
 
 
-
-
-
-
-
-
+    
 
 
 
@@ -250,6 +259,8 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
+
 
 
 
