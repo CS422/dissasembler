@@ -12,7 +12,17 @@ LF  EQU $0A
 startLoc    EQU $7000
 
 *-----------------------------------------------------------
-
+* Title      : (!!!!!!STABLE!!!!) Master branch
+* Written by : Danny Ly & Edward Chang
+* Date       : 4/27/2017
+* Description: Our dissasembler for 68K
+*-----------------------------------------------------------
+*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
+    ORG    $1000
+    
+CR  EQU $0D
+LF  EQU $0A
+startLoc    EQU $7000
 
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
@@ -186,10 +196,10 @@ mainLoop
             BEQ     op1101      ;branch to op1101            
             CMP.B   #bin1001,D3 ;SUB, SUBA
             BEQ     op1001      ;branch to op1001                        
-            CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
-            BEQ     op0000      ;branch to op0000                       
-            CMP.B   #bin0101,D3 ;SUBQ, ADDQ
-            BEQ     op0101      ;branch to op0101                         
+            ;CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
+            ;BEQ     op0000      ;branch to op0000                       
+            ;CMP.B   #bin0101,D3 ;SUBQ
+            ;BEQ     op0101      ;branch to op0101                         
             ;CMP.B   #bin0110,D3 ;Bcc
             ;BEQ     op0110      ;branch to op0110            
             CMP.B   #bin1000,D3 ;DIVU.W
@@ -198,8 +208,8 @@ mainLoop
             ;BEQ     op1011      ;branch to op1011 
             ;CMP.B   #bin1100,D3 ;AND, MULS.W
             ;BEQ     op1100      ;branch to op1100                                    
-            CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
-            BEQ     op1110      ;branch to op1110            
+            ;CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
+            ;BEQ     op1110      ;branch to op1110            
             
             BRA     opERROR     ;invalid opcode display we havent implemented this code yet
             
@@ -209,12 +219,6 @@ mainLoop
  *******************************************************************************
 *
 *******************************************************************************
-*lineCount
-*            LEA lines,A2    bring out pointer into A2, where we specificed it to be
-*            
-*            
-*            
-            
 addressCount 
             *-THIS LOCATION IS WHERE WE WILL PERIODICALLY CHECK THE RUNNING A4 REGISTERY WITH OUR STORED
             *-ENDING ADDRESS VALUE TO SEE IF WE HAVE REACHED THE END OF OUR ADDRESS RANGE
@@ -229,16 +233,9 @@ addressCount
             BLE     FINISH      * branch to end if ending address reached
             RTS                 * return IF WE HAVE NOT FINISHED
             
-         
-            
 get_next_instruction:
-
                 JSR addressCount    *-CHECKS IF WE REACHED OUT ENDING ADDRESS YET
                 *-line count
-                ;JSR lineCount ;this is where everytime we get a set of instruction we increment our number of lines on the screen by a factor
-                *-of 1, however we could also put this in print code, since each time code is print to the console it increments by 1, ERROR CHECKING
-                
-                
                 CLR D5             *-CLEAR THIS REGISTER/
                 
                 Lea good_code_buffer,A2 ;reset A2, LOADS THE BUFFER TO GET READY TO PRINT TO IT/WRITE TO IT
@@ -262,104 +259,13 @@ get_next_instruction:
                 
                 MOVE.W  (A4)+,D6 INCREMENT OUT STARTING/CURRENT POINTER BY A WORD, STORE THE CONTENTS OF WHAT ITS CURRENTLY POINTING AT
                                    *-WHICH WOULD BE THE OPCODE DATA, INTO D6
-                *- change it here such that,  when we encounter a Long-Word absolute addressing or 
-                *-immediate addressing, that function takes care of grabing the LONG word or word data
-                *-that function should also increment the A4 pointer.
-                
+
                 MOVE.L  (A4),D4  If absolute addressing => this will be operand                 
                 MOVE.W  D6,D3
                 LSR.W   #8,D3
                 
                 BRA     mainLoop
                 
-
-print_long:
-                *-This method print out the long stored in D4,
-                *- converting from hex to ascii
-                MOVE.L  D4,D3
-                SWAP D3
-                
-                AND.L   #$0000FFFF,D3
-                MOVE.W  D3,D2
-                MOVE.W  D2,D3
-                *-get bit 0
-               
-          
-               LSL.W    #8,D3
-               LSL.W    #4,D3
-               LSR.W    #8,D3
-               LSR.W    #4,D3
-               
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               *-get bit 1
-               CLR  D3
-               MOVE.W   D2,D3
-               AND.W    #$00F0,D3
-               LSR.W    #4,D3
-                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               MOVE.W   D2,D3
-               AND.W    #$0F00,D3
-               LSR.W    #8,D3
-                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               MOVE.W   D2,D3
-               AND.W    #$F000,D3
-               LSR.W    #8,D3
-               LSR.W    #4,D3
-                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               *-print the upper word
-               
-               MOVE.L D4,D3
-               
-               AND.L    #$0000FFFF,D3
-               MOVE.W   D3,D2
-               
-               *-get bit 4
-               AND.W    #$F000,D3
-               LSR.W    #8,D3
-               LSR.W    #4,D3                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               
-               MOVE.W   D2,D3
-               AND.W    #$0F00,D3
-               LSR.W    #8,D3                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               MOVE.W   D2,D3
-               AND.W    #$00F0,D3
-               LSR.W    #4,D3                              
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               
-               
-               MOVE.W   D2,D3
-               AND.W    #$000F,D3                             
-               MULU.W   #8,D3
-               LEA  numTable,A6
-               JSR  (A6,D3)
-               RTS
-               
-               
 write_data_in_D3_to_buffer:
             *------
             *   This is where we write to whatever is in data registrer D3 our dedicated D3 writer buffer writer
@@ -373,10 +279,8 @@ write_data_in_D3_to_buffer:
                 JSR     print_word
                 SWAP    D6
                 MOVE.L  D6,D3
-         
                 
-                           
-print_word:
+ print_word:
                 *-****
                 * called 4 times to decode from hex to ascii the first word 
                 *   using the below jump table
@@ -416,7 +320,6 @@ print_word:
                 JSR     (A6,D3)
                 ADDI.B  #4,D5
                 RTS
-
 * -----------------------------------------------------------            
 * Jump Table immAbTable *************************************
 *** matches the associated Addressing mode     
@@ -434,6 +337,13 @@ immAbTable  JSR     IA000   ;Absoulute Word
 * -----------------------------------------------------------            
 IA010       RTS
 IA011       RTS
+* ----------------------------------------------------------- 
+moveIntPointerWord
+            MOVE.W  (A4)+,D4     MOVE insturction pointer by WORD to get next
+            RTS
+moveIntPointerLong
+            MOVE.L  (A4)+,D4     MOVE insturction pointer by LONG to get next
+            RTS
 * -----------------------------------------------------------            
 * Subroutine IA000   ------------------------------------------
 IA000                               ;absoulteWord   
@@ -472,6 +382,7 @@ IA000                               ;absoulteWord
             LEA     numTable ,A6 Load the table into A6
                         MULU    #8,D1
             JSR     (A6,D1)     Jump to subroutine of value at D1
+            JSR     moveIntPointerWord
             RTS           
 * -----------------------------------------------------------            
 * Subroutine IA001   ------------------------------------------
@@ -548,14 +459,14 @@ IA001                               ;absoulteLong
             MULU    #8,D1
             LEA     numTable ,A6 Load the table into A6
             JSR     (A6,D1)     Jump to subroutine of value at D1
-           
-
+            JSR     moveIntPointerLong
             RTS
  
 * -----------------------------------------------------------            
 * Subroutine IA100   ------------------------------------------
 IA100                               ;immediateData
-            MOVE.B  #'#',(A2)+ 
+            MOVE.B  #'#',(A2)+
+            MOVE.B  #'$',(A2)+  
             MOVE.W  (A5)+,D4    WE got the address for the operand
             MOVE.W  (A5),D4     Got the value of operand, immeditae data
             *4MSB   00X*
@@ -893,11 +804,22 @@ N1111
 *            HELPER LOCATION
 *            HELPER LOCATION
 *            HELPER LOCATION
-
-get_0_3_bit
-    
-
-get_3_5bit
+*------------------------------------------------------------
+get_0to2_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** **** **** *BIT
+* Only last 3 bits which is stored at D0 => Source Register
+            
+            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+            LSL.B   #5,D1       **** **** BIT0 0000
+            LSR.B   #5,D1       **** **** 0000 0BIT
+            MOVE.B  D1,D0      
+            MULU    #8,D0       value adjusted for jumping
+            LEA     regNumTable ,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D1   
+            RTS
+*------------------------------------------------------------
+get_3to5_bit
 *------------------------------------------------------------
 * MachineCode: 0001 **** **** **BI T***
 * Only next last 3 bits which is stored at D0 => Source Address mode
@@ -906,10 +828,41 @@ get_3_5bit
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
             LSL.B   #2,D2       **** **** BIT* **00
             LSR.B   #5,D2       **** **** 0000 0BIT
+            MOVE.B  D2,D0
+            MULU    #8,D0       value adjusted for jumping
+            LEA     modeTable,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D0
             RTS
-            *------------------------------------------------------------
-
-
+*------------------------------------------------------------
+get_6to8_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** ***B IT** ****
+* Only next last 3 bits which is stored at D0 => Destination Address mode
+            CLR     D2
+            CLR     D1
+            MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
+            LSL.W   #7,D2       BIT* **** **** 0000
+            LSR.W   #8,D2       0000 0000 BIT* ****
+            LSR.W   #5,D2       0000 0000 0000 0BIT 
+            MULU    #8,D2       value adjusted for jumping
+            LEA     modeTable,A6 Load the table into A6
+            JSR     (A6,D2)     Jump to subroutine of value at D2
+            RTS
+*------------------------------------------------------------
+get_9to11_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** BIT* **** ****
+* Decode 3 bits => Destination Register
+* Stored at D1
+           
+            MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+            LSL.W   #4,D1       BIT* **** **** 0000
+            LSR.W   #8,D1       0000 0000 BIT* ****
+            LSR.W   #5,D1       0000 0000 0000 0BIT     
+            MULU    #8,D1       value adjusted for jumping
+            LEA     regNumTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1 
+            RTS  
 *-----------------------FUNCTION word or Long --------------
 *----------Used to decipher if we are decoding a word or long
 *-  This subroutine determines f the operations is a word or a long, 
@@ -957,15 +910,15 @@ WordOrLong
             INCLUDE 'op0011.x68'    MOVE.W, MOVEA.W
             INCLUDE 'op0010.x68'    MOVE.L, MOVEA.L
 
-            INCLUDE 'op1101.x68'    ADD,ADDA-
+            INCLUDE 'op1101.x68'    ADD,ADDA
             INCLUDE 'op1001.x68'    SUB, SUBA
             INCLUDE 'op1000.x68'    DIVU
             INCLUDE 'op0111.x68'    MOVEQ
-            INCLUDE 'op0000.x68'    ADDI.W/B/L
             
-            INCLUDE 'op0101.x68'    SUBQ, ADDQ
+            
 
-            INCLUDE 'op1110.x68'    ROR,ASR,ROL,ASL
+
+
 
 
 
@@ -1253,6 +1206,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
