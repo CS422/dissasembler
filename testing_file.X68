@@ -10,28 +10,33 @@
 *
 *
 *----
-START:                  ; first instruction of program
-    MOVE.W  $A000,D1
-    MOVE.W  D0,D1
-    MOVE.w  $4563,D0
-    MOVE.w  D0,D1
-    MOVE.w  #34,D1
-    MOVE.w  D0,D1
-    MOVE.l  $A000,D1
-    MOVE.l  D0,D1
-    MOVE.l  $4563,D0
-    MOVE.l  D0,D1
-    MOVE.l  #34,D1
-    MOVE.l  D0,D1
+START:                  ; first instruction of program  
+      LEA    (A1),A2
+      LEA    $A000,A5
+*     JSR    (A0)
+*     JSR    $4214
+*     JSR    $A000
+*    MOVE.W  $A000,D1
+*    MOVE.W  D0,D1
+*    MOVE.w  $4563,D0
+*    MOVE.w  D0,D1
+*    MOVE.w  #34,D1
+*    MOVE.w  D0,D1
+*    MOVE.l  $A000,D1
+*    MOVE.l  D0,D1
+*    MOVE.l  $4563,D0
+*    MOVE.l  D0,D1
+*    MOVE.l  #34,D1
+*    MOVE.l  D0,D1
 * Put program code here
 *----------------------------------------------------------
 * Testing:  4MSB opcode 0001 => MOVE.B and MOVEA.B 
 *----------------------------------------------------------
 * Direct Addressing
 *----------------------------------------------------------
-*    MOVE.B  D0,D1       ; Testing Dn
-*    MOVE.B  D0,D2       ; Testing Dn
-**   MOVE.B  A0,D1       ; Testing An
+    MOVE.B  D0,D1       ; Testing Dn
+    MOVE.B  D0,D2       ; Testing Dn
+*    MOVE.B  A0,D1       ; Testing An
 *----------------------------------------------------------
 * Indriect Addressing
 *----------------------------------------------------------
@@ -52,8 +57,8 @@ START:                  ; first instruction of program
 *----------------------------------------------------------
 * Immediate Data
 *----------------------------------------------------------
-*   MOVE.B  #34,D4 
-*     MOVE.B  #99,D5        
+   MOVE.B  #34,D4 
+     MOVE.B  #99,D5        
 *----------------------------------------------------------
 * Absolute Addressing - Word
 *----------------------------------------------------------
@@ -261,6 +266,11 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
+
+
+
+
 
 
 

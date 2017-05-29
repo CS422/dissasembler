@@ -804,11 +804,22 @@ N1111
 *            HELPER LOCATION
 *            HELPER LOCATION
 *            HELPER LOCATION
-
-get_0_3_bit
-    
-
-get_3_5bit
+*------------------------------------------------------------
+get_0to2_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** **** **** *BIT
+* Only last 3 bits which is stored at D0 => Source Register
+            
+            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+            LSL.B   #5,D1       **** **** BIT0 0000
+            LSR.B   #5,D1       **** **** 0000 0BIT
+            MOVE.B  D1,D0      
+            MULU    #8,D0       value adjusted for jumping
+            LEA     regNumTable ,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D1   
+            RTS
+*------------------------------------------------------------
+get_3to5_bit
 *------------------------------------------------------------
 * MachineCode: 0001 **** **** **BI T***
 * Only next last 3 bits which is stored at D0 => Source Address mode
@@ -817,10 +828,41 @@ get_3_5bit
             MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
             LSL.B   #2,D2       **** **** BIT* **00
             LSR.B   #5,D2       **** **** 0000 0BIT
+            MOVE.B  D2,D0
+            MULU    #8,D0       value adjusted for jumping
+            LEA     modeTable,A6 Load the table into A6
+            JSR     (A6,D0)     Jump to subroutine of value at D0
             RTS
-            *------------------------------------------------------------
-
-
+*------------------------------------------------------------
+get_6to8_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** ***B IT** ****
+* Only next last 3 bits which is stored at D0 => Destination Address mode
+            CLR     D2
+            CLR     D1
+            MOVE.W  D6,D2       MOVE the original machine code to D2 to play with
+            LSL.W   #7,D2       BIT* **** **** 0000
+            LSR.W   #8,D2       0000 0000 BIT* ****
+            LSR.W   #5,D2       0000 0000 0000 0BIT 
+            MULU    #8,D2       value adjusted for jumping
+            LEA     modeTable,A6 Load the table into A6
+            JSR     (A6,D2)     Jump to subroutine of value at D2
+            RTS
+*------------------------------------------------------------
+get_9to11_bit
+*------------------------------------------------------------
+* MachineCode: 0001 **** BIT* **** ****
+* Decode 3 bits => Destination Register
+* Stored at D1
+           
+            MOVE.W  D6,D1       MOVE the original machine code to D1 to play with
+            LSL.W   #4,D1       BIT* **** **** 0000
+            LSR.W   #8,D1       0000 0000 BIT* ****
+            LSR.W   #5,D1       0000 0000 0000 0BIT     
+            MULU    #8,D1       value adjusted for jumping
+            LEA     regNumTable ,A6 Load the table into A6
+            JSR     (A6,D1)     Jump to subroutine of value at D1 
+            RTS  
 *-----------------------FUNCTION word or Long --------------
 *----------Used to decipher if we are decoding a word or long
 *-  This subroutine determines f the operations is a word or a long, 
@@ -1164,6 +1206,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
