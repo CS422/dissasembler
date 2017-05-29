@@ -11,7 +11,24 @@
 *
 *----
 START:                  ; first instruction of program
-    
+        BRA     A1  
+*      LEA    (A1),A2
+*      LEA    $A000,A5
+*     JSR    (A0)
+*     JSR    $4214
+*     JSR    $A000
+*    MOVE.W  $A000,D1
+*    MOVE.W  D0,D1
+*    MOVE.w  $4563,D0
+*    MOVE.w  D0,D1
+*    MOVE.w  #34,D1
+*    MOVE.w  D0,D1
+*    MOVE.l  $A000,D1
+*    MOVE.l  D0,D1
+*    MOVE.l  $4563,D0
+*    MOVE.l  D0,D1
+*    MOVE.l  #34,D1
+*    MOVE.l  D0,D1
 * Put program code here
 *----------------------------------------------------------
 * Testing:  4MSB opcode 0001 => MOVE.B and MOVEA.B 
@@ -323,6 +340,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 
