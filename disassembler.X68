@@ -11,18 +11,6 @@ CR  EQU $0D
 LF  EQU $0A
 startLoc    EQU $7000
 
-*-----------------------------------------------------------
-* Title      : (!!!!!!STABLE!!!!) Master branch
-* Written by : Danny Ly & Edward Chang
-* Date       : 4/27/2017
-* Description: Our dissasembler for 68K
-*-----------------------------------------------------------
-*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
-    ORG    $1000
-    
-CR  EQU $0D
-LF  EQU $0A
-startLoc    EQU $7000
 
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
@@ -198,8 +186,8 @@ mainLoop
             BEQ     op1001      ;branch to op1001                        
             ;CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
             ;BEQ     op0000      ;branch to op0000                       
-            ;CMP.B   #bin0101,D3 ;SUBQ
-            ;BEQ     op0101      ;branch to op0101                         
+            CMP.B   #bin0101,D3 ;SUBQ ADDQ
+            BEQ     op0101      ;branch to op0101                         
             ;CMP.B   #bin0110,D3 ;Bcc
             ;BEQ     op0110      ;branch to op0110            
             CMP.B   #bin1000,D3 ;DIVU.W
@@ -208,8 +196,8 @@ mainLoop
             ;BEQ     op1011      ;branch to op1011 
             ;CMP.B   #bin1100,D3 ;AND, MULS.W
             ;BEQ     op1100      ;branch to op1100                                    
-            ;CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
-            ;BEQ     op1110      ;branch to op1110            
+            CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
+            BEQ     op1110      ;branch to op1110            
             
             BRA     opERROR     ;invalid opcode display we havent implemented this code yet
             
@@ -871,6 +859,93 @@ get_9to11_bit
 *-the word or LONG can be found in the OPCODE FIELD which is 
 *-bits 8 _6
 
+print_long:
+                *-This method print out the long stored in D4,
+                *- converting from hex to ascii
+                MOVE.L  D4,D3
+                SWAP D3
+                
+                AND.L   #$0000FFFF,D3
+                MOVE.W  D3,D2
+                MOVE.W  D2,D3
+                *-get bit 0
+               
+          
+               LSL.W    #8,D3
+               LSL.W    #4,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3
+               
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               *-get bit 1
+               CLR  D3
+               MOVE.W   D2,D3
+               AND.W    #$00F0,D3
+               LSR.W    #4,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$0F00,D3
+               LSR.W    #8,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$F000,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               *-print the upper word
+               
+               MOVE.L D4,D3
+               
+               AND.L    #$0000FFFF,D3
+               MOVE.W   D3,D2
+               
+               *-get bit 4
+               AND.W    #$F000,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               
+               MOVE.W   D2,D3
+               AND.W    #$0F00,D3
+               LSR.W    #8,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$00F0,D3
+               LSR.W    #4,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               
+               MOVE.W   D2,D3
+               AND.W    #$000F,D3                             
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               RTS
+               
+
 WordOrLong  
         *-find this OPMODE          
         CLR.L   D3
@@ -914,6 +989,10 @@ WordOrLong
             INCLUDE 'op1001.x68'    SUB, SUBA
             INCLUDE 'op1000.x68'    DIVU
             INCLUDE 'op0111.x68'    MOVEQ
+            
+            INCLUDE 'op0000.x68'    ADDI
+            INCLUDE 'op0101.x68'    SUBQ,ADDQ
+            INCLUDE 'op1110.x68'    ROR,ROL,ASR,ASL,LSL,LSR
             
             
 
@@ -1206,6 +1285,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
