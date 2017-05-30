@@ -97,19 +97,11 @@ decode0010
             LEA     regNumTable ,A6 Load the table into A7
             JSR     (A6,D0)     Jump to subroutine of value at D1
 *------------------------------------------------------------
-* Check for #imm or Absolute addressing with D1: register value
-*            LEA     immAbTable, A6
-*            MULU    #8,D1
-*            JSR     (A7,D1)    
-*            CMP.B   #4,D1         ; 100 => #imm => #XX 3 spaces
-*            BEQ.B   immediateData   ;branch to immediateData
-*            CMP.B   #0,D1         ; 000 => (xxx).W => #XXXX 5 spaces
-*            BEQ.W   absoulteWord   ;branch to absoulteWord   
-*            CMP.B   #1,D1         ; 001 => (xxx).L => #XXXXXXXX 9 spaces
-*            BEQ.W   absoulteLong   ;branch to absoulteLong   
-
-
+* Check D2: mode value for immediate or Absolute addressing
+            CMP.B   #7,D2
+            BEQ     immAb0010
 *------------------------------------------------------------
+desDecode0010   
             MOVE.B  #',',(A2)+  comma between operands
 *------------------------------------------------------------
 * MachineCode: 0001 **** ***B IT** ****
@@ -141,8 +133,21 @@ decode0010
 * printing          
             BRA     printCode
 *------------------------------------------------------------
+immAb0010
+* Check for #imm or Absolute addressing with D1: register value
+            LEA     immAbTable, A6
+            MULU    #8,D1
+            JSR     (A6,D1)
+            CMP     #32,D1      if immediate data
+            BEQ     moveIntPointerLong0010
+            BNE     desDecode0010 
+moveIntPointerLong0010
+            JSR     moveIntPointerLong 
+            BRA     desDecode0010   
+*------------------------------------------------------------
 * end of file            
 *------------------------------------------------------------
+
 *~Font name~Courier New~
 *~Font size~10~
 *~Tab type~1~

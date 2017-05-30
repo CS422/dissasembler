@@ -11,7 +11,15 @@
 *
 *----
 START:                  ; first instruction of program
-        BRA     A1  
+       BRA     _01
+       CMP    #1,D0
+       BCC      _02
+       BLT      _02
+       BGE      _01
+_01 
+       MOVE.B   D1,D2
+       BRA     _02
+_02        
 *      LEA    (A1),A2
 *      LEA    $A000,A5
 *     JSR    (A0)
@@ -234,54 +242,54 @@ START:                  ; first instruction of program
 *    ROL.L   #6,D6
 *    ROL.L   #8,D7
     
-    ASR.B     #8,D2
-    
-    *    ROR.B   #$3,D1
-    ASR.B   #2,D7
-    ASR.B   D1,D2
-    
-    ASR.W   #5,D2
-    ASR.W   D2,D7
-    ASR.W   #$8,D4
-    
-    ASR.L   D2,D7
-    
-    ASR.L   #$5,D2
-    ASR.L   #8,D0
-    
-    ASR.B   #4,D1
-    ASR.B   D0,D7
-    ASR.B   #8,D0
-    
-    ASR.W   #$5,D6
-    ASR.W   #2,D5
-    ASR.W   #$8,D5
-    
-    ASR.L   #6,D6
-    ASR.L   #8,D7
-    
-    LSL.B   #$8,D2
-    LSL.B   #4,D0
-    
-    LSL.W   #8,D2
-    LSL.W   #$7,D7
-    LSL.W   D2,D1
-    
-    LSL.L   #6,D2
-    LSL.L   D4,D6
-    LSL.L   #$6,D7
-    
-    
-
-    LSR.B   #5,D2
-    LSL.B   #5,D2
-    LSR.W   #5,D6
-    LSR.L   #5,D2
-    
-
-    LSR.B   D2,D3
-    LSR.W   D1,D3
-    LSR.L   D6,D7
+*    ASR.B     #8,D2
+*    
+*    *    ROR.B   #$3,D1
+*    ASR.B   #2,D7
+*    ASR.B   D1,D2
+*    
+*    ASR.W   #5,D2
+*    ASR.W   D2,D7
+*    ASR.W   #$8,D4
+*    
+*    ASR.L   D2,D7
+*    
+*    ASR.L   #$5,D2
+*    ASR.L   #8,D0
+*    
+*    ASR.B   #4,D1
+*    ASR.B   D0,D7
+*    ASR.B   #8,D0
+*    
+*    ASR.W   #$5,D6
+*    ASR.W   #2,D5
+*    ASR.W   #$8,D5
+*    
+*    ASR.L   #6,D6
+*    ASR.L   #8,D7
+*    
+*    LSL.B   #$8,D2
+*    LSL.B   #4,D0
+*    
+*    LSL.W   #8,D2
+*    LSL.W   #$7,D7
+*    LSL.W   D2,D1
+*    
+*    LSL.L   #6,D2
+*    LSL.L   D4,D6
+*    LSL.L   #$6,D7
+*    
+*    
+*
+*    LSR.B   #5,D2
+*    LSL.B   #5,D2
+*    LSR.W   #5,D6
+*    LSR.L   #5,D2
+*    
+*
+*    LSR.B   D2,D3
+*    LSR.W   D1,D3
+*    LSR.L   D6,D7
 
 
 
@@ -340,6 +348,7 @@ START:                  ; first instruction of program
     
 
     END    START        ; last line of source
+
 
 
 

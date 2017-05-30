@@ -188,8 +188,8 @@ mainLoop
             ;BEQ     op0000      ;branch to op0000                       
             CMP.B   #bin0101,D3 ;SUBQ ADDQ
             BEQ     op0101      ;branch to op0101                         
-            ;CMP.B   #bin0110,D3 ;Bcc
-            ;BEQ     op0110      ;branch to op0110            
+            CMP.B   #bin0110,D3 ;BRA, Bcc
+            BEQ     op0110      ;branch to op0110            
             CMP.B   #bin1000,D3 ;DIVU.W
             BEQ     op1000      ;branch to op1000                                      
             ;CMP.B   #bin1011,D3 ;CMP, CMPA, EOR
@@ -980,7 +980,8 @@ WordOrLong
             *--------------------------------------------------------
             *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
             *-------------------------------------
-            INCLUDE 'op0100.x68'    IN a different file, modulated design        
+            INCLUDE 'op0100.x68'    IN a different file, modulated design
+            INCLUDE 'op0110.x68'    BRA,Bcc(BCC,BLT,BGE)        
             INCLUDE 'op0001.x68'    MOVE.B MOVEA.B 
             INCLUDE 'op0011.x68'    MOVE.W, MOVEA.W
             INCLUDE 'op0010.x68'    MOVE.L, MOVEA.L
@@ -1285,6 +1286,7 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
+
 
 
 
