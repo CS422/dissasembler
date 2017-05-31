@@ -206,6 +206,34 @@ mainLoop
             ;print all the things...
  *******************************************************************************
 *
+
+*******************************************************************************
+* 
+*******************************************************************************
+lineCount
+    LEA     line_counter,A2    * Set up A2 ptr as linecount
+    ADDI.B  #$1,(A2)    * Increment the number of lines by one
+    CMP.B   #30,(A2)    * Now check if the lines hit 30
+    BEQ     halt        * Pause the page if it is full
+    RTS                 * If counter isnt at 31 then go back to
+            
+       
+* this will halt the program and ask user to continue
+halt
+    CLR     D1
+    MOVE.B  #00,(A2)     * Reset the counter then display message
+    LEA     hitEnter,A1  * Load lower address prompt
+    MOVE.B  enterBuf,D1  * Load lower prompt length
+    MOVE.L  #1,D0        * Load task code for prompt
+    TRAP    #15          * Display user prompt
+    LEA     haltEntry,A1    * Load address to store user input
+    MOVE.L  #2,D0       * Load task code for user input
+    TRAP    #15         * Retrieve input
+    RTS                 * Return to the main program loop
+                      
+*******************************************************************************
+*
+*******************************************************************************
 *******************************************************************************
 addressCount 
             *-THIS LOCATION IS WHERE WE WILL PERIODICALLY CHECK THE RUNNING A4 REGISTERY WITH OUR STORED
@@ -224,6 +252,7 @@ addressCount
 get_next_instruction:
                 JSR addressCount    *-CHECKS IF WE REACHED OUT ENDING ADDRESS YET
                 *-line count
+                JSR lineCount
                 CLR D5             *-CLEAR THIS REGISTER/
                 
                 Lea good_code_buffer,A2 ;reset A2, LOADS THE BUFFER TO GET READY TO PRINT TO IT/WRITE TO IT
@@ -1262,6 +1291,10 @@ error_bad_entry LEA bad_entry,A1
 * Put variables and constants here
 welcome_message DC.B    'Hello and Welcome 68Kkrew"s 68K Disassembler(get the pun)',CR,LF,0
 
+hitEnter        DC.B 'Hit enter to display the next page.'
+enterBuf        DC.B enterBuf-hitEnter
+haltEntry       DS.B 1
+line_counter    DC.B 1
 
 good_code_buffer    DS.B    88
 
