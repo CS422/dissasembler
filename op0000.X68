@@ -19,6 +19,16 @@ op0000  ;ADDI
     CMP.B   #$1A,D3     ;see if it's a ADDI.L
     BEQ     addi_L 
     
+    CMP.B   #$10,D3 SUBI.B  #$66,(A2)+
+    BEQ     subi_B_
+    
+    CMP.B   #$11,D3 SUBI.W  #$66,(A2)+
+    BEQ     subi_W_
+    
+    CMP.B   #$12,D3 SUBI.L  #$66,(A2)+
+    BEQ     subi_L_
+    
+    
     JSR finish
 
 
@@ -134,34 +144,28 @@ addi_W
     MOVE.W  D2,D6
     MOVE.B  #',',(A2)+
     
-    ;MOVE.W  A5,D6
-    
     * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-            CLR     D2
-            CLR     D1
-            MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
-            LSL.B   #2,D2       **** **** BIT* **00
-            LSR.B   #5,D2       **** **** 0000 0BIT
-            MOVE.B  D2,D0
-            MULU    #8,D0       value adjusted for jumping
-            LEA     modeTable,A6 Load the table into A6
-            JSR     (A6,D0)     Jump to subroutine of value at D0
+    * Only next last 3 bits which is stored at D0 => Source Address mode
+    CLR     D2
+    CLR     D1
+    MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+    LSL.B   #2,D2       **** **** BIT* **00
+    LSR.B   #5,D2       **** **** 0000 0BIT
+    MOVE.B  D2,D0
+    MULU    #8,D0       value adjusted for jumping
+    LEA     modeTable,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D0   
+    *------------------------------------------------------------
+    * MachineCode: 0001 **** **** **** *BIT
+    * Only last 3 bits which is stored at D0 => Source Register
             
-            
-            
-            *------------------------------------------------------------
-* MachineCode: 0001 **** **** **** *BIT
-* Only last 3 bits which is stored at D0 => Source Register
-            
-            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
-            LSL.B   #5,D1       **** **** BIT0 0000
-            LSR.B   #5,D1       **** **** 0000 0BIT
-            MOVE.B  D1,D0      
-            MULU    #8,D0       value adjusted for jumping
-            LEA     regNumTable ,A6 Load the table into A6
-            JSR     (A6,D0)     Jump to subroutine of value at D1
-            
+    MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+    LSL.B   #5,D1       **** **** BIT0 0000
+    LSR.B   #5,D1       **** **** 0000 0BIT
+    MOVE.B  D1,D0      
+    MULU    #8,D0       value adjusted for jumping
+    LEA     regNumTable ,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D1        
     BRA printCode
 
 addi_L
@@ -200,37 +204,178 @@ addi_L
     MOVE.B  #' ',(A2)+  ;print     
     MOVE.B  #'#',(A2)+  ;print 
     MOVE.B  #'$',(A2)+  ;print 
+    
     JSR print_long
     *-STORE LONG data inside D3
     MOVE.B  #',',(A2)+
-    
-
     * MachineCode: 0001 **** **** **BI T***
-* Only next last 3 bits which is stored at D0 => Source Address mode
-            CLR     D2
-            CLR     D1
-            MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
-            LSL.B   #2,D2       **** **** BIT* **00
-            LSR.B   #5,D2       **** **** 0000 0BIT
-            MOVE.B  D2,D0
-            MULU    #8,D0       value adjusted for jumping
-            LEA     modeTable,A6 Load the table into A6
-            JSR     (A6,D0)     Jump to subroutine of value at D0
+    * Only next last 3 bits which is stored at D0 => Source Address mode
+    CLR     D2
+    CLR     D1
+    MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+    LSL.B   #2,D2       **** **** BIT* **00
+    LSR.B   #5,D2       **** **** 0000 0BIT
+    MOVE.B  D2,D0
+    MULU    #8,D0       value adjusted for jumping
+    LEA     modeTable,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D0
 *------------------------------------------------------------
 * MachineCode: 0001 **** **** **** *BIT
 * Only last 3 bits which is stored at D0 => Source Register
             
-            MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
-            LSL.B   #5,D1       **** **** BIT0 0000
-            LSR.B   #5,D1       **** **** 0000 0BIT
-            MOVE.B  D1,D0      
-            MULU    #8,D0       value adjusted for jumping
-            LEA     regNumTable ,A6 Load the table into A6
-            JSR     (A6,D0)     Jump to subroutine of value at D1
-
+    MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+    LSL.B   #5,D1       **** **** BIT0 0000
+    LSR.B   #5,D1       **** **** 0000 0BIT
+    MOVE.B  D1,D0      
+    MULU    #8,D0       value adjusted for jumping
+    LEA     regNumTable ,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D1
     BRA printCode
 
+
+subi_B_
+    MOVE.W  D6,D2
+    ;MOVEA.W D6,A5       ; BUGGG LOOK BELOW WHWERE DO WE STORE OUR ABS IMM DATA IN ????
+    MOVE.W  (A4)+,D6 ;i forgot where we store our data in memory
     
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print   
+    MOVE.B  #'S',(A2)+  ;print 
+    MOVE.B  #'U',(A2)+  ;print 
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #'I',(A2)+  ;print 
+    MOVE.B  #'.',(A2)+  ;print 
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #'#',(A2)+  ;print 
+    MOVE.B  #'$',(A2)+  ;print 
+    
+    JSR print_word
+    MOVE.W  D2,D6
+    MOVE.B  #',',(A2)+
+    
+    * MachineCode: 0001 **** **** **BI T***
+    * Only next last 3 bits which is stored at D0 => Source Address mode
+    CLR     D2
+    CLR     D1
+    MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+    LSL.B   #2,D2       **** **** BIT* **00
+    LSR.B   #5,D2       **** **** 0000 0BIT
+    MOVE.B  D2,D0
+    MULU    #8,D0       value adjusted for jumping
+    LEA     modeTable,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D0   
+    *------------------------------------------------------------
+    * MachineCode: 0001 **** **** **** *BIT
+    * Only last 3 bits which is stored at D0 => Source Register
+            
+    MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+    LSL.B   #5,D1       **** **** BIT0 0000
+    LSR.B   #5,D1       **** **** 0000 0BIT
+    MOVE.B  D1,D0      
+    MULU    #8,D0       value adjusted for jumping
+    LEA     regNumTable ,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D1        
+    BRA printCode
+    
+
+subi_W_
+    MOVE.W  D6,D2
+    ;MOVEA.W D6,A5       ; BUGGG LOOK BELOW WHWERE DO WE STORE OUR ABS IMM DATA IN ????
+    MOVE.W  (A4)+,D6 ;i forgot where we store our data in memory
+    
+    
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print   
+    MOVE.B  #'S',(A2)+  ;print 
+    MOVE.B  #'U',(A2)+  ;print 
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #'I',(A2)+  ;print 
+    MOVE.B  #'.',(A2)+  ;print 
+    MOVE.B  #'W',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #'#',(A2)+  ;print 
+    MOVE.B  #'$',(A2)+  ;print 
+    
+    JSR print_word
+    MOVE.W  D2,D6
+    MOVE.B  #',',(A2)+
+    
+    * MachineCode: 0001 **** **** **BI T***
+    * Only next last 3 bits which is stored at D0 => Source Address mode
+    CLR     D2
+    CLR     D1
+    MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+    LSL.B   #2,D2       **** **** BIT* **00
+    LSR.B   #5,D2       **** **** 0000 0BIT
+    MOVE.B  D2,D0
+    MULU    #8,D0       value adjusted for jumping
+    LEA     modeTable,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D0   
+    *------------------------------------------------------------
+    * MachineCode: 0001 **** **** **** *BIT
+    * Only last 3 bits which is stored at D0 => Source Register
+            
+    MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+    LSL.B   #5,D1       **** **** BIT0 0000
+    LSR.B   #5,D1       **** **** 0000 0BIT
+    MOVE.B  D1,D0      
+    MULU    #8,D0       value adjusted for jumping
+    LEA     regNumTable ,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D1        
+    BRA printCode   
+    
+subi_L_
+
+    MOVE.L  (A4)+,D3 ;throw away just need to increment pointer here
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print   
+    MOVE.B  #'S',(A2)+  ;print 
+    MOVE.B  #'U',(A2)+  ;print 
+    MOVE.B  #'B',(A2)+  ;print 
+    MOVE.B  #'I',(A2)+  ;print 
+    MOVE.B  #'.',(A2)+  ;print 
+    MOVE.B  #'L',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #' ',(A2)+  ;print 
+    MOVE.B  #'#',(A2)+  ;print 
+    MOVE.B  #'$',(A2)+  ;print 
+    
+    JSR print_long
+    *-STORE LONG data inside D3
+    MOVE.B  #',',(A2)+
+    * MachineCode: 0001 **** **** **BI T***
+    * Only next last 3 bits which is stored at D0 => Source Address mode
+    CLR     D2
+    CLR     D1
+    MOVE.B  D6,D2       MOVE the original machine code to D2 to play with
+    LSL.B   #2,D2       **** **** BIT* **00
+    LSR.B   #5,D2       **** **** 0000 0BIT
+    MOVE.B  D2,D0
+    MULU    #8,D0       value adjusted for jumping
+    LEA     modeTable,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D0
+*------------------------------------------------------------
+* MachineCode: 0001 **** **** **** *BIT
+* Only last 3 bits which is stored at D0 => Source Register
+            
+    MOVE.B  D6, D1      MOVE the original machine code to D1 to play with
+    LSL.B   #5,D1       **** **** BIT0 0000
+    LSR.B   #5,D1       **** **** 0000 0BIT
+    MOVE.B  D1,D0      
+    MULU    #8,D0       value adjusted for jumping
+    LEA     regNumTable ,A6 Load the table into A6
+    JSR     (A6,D0)     Jump to subroutine of value at D1
+    BRA printCode
+
 
 decode0000
     *-this will put the bits 6 - 10 however add zeros
@@ -243,7 +388,4 @@ decode0000
     LSR.W   #6,D3   [ 0000 1111 11XX XXXX ] -> [ 0000 0000 0011 1111 ]
     AND.W   #$00FF,D3   Cancel out any trailing bits 
     RTS
-*~Font name~Courier New~
-*~Font size~10~
-*~Tab type~1~
-*~Tab size~4~
+
