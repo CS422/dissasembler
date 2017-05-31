@@ -7,8 +7,8 @@
 *-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
     ORG    $1000
     
-CR  EQU $0D
-LF  EQU $0A
+CR      EQU $0D
+LF      EQU $0A
 startLoc    EQU $7000
 
 
@@ -1178,17 +1178,6 @@ ones:
     RTS
 
 
-
-
-
-
-
-
-
-
-
-
-
 *-Parses input - take input from user to create a memory address
 *- entry is parsed to make sure it falls within a valid range
 *-good inputs are converteed to hex
@@ -1319,27 +1308,6 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 *~Font name~Courier New~
 *~Font size~10~
