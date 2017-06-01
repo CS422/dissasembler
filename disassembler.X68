@@ -7,22 +7,10 @@
 *-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
     ORG    $1000
     
-CR  EQU $0D
-LF  EQU $0A
+CR      EQU $0D
+LF      EQU $0A
 startLoc    EQU $7000
 
-*-----------------------------------------------------------
-* Title      : (!!!!!!STABLE!!!!) Master branch
-* Written by : Danny Ly & Edward Chang
-* Date       : 4/27/2017
-* Description: Our dissasembler for 68K
-*-----------------------------------------------------------
-*-CURRENT STATE ONLY CONVERTS THE STRING ADDRESS TO A HEX ADDRESS STORED INSIDE D6
-    ORG    $1000
-    
-CR  EQU $0D
-LF  EQU $0A
-startLoc    EQU $7000
 
 *--- Notes
 *We'll keep A2 as our pointer to writing to the different buffers
@@ -198,18 +186,18 @@ mainLoop
             BEQ     op1001      ;branch to op1001                        
             ;CMP.B   #bin0000,D3 ;ADDI, ANDI, EORI, BCHG, CMPI
             ;BEQ     op0000      ;branch to op0000                       
-            ;CMP.B   #bin0101,D3 ;SUBQ
-            ;BEQ     op0101      ;branch to op0101                         
-            ;CMP.B   #bin0110,D3 ;Bcc
-            ;BEQ     op0110      ;branch to op0110            
+            CMP.B   #bin0101,D3 ;SUBQ ADDQ
+            BEQ     op0101      ;branch to op0101                         
+            CMP.B   #bin0110,D3 ;BRA, Bcc
+            BEQ     op0110      ;branch to op0110            
             CMP.B   #bin1000,D3 ;DIVU.W
             BEQ     op1000      ;branch to op1000                                      
             ;CMP.B   #bin1011,D3 ;CMP, CMPA, EOR
             ;BEQ     op1011      ;branch to op1011 
             ;CMP.B   #bin1100,D3 ;AND, MULS.W
             ;BEQ     op1100      ;branch to op1100                                    
-            ;CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
-            ;BEQ     op1110      ;branch to op1110            
+            CMP.B   #bin1110,D3 ;ASR, LSL, ROL, ROR
+            BEQ     op1110      ;branch to op1110            
             
             BRA     opERROR     ;invalid opcode display we havent implemented this code yet
             
@@ -218,6 +206,34 @@ mainLoop
             ;print all the things...
  *******************************************************************************
 *
+
+*******************************************************************************
+* 
+*******************************************************************************
+lineCount
+    LEA     line_counter,A2    * Set up A2 ptr as linecount
+    ADDI.B  #$1,(A2)    * Increment the number of lines by one
+    CMP.B   #30,(A2)    * Now check if the lines hit 30
+    BEQ     halt        * Pause the page if it is full
+    RTS                 * If counter isnt at 31 then go back to
+            
+       
+* this will halt the program and ask user to continue
+halt
+    CLR     D1
+    MOVE.B  #00,(A2)     * Reset the counter then display message
+    LEA     hitEnter,A1  * Load lower address prompt
+    MOVE.B  enterBuf,D1  * Load lower prompt length
+    MOVE.L  #1,D0        * Load task code for prompt
+    TRAP    #15          * Display user prompt
+    LEA     haltEntry,A1    * Load address to store user input
+    MOVE.L  #2,D0       * Load task code for user input
+    TRAP    #15         * Retrieve input
+    RTS                 * Return to the main program loop
+                      
+*******************************************************************************
+*
+*******************************************************************************
 *******************************************************************************
 addressCount 
             *-THIS LOCATION IS WHERE WE WILL PERIODICALLY CHECK THE RUNNING A4 REGISTERY WITH OUR STORED
@@ -236,6 +252,7 @@ addressCount
 get_next_instruction:
                 JSR addressCount    *-CHECKS IF WE REACHED OUT ENDING ADDRESS YET
                 *-line count
+                JSR lineCount
                 CLR D5             *-CLEAR THIS REGISTER/
                 
                 Lea good_code_buffer,A2 ;reset A2, LOADS THE BUFFER TO GET READY TO PRINT TO IT/WRITE TO IT
@@ -871,6 +888,93 @@ get_9to11_bit
 *-the word or LONG can be found in the OPCODE FIELD which is 
 *-bits 8 _6
 
+print_long:
+                *-This method print out the long stored in D4,
+                *- converting from hex to ascii
+                MOVE.L  D4,D3
+                SWAP D3
+                
+                AND.L   #$0000FFFF,D3
+                MOVE.W  D3,D2
+                MOVE.W  D2,D3
+                *-get bit 0
+               
+          
+               LSL.W    #8,D3
+               LSL.W    #4,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3
+               
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               *-get bit 1
+               CLR  D3
+               MOVE.W   D2,D3
+               AND.W    #$00F0,D3
+               LSR.W    #4,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$0F00,D3
+               LSR.W    #8,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$F000,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3
+                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               *-print the upper word
+               
+               MOVE.L D4,D3
+               
+               AND.L    #$0000FFFF,D3
+               MOVE.W   D3,D2
+               
+               *-get bit 4
+               AND.W    #$F000,D3
+               LSR.W    #8,D3
+               LSR.W    #4,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               
+               MOVE.W   D2,D3
+               AND.W    #$0F00,D3
+               LSR.W    #8,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               MOVE.W   D2,D3
+               AND.W    #$00F0,D3
+               LSR.W    #4,D3                              
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               
+               
+               MOVE.W   D2,D3
+               AND.W    #$000F,D3                             
+               MULU.W   #8,D3
+               LEA  numTable,A6
+               JSR  (A6,D3)
+               RTS
+               
+
 WordOrLong  
         *-find this OPMODE          
         CLR.L   D3
@@ -905,7 +1009,8 @@ WordOrLong
             *--------------------------------------------------------
             *-OPCODE SUB ROUTINE INCLUDES ( all decodes are in different files - See files
             *-------------------------------------
-            INCLUDE 'op0100.x68'    IN a different file, modulated design        
+            INCLUDE 'op0100.x68'    IN a different file, modulated design
+            INCLUDE 'op0110.x68'    BRA,Bcc(BCC,BLT,BGE)        
             INCLUDE 'op0001.x68'    MOVE.B MOVEA.B 
             INCLUDE 'op0011.x68'    MOVE.W, MOVEA.W
             INCLUDE 'op0010.x68'    MOVE.L, MOVEA.L
@@ -914,6 +1019,10 @@ WordOrLong
             INCLUDE 'op1001.x68'    SUB, SUBA
             INCLUDE 'op1000.x68'    DIVU
             INCLUDE 'op0111.x68'    MOVEQ
+            
+            INCLUDE 'op0000.x68'    ADDI
+            INCLUDE 'op0101.x68'    SUBQ,ADDQ
+            INCLUDE 'op1110.x68'    ROR,ROL,ASR,ASL,LSL,LSR
             
             
 
@@ -1069,17 +1178,6 @@ ones:
     RTS
 
 
-
-
-
-
-
-
-
-
-
-
-
 *-Parses input - take input from user to create a memory address
 *- entry is parsed to make sure it falls within a valid range
 *-good inputs are converteed to hex
@@ -1182,6 +1280,10 @@ error_bad_entry LEA bad_entry,A1
 * Put variables and constants here
 welcome_message DC.B    'Hello and Welcome 68Kkrew"s 68K Disassembler(get the pun)',CR,LF,0
 
+hitEnter        DC.B 'Hit enter to display the next page.'
+enterBuf        DC.B enterBuf-hitEnter
+haltEntry       DS.B 1
+line_counter    DC.B 1
 
 good_code_buffer    DS.B    88
 
@@ -1206,25 +1308,6 @@ error_inv_to_many_char  LEA no_entry,A1 load bad entry statment
 *-i dea i could load the string "           DATA            " without the cursor and find a way to load the address at the line
 
     END    START        ; last line of source
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 *~Font name~Courier New~
 *~Font size~10~
