@@ -37,24 +37,16 @@ op0100      *MOVEM, JSR,LEA,RTS,NOP
 *   3. $4EA0 ~ $4EA7        => (An)
             CMP.W   #$4EA7,D6   ;see if it's a JSR
             BLS     _JSR          
-            
-           
-* determine if contents in D3 are a word or long ---------- 
-            ;JSR     WorL        
 * ---------------------------------------------------------
-            ;CMP.B   #hex7,D3    ;see if it's a LEA
-            ;BEQ     _lea        ;branch 
-            
-* determine if contents in D3 are either CLR or MOVEM ----- 
-            ;JSR     clrORmm       
-* ---------------------------------------------------------
-            ;CMP.B   #hex2,D3    ;see if it's a MOVEM.W
-            ;BEQ     _movemW     ;branch   
-            ;CMP.B   #hex3,D3    ;see if it's a MOVEM.L
-            ;BEQ     _movemL     ;branch              
-                        
-            ;BRA     opError     ;bad opcode branch to error
-            
+*   Check CLR  
+* ---------------------------------------------------------           
+            JSR check_clr_or_moveM
+            CMP.B   #hex_8,D3
+            BEQ     clr_B   ;clr.B
+            CMP.B   #hex_9,D3
+            BEQ     clr_W   ;clr.W
+            CMP.B   #hex_A,D3
+            BEQ     clr_L   ;clr.L        
             
            
            
@@ -149,6 +141,90 @@ _JSR
             BEQ     immAbJSR
             BRA     printCode
 *------------------------------------------------------------
+* CLR subroutine
+* ---------------------------------------------------------
+clr_B       ;CLR.B
+    MOVE.B  D6,D3       ;copy data to D3
+    LSL.B   #5,D3       ;shift d3 to clear
+    LSR.B   #5,D3       ;shift back to bit 0-2
+    CMP.B   #%100,D3    ;compare to immediate data
+
+    ;Print/store CLR.B here
+        MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'C',(A2)+  ;print C
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'B',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;print some spaces
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+
+    
+    *-get bit 3 to 5
+    JSR get_3to5_bit
+    JSR get_0to2_bit
+
+
+    BRA     printCode
+    
+    
+clr_W       ;CLR.W
+    MOVE.B  D6,D3       ;copy data to D3
+    LSL.B   #5,D3       ;shift d3 to clear
+    LSR.B   #5,D3       ;shift back to bit 0-2
+    CMP.B   #%100,D3    ;compare to immediate data
+
+    ;Print/store CLR.B here
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'C',(A2)+  ;print C
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'W',(A2)+  ;print W
+    MOVE.B  #' ',(A2)+  ;print some spaces
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+
+    
+    *-get bit 3 to 5
+    JSR get_3to5_bit
+    JSR get_0to2_bit
+
+    BRA     printCode
+    
+clr_L       ;CLR.L
+    MOVE.B  D6,D3       ;copy data to D3
+    LSL.B   #5,D3       ;shift d3 to clear
+    LSR.B   #5,D3       ;shift back to bit 0-2
+    CMP.B   #%100,D3    ;compare to immediate data
+
+    ;Print/store CLR.B here
+        MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #'C',(A2)+  ;print C
+    MOVE.B  #'L',(A2)+  ;print L
+    MOVE.B  #'R',(A2)+  ;print R
+    MOVE.B  #'.',(A2)+  ;print .
+    MOVE.B  #'L',(A2)+  ;print B
+    MOVE.B  #' ',(A2)+  ;print some spaces
+    MOVE.B  #' ',(A2)+
+    MOVE.B  #' ',(A2)+
+
+    
+    *-get bit 3 to 5
+    JSR get_3to5_bit
+    JSR get_0to2_bit
+    BRA     printCode
+*------------------------------------------------------------
 immAbJSR
 * Check for #imm or Absolute addressing with D1: register value
             LEA     immAbTable, A6
@@ -161,10 +237,18 @@ immAbLEA
             MULU    #8,D1
             JSR     (A6,D1)
             BRA     desDecodeLEA
+check_clr_or_moveM:
+    CLR.L   D3
+    MOVE.W  D6,D3
+    AND.W   #$0FF0,D3
+    LSR.W   #6,D3
+    AND.W   #$000F,D3
+    RTS            
 *------------------------------------------------------------
 * end of file            
 *------------------------------------------------------------
             
+
 
 *~Font name~Courier New~
 *~Font size~10~
